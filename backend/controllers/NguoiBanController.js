@@ -4,7 +4,9 @@ class NguoiBanController
 {
     async index (req,res,next)
     {
-        res.json (await NguoiBan.get ())
+        let obj = await NguoiBan.get ()
+        if (!obj.success) return next (new Exception (obj.res, 500))
+        return res.json (obj.res)
     }
 
     async getById (req,res,next)
@@ -17,17 +19,25 @@ class NguoiBanController
     
     async add (req,res,next)
     {
-        res.json (await NguoiBan.add (req.body))
+        let obj = await NguoiBan.add (req.body)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        return res.status(201).json (obj.res)
     }
 
     async update (req,res,next)
     {
-        res.json (await NguoiBan.update (req.body))
+        let obj = await NguoiBan.update (req.body)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
+        return res.status (201).json (obj.res)
     }
 
     async delete (req,res,next)
     {
-        res.json (await NguoiBan.remove (req.body))
+        let obj = await NguoiBan.remove (req.body)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
+        return res.status (204).json ({msg: "Ok!"})
     }
 }
 
