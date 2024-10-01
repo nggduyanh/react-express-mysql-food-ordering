@@ -4,6 +4,8 @@ const loaiNguoiBanRouter = require ("./LoaiNguoiBanRoute")
 const loaiMonAnRouter = require ("./LoaiMonAnRoute")
 const monAnRouter = require ("./MonAnRoute")
 const nhanXetRouter = require ("./NhanXetRoute")
+const khuyenMaiRouter = require ("./KhuyenMaiRoute")
+const trangThaiDonHangRouter = require ("./TrangThaiDonHangRoute")
 
 function route (app)
 {
@@ -13,6 +15,8 @@ function route (app)
     app.use ("/loaiMonAn",loaiMonAnRouter)
     app.use ("/monan",monAnRouter)
     app.use ("/nhanxet",nhanXetRouter)
+    app.use ("/khuyenmai",khuyenMaiRouter)
+    app.use ("/trangthaidonhang",trangThaiDonHangRouter)
 }
 
 module.exports = route

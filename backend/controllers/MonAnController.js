@@ -37,7 +37,7 @@ class MonAnController
         let obj = await NguoiBan.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
-        return res.status (204).json ({msg: "Ok!"})
+        return res.sendStatus (204)
     }
 }
 
