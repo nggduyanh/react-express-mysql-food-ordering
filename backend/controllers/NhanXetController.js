@@ -31,6 +31,22 @@ class NhanXetController
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
     }
+
+    async getByNguoiMua (req,res,next)
+    {
+        let obj = await NhanXet.getByNguoiMua (req.params.id)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
+        return res.status (200).json (obj.res)
+    }
+
+    async getByMonAn (req,res,next) 
+    {
+        let obj = await NhanXet.getByMonAn (req.params.id)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
+        return res.status (200).json (obj.res) 
+    }
 }
 
 module.exports = new NhanXetController

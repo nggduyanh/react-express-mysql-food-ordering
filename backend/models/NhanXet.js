@@ -22,7 +22,16 @@ class NhanXet
     {
         return await query.remove (nhanxet.tableName,`where ${nhanxet.maMonAn} = ? and ${nhanxet.maNguoiMua} = ?`, [obj[nhanxet.maMonAn],obj[nhanxet.maNguoiMua]])
     }
-}
 
+    async getByMonAn(id) 
+    {
+        return await query.select ("*",nhanxet.tableName,`where ${nhanxet.maMonAn} = ?`, [id])    
+    }
+
+    async getByNguoiMua (id)
+    {
+        return await query.select ("*",nhanxet.tableName, `where ${nhanxet.maNguoiMua} = ?`, [id])   
+    }
+}
 
 module.exports = new NhanXet
