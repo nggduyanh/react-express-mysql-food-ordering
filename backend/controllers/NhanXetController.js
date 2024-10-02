@@ -36,7 +36,7 @@ class NhanXetController
     {
         let obj = await NhanXet.getByNguoiMua (req.params.id)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiMua = ${req.params.id}`}, 404))
         return res.status (200).json (obj.res)
     }
 
@@ -44,7 +44,7 @@ class NhanXetController
     {
         let obj = await NhanXet.getByMonAn (req.params.id)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.params.id}`}, 404))
         return res.status (200).json (obj.res) 
     }
 }
