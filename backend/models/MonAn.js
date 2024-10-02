@@ -27,6 +27,11 @@ class MonAn
     {
         return await query.remove (monAn.tableName,`where ${monAn.id} = ?`,[obj[monAn.id]])
     }
+
+    async getByNguoiBan (id)
+    {
+        return await query.select ("*",monAn.tableName,`where ${monAn.maNguoiBan} = ?`, [id])
+    }
 }
 
 

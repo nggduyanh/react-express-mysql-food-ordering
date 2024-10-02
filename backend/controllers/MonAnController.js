@@ -39,6 +39,14 @@ class MonAnController
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
     }
+
+    async getByNguoiBan (res,req,next)
+    {
+        let obj = await NguoiBan.getByNguoiBan (req.params.id)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.id}`},404))
+        return res.status (200).json (obj)
+    }
 }
 
 module.exports = new MonAnController
