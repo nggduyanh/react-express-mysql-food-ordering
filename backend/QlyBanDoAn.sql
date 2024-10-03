@@ -143,22 +143,21 @@ create table NguoiBanYeuThich (
 );
 
 # Drop Table 
-drop table NhanXet;
-drop table NguoiMua_KhuyenMai;
-drop table LoaiNguoiBan_NguoiBan;
-drop table ChiTietDonHang;
+-- drop table NhanXet;
+-- drop table NguoiMua_KhuyenMai;
+-- drop table LoaiNguoiBan_NguoiBan;
+-- drop table ChiTietDonHang;
 
-drop table DonHang;
-drop table NguoiMua;
-drop table MonAn;
-drop table LoaiMonAn;
-drop table LoaiNguoiBan;
-drop table KhuyenMai;
-drop table NguoiBan;
-drop table TaiXe;
-drop table PhuongThucGiaoDich;
-drop table TrangThaiDonHang;
-#
+-- drop table DonHang;
+-- drop table NguoiMua;
+-- drop table MonAn;
+-- drop table LoaiMonAn;
+-- drop table LoaiNguoiBan;
+-- drop table KhuyenMai;
+-- drop table NguoiBan;
+-- drop table TaiXe;
+-- drop table PhuongThucGiaoDich;
+-- drop table TrangThaiDonHang;
 
 # Trigger
 
@@ -187,14 +186,6 @@ begin
 	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
     else update khuyenmai set soLuong = soLuong - 1 where makhuyenmai = new.makhuyenmai;
     end if;
-end$$
-delimiter ;
-
-delimiter $$
-create trigger themNguoiMua_KhuyenMai before delete on NguoiMua_KhuyenMai
-for each row 
-begin
-	update khuyenmai set soLuong = soLuong + 1 where makhuyenmai = old.makhuyenmai;
 end$$
 delimiter ;
 
