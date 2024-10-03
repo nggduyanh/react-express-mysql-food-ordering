@@ -1,5 +1,5 @@
 const constant = {
-    tableName: "nguoimua",
+    tableName: "NguoiMua",
     id: "MaNguoiMua",
     ten: "TenNguoiMua",
     sdt: "SoDienThoai",

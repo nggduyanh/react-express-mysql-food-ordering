@@ -129,4 +129,26 @@ async function insertWithManualPrimaryKey(tableName,obj,ids)
     }       
 }
 
-module.exports = {select,insert,update,remove,insertWithManualPrimaryKey}
+async function selectWithJoin(field,tableName,joinClause,whereClause,args) 
+{
+    let response = {}
+    try 
+    {
+        let sqlString = pool.format (`select ${field} from ${tableName} ${joinClause} ${whereClause || ""}`,args)
+        let options = {sql: sqlString, nestTables: true}
+        let [res] = await pool.query(options)
+        response.res = res
+        response.success = true
+    } 
+    catch (error) 
+    {
+        response.res = error
+        response.success = false
+    }
+    finally 
+    {
+        return response
+    }
+}
+
+module.exports = {select,insert,update,remove,insertWithManualPrimaryKey, selectWithJoin}

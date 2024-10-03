@@ -1,6 +1,7 @@
 const query = require ("../services/QueryService")
 const nhanxet = require ("../utils/constants/NhanXetConstant")
-
+const nguoimua = require ("../utils/constants/NguoiMuaConstant")
+const monan = require ("../utils/constants/MonAnConstant")
 class NhanXet 
 {
     async get ()
@@ -25,12 +26,12 @@ class NhanXet
 
     async getByMonAn(id) 
     {
-        return await query.select ("*",nhanxet.tableName,`where ${nhanxet.maMonAn} = ?`, [id])    
+        return await query.selectWithJoin ("*",nhanxet.tableName, `join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua}`,`where ${nhanxet.maMonAn} = ?`, [id])    
     }
 
     async getByNguoiMua (id)
     {
-        return await query.select ("*",nhanxet.tableName, `where ${nhanxet.maNguoiMua} = ?`, [id])   
+        return await query.selectWithJoin ("*",nhanxet.tableName,`join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}` , `where ${nhanxet.maNguoiMua} = ?`, [id])   
     }
 }
 

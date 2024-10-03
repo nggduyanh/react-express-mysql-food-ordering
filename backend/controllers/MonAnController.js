@@ -1,5 +1,7 @@
 const NguoiBan = require ("../models/MonAn")
 const Exception = require ("../models/Exception")
+const NhanXet = require ("../models/NhanXet")
+const nhanxet = require ("../utils/constants/NhanXetConstant")
 class MonAnController 
 {
     async index (req,res,next)
@@ -45,6 +47,27 @@ class MonAnController
         let obj = await NguoiBan.getByNguoiBan (req.params.id)
         if (!obj.success) return next (new Exception (obj.res,500))
         if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiBan = ${req.params.id}`},404))
+        return res.status (200).json (obj.res)
+    }
+
+    async getNhanXetByMonAn (req,res,next)
+    {
+        let obj = await NhanXet.getByMonAn (req.params.id)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.params.id}`}, 404))
+        return res.status (200).json (obj.res)
+    }
+
+    async replyNhanXet (req,res,next)
+    {
+        let nhanXetObj =
+        {
+            [nhanxet.maMonAn] : req.params.id,
+            [nhanxet.maNguoiMua]: req.params.idNguoiMua,
+        }
+        let obj = await NhanXet.update (nhanXetObj)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.params.id} or not found id NguoiMua = ${req.params.idNguoiMua}`}, 404))
         return res.status (200).json (obj.res)
     }
 }
