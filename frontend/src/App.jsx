@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage/HomePage";
+import Login from "./Login/Login";
+import Register from "./Login/Register";
+import LayoutHeader from "./Layout/LayoutHeader";
+import UserInfor from "./Information/UserInfor";
+import PaymentCards from "./Information/InfoSelection/PaymentCards";
+import ChangeAccount from "./Information/InfoSelection/ChangeAccount";
+import ListRes from "./RestaurantPage/ListRes";
+import NoPage from "./NoPage";
+import TypeRes from "./RestaurantPage/TypeRes";
+import SpecificRes from "./RestaurantPage/ResDetails/SpecificRes";
+import Favourite from "./Information/Favourite";
+import Address from "./Information/Address/Address";
+import ActivityOrder from "./Information/Activity/ActivityOrder";
+import Complete from "./Information/Activity/Complete";
+import OnGoing from "./Information/Activity/OnGoing";
+import Canceled from "./Information/Activity/Canceled";
+import OrderStatusDetails from "./Information/Activity/OrderStatusDetails";
+import SuccessPayment from "./SuccessPayment";
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LayoutHeader />}>
+          <Route index element={<HomePage />} />
+          <Route path="information" element={<UserInfor />}>
+            <Route index element={<ChangeAccount />} />
+            <Route path="payment" element={<PaymentCards />} />
+            <Route path="favourite" element={<Favourite />} />
+            <Route path="address" element={<Address />} />
+          </Route>
+          <Route path="activity" element={<ActivityOrder />}>
+            <Route index element={<Complete />} />
+            <Route path="ongoing" element={<OnGoing />} />
+            <Route path="canceled" element={<Canceled />} />
+            <Route path=":orderID" element={<OrderStatusDetails />} />
+          </Route>
+          <Route path="success" element={<SuccessPayment />} />
+          <Route path="all" element={<ListRes />} />
+          <Route path="typeRes/:type" element={<TypeRes />} />
+          <Route path="restaurant/:resname" element={<SpecificRes />} />
+        </Route>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="*" element={<NoPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
