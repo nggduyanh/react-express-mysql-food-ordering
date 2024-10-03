@@ -7,8 +7,6 @@ router.put ("/update",MonAnController.update)
 router.post("/add",MonAnController.add)
 router.get ("/", MonAnController.index)
 router.get ("/:id",MonAnController.getById)
-router.get ("/:id/nguoiban/", MonAnController.getByNguoiBan)
-router.get ("/:id/nhanxet/", MonAnController.getNhanXetByMonAn)
-router.put ("/:id/nhanxet/:idNguoiMua/reply",MonAnController.replyNhanXet)
+router.get ("/nguoiban/:idNguoiBan", MonAnController.getByNguoiBan)
 
 module.exports = router

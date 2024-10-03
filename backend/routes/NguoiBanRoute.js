@@ -7,8 +7,9 @@ router.put ("/update",nguoiBanController.update)
 router.post("/add",nguoiBanController.add)
 router.get ("/", nguoiBanController.index)
 router.get ("/:id",nguoiBanController.getById)
-router.get ("/:id/loainguoiban",nguoiBanController.getLoaiNguoiBan)
-router.post ("/:id/loainguoiban/add",nguoiBanController.addLoaiNguoiBan)
-router.delete ("/:id/loainguoiban/:idLoaiNguoiBan/delete", nguoiBanController.deleteLoaiNguoiBan)
+router.post ("/loainguoiban/add",nguoiBanController.addLoaiNguoiBan)
+router.delete ("/loainguoiban/delete", nguoiBanController.deleteLoaiNguoiBan)
+router.put ("/nhanxet/update",nguoiBanController.replyNhanXet)
+
 
 module.exports = router

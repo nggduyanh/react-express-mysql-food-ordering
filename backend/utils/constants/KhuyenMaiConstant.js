@@ -6,7 +6,8 @@ const constant = {
     giaTri: "GiaTri",
     soLuong: "SoLuong",
     ngayTao: "NgayTao",
-    ngayHetHan: "NgayHetHan"
+    ngayHetHan: "NgayHetHan",
+    maNguoiBan: "MaNguoiBan"
 }
 
 module.exports = constant

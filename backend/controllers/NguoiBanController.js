@@ -1,8 +1,9 @@
 const NguoiBan = require ("../models/NguoiBan")
 const Exception = require ("../models/Exception")
 const LoaiNguoiBanNguoiBan = require ("../models/LoaiNguoiBan_NguoiBan")
-const loaiNguoiBan = require ("../utils/constants/LoaiNguoiBanConstant")
 const loaiNguoiBanNguoiBan = require ("../utils/constants/LoaiNguoiBanNguoiBanConstant")
+const NhanXet = require ("../models/NhanXet")
+const nhanXet = require ("../utils/constants/NhanXetConstant")
 class NguoiBanController 
 {
     async index (req,res,next)
@@ -43,37 +44,29 @@ class NguoiBanController
         return res.sendStatus (204)
     }
 
-    async getLoaiNguoiBan (req,res,next)
-    {
-        let obj = await LoaiNguoiBanNguoiBan.getByNguoiBan (req.params.id)
-        if (!obj.success) return next (new Exception (obj.res,500))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiBan = ${req.params.id}`},404))
-        return res.status (200).json (obj.res.map (elem => elem[loaiNguoiBan.tableName]))
-    }
-
+    
     async deleteLoaiNguoiBan (req,res,next)
     {
-        let removeObj = 
-        {
-            [loaiNguoiBanNguoiBan.maNguoiBan]: req.params.id,
-            [loaiNguoiBanNguoiBan.maLoaiNguoiBan]: req.params.idLoaiNguoiBan
-        }
-        let obj = await LoaiNguoiBanNguoiBan.remove (removeObj)
+        let obj = await LoaiNguoiBanNguoiBan.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found id NguoiBan = ${req.params.id} or id LoaiNguoiBan = ${req.params.idLoaiNguoiBan}`}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found id NguoiBan = ${req.body[loaiNguoiBanNguoiBan.maNguoiBan]} or id LoaiNguoiBan = ${req.body[loaiNguoiBanNguoiBan.maLoaiNguoiBan]}`}, 404))
         return res.sendStatus (204)
     }
 
     async addLoaiNguoiBan (req,res,next)
     {
-        let addObj = {
-            ...req.body,
-            [loaiNguoiBanNguoiBan.maNguoiBan]: req.params.id
-        }
-        let obj = await LoaiNguoiBanNguoiBan.add (addObj)
+        let obj = await LoaiNguoiBanNguoiBan.add (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404)) 
         return res.status (201).json (obj.res)  
+    }
+
+    async replyNhanXet (req,res,next)
+    {
+        let obj = await NhanXet.update (req.body)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.body[nhanXet.maMonAn]} or not found id NguoiMua = ${req.body[nhanXet.maNguoiMua]}`}, 404))
+        return res.status (200).json (obj.res)
     }
 }
 

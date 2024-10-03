@@ -27,6 +27,11 @@ class KhuyenMai
         return await query.remove (khuyenMai.tableName,`where ${khuyenMai.id} = ?`,[obj[khuyenMai.id]])
     }
 
+    async getByNguoiBan (id)
+    {
+        return await query.select ("*",khuyenMai.tableName,`where ${khuyenMai.maNguoiBan} = ?`, [id])
+    }
+
 }
 
 module.exports = new KhuyenMai

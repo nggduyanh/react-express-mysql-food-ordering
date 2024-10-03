@@ -7,5 +7,5 @@ router.put ("/update",KhuyenMaiController.update)
 router.post("/add",KhuyenMaiController.add)
 router.get ("/", KhuyenMaiController.index)
 router.get ("/:id",KhuyenMaiController.getById)
-
+router.get ("/nguoimua/:idNguoiMua",KhuyenMaiController.getKhuyenMaiByNguoiMua)
 module.exports = router

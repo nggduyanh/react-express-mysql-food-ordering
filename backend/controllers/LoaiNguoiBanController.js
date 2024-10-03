@@ -1,7 +1,7 @@
 const LoaiNguoiBan = require ("../models/LoaiNguoiBan")
 const Exception = require ("../models/Exception")
-const nguoiBan = require ("../utils/constants/NguoiBanConstant")
 const LoaiNguoiBanNguoiBan = require ("../models/LoaiNguoiBan_NguoiBan")
+const loaiNguoiBan = require ("../utils/constants/LoaiNguoiBanConstant")
 class LoaiNguoiBanController 
 {
     async index (req,res,next)
@@ -41,15 +41,15 @@ class LoaiNguoiBanController
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
     }
-
-    async getByLoaiNguoiBan (req,res,next)
-    {
-        let obj = await LoaiNguoiBanNguoiBan.getByLoaiNguoiBan (req.params.id)
-        if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
-        return res.status (200).json (obj.res.map (elem => elem[nguoiBan.tableName]))
-    }
     
+    async getLoaiNguoiBanByNguoiBan (req,res,next)
+    {
+        let obj = await LoaiNguoiBanNguoiBan.getByNguoiBan (req.params.idNguoiBan)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiBan = ${req.params.idNguoiBan}`},404))
+        return res.status (200).json (obj.res.map (elem => elem[loaiNguoiBan.tableName]))
+    }
+
 }
 
 module.exports = new LoaiNguoiBanController
