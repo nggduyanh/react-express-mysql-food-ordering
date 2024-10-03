@@ -1,7 +1,7 @@
 const NguoiBan = require ("../models/MonAn")
 const Exception = require ("../models/Exception")
-const NhanXet = require ("../models/NhanXet")
-const nhanxet = require ("../utils/constants/NhanXetConstant")
+const ChiTietDonHang = require ("../models/ChiTietDonHang")
+const monAn = require ("../utils/constants/MonAnConstant")
 class MonAnController 
 {
     async index (req,res,next)
@@ -47,6 +47,14 @@ class MonAnController
         let obj = await NguoiBan.getByNguoiBan (req.params.idNguoiBan)
         if (!obj.success) return next (new Exception (obj.res,500))
         if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiBan = ${req.params.idNguoiBan}`},404))
+        return res.status (200).json (obj.res)
+    }
+
+    async getByHoaDon (req,res,next)
+    {
+        let obj = await ChiTietDonHang.getMonAnByDonHang (req.params.idDonHang)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id DonHang = ${req.params.idDonHang}`},404))
         return res.status (200).json (obj.res)
     }
 }
