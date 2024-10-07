@@ -1,28 +1,24 @@
+create table NguoiDung (
+	MaNguoiDung int primary key auto_increment,
+    TenNguoiDung varchar (50),
+    Email varchar (255),
+    Anh varchar (255),
+    MatKhau varchar (50),
+    SoDienThoai varchar (50)
+);
+
 create table NguoiBan (
-	MaNguoiBan int primary key auto_increment,
+	MaNguoiBan int primary key,
     TenNguoiBan varchar (50),
-    TenNguoiSoHuu varchar (50),
     ThanhPho varchar (50),
     ThoiGianMoCua time,
     ThoiGianDongCua time,
     DiaChi varchar (255),
     CanCuoc varchar (255),
     GiayPhep varchar (255),
-    SoDienThoai varchar (15),
-    MatKhau varchar (255),
-    Anh varchar (255),
-    Email varchar (255),
     Diem double default 0,
-    LuotDanhGia int default 0
-);
-
-create table NguoiMua (
-	MaNguoiMua int primary key auto_increment,
-    TenNguoiMua varchar (50),
-    Email varchar (50),
-    anh varchar (255),
-    MatKhau varchar (50),
-    SoDienThoai varchar (50)
+    LuotDanhGia int default 0,
+    foreign key (MaNguoiBan) references NguoiDung (MaNguoiDung) on delete cascade
 );
 
 create table LoaiNguoiBan (
@@ -53,7 +49,7 @@ create table NhanXet (
 	MaNguoiMua int,
     MaMonAn int,
     primary key (MaNguoiMua,MaMonAn),
-    foreign key (MaNguoiMua) references nguoimua (MaNguoiMua) on delete cascade,
+    foreign key (MaNguoiMua) references nguoidung (MaNguoiDung) on delete cascade,
     foreign key (MaMonAn) references monan (MaMonAn),
     HienThi boolean default true,
     NoiDung varchar (255),
@@ -85,18 +81,15 @@ create table NguoiMua_KhuyenMai (
 	MaNguoiMua int,
     MaKhuyenMai int,
     primary key (MaNguoiMua, MaKhuyenMai),
-    foreign key (MaNguoiMua) references NguoiMua (MaNguoiMua) on delete cascade,
+    foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete cascade,
     foreign key (MaKhuyenMai) references KhuyenMai (MaKhuyenMai) on delete cascade
 );
 
 create table TaiXe (
-	MaTaiXe int primary key auto_increment, 
-    TenTaiXe varchar (50),
-    SoDienThoai varchar (15),
+	MaTaiXe int primary key, 
     CanCuoc varchar (255),
     BangLai varchar (255),
-    Anh varchar (255),
-    MatKhau varchar (255)
+    foreign key (MaTaiXe) references NguoiDung (MaNguoiDung) on delete cascade
 );
 
 create table TrangThaiDonHang (
@@ -121,7 +114,7 @@ create table DonHang (
     foreign key (TrangThai) references TrangThaiDonHang (MaTrangThai) on delete set null,
     foreign key (MaTaiXe) references TaiXe (MaTaiXe) on delete set null,
     foreign key (MaKhuyenMai) references KhuyenMai (MaKhuyenMai) on delete set null,
-    foreign key (MaNguoiMua) references NguoiMua (MaNguoiMua) on delete set null,
+    foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete set null,
     foreign key (MaPhuongThucGiaoDich) references PhuongThucGiaoDich (MaPhuongThucGiaoDich) on delete set null
 );
 
@@ -139,26 +132,40 @@ create table NguoiBanYeuThich (
     MaNguoiMua int,
     primary key (MaNguoiBan,MaNguoiMua),
     foreign key (MaNguoiBan) references nguoiban (MaNguoiBan) on delete cascade,
-    foreign key (MaNguoiMua) references nguoimua (MaNguoiMua) on delete cascade
+    foreign key (MaNguoiMua) references nguoidung (MaNguoiDung) on delete cascade
+);
+
+create table VaiTro (
+	MaVaiTro int primary key auto_increment,
+    TenVaiTro varchar (50)
+);
+
+create table VaiTro_NguoiDung (
+	MaVaiTro int,
+    MaNguoiDung int,
+    primary key (MaVaiTro,MaNguoiDung),
+    foreign key (MaVaiTro) references VaiTro (MaVaiTro) on delete cascade,
+    foreign key (MaNguoiDung) references nguoidung (MaNguoiDung) on delete cascade
 );
 
 # Drop Table 
--- drop table NhanXet;
--- drop table NguoiMua_KhuyenMai;
--- drop table LoaiNguoiBan_NguoiBan;
--- drop table ChiTietDonHang;
-
--- drop table DonHang;
--- drop table NguoiMua;
--- drop table MonAn;
--- drop table LoaiMonAn;
--- drop table LoaiNguoiBan;
--- drop table KhuyenMai;
--- drop table NguoiBan;
--- drop table TaiXe;
--- drop table PhuongThucGiaoDich;
--- drop table TrangThaiDonHang;
-
+drop table NhanXet;
+drop table NguoiMua_KhuyenMai;
+drop table LoaiNguoiBan_NguoiBan;
+drop table ChiTietDonHang;
+drop table VaiTro_NguoiDung;
+drop table NguoiBanYeuThich;
+drop table DonHang;
+drop table MonAn;
+drop table LoaiMonAn;
+drop table LoaiNguoiBan;
+drop table KhuyenMai;
+drop table NguoiBan;
+drop table TaiXe;
+drop table NguoiDung;
+drop table PhuongThucGiaoDich;
+drop table TrangThaiDonHang;
+drop table VaiTro;
 # Trigger
 
 create trigger tinhDiemNguoiBanInsert after insert on NhanXet
@@ -192,3 +199,5 @@ delimiter ;
 create trigger xoaNguoiMua_KhuyenMai after delete on NguoiMua_KhuyenMai
 for each row
 update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
+
+-- Dữ liệu

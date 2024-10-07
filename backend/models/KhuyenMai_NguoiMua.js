@@ -1,6 +1,6 @@
 const query = require ("../services/QueryService")
 const khuyenMaiNguoiMua = require ("../utils/constants/KhuyenMaiNguoiMua")
-const nguoimua = require ("../utils/constants/NguoiMuaConstant")
+const nguoimua = require ("../utils/constants/NguoiDungConstant")
 const khuyenmai = require ("../utils/constants/KhuyenMaiConstant")
 class KhuyenMaiNguoiMua 
 {
