@@ -9,6 +9,7 @@ const phuongThucGiaoDichRouter = require ("./PhuongThucGiaoDichRoute")
 const donHangRouter = require ("./DonHangRouter")
 const taiXeRouter = require ("./TaiXeRouter")
 const vaiTroRouter = require ("./VaiTroRoute")
+const nguoiMuaRouter = require ("./NguoiMuaRouter")
 
 function route (app)
 {
@@ -23,6 +24,7 @@ function route (app)
     app.use ("/donhang",donHangRouter)
     app.use ("/taixe",taiXeRouter)
     app.use ("/vaitro",vaiTroRouter)
+    app.use ("/nguoimua",nguoiMuaRouter)
 }
 
 module.exports = route

@@ -201,3 +201,17 @@ for each row
 update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
 
 -- Dữ liệu
+-- VaiTro
+insert into vaitro (vaitro.TenVaiTro) values 
+	("Admin"),
+    ("Buyer"),
+    ("Seller"),
+    ("Driver");
+
+select * from vaitro
+-- NguoiDung
+insert into nguoidung (nguoidung.TenNguoiDung,nguoidung.MatKhau) values 
+	("abc","1"),
+    ("root","1"),
+    ("custard","1");
+    

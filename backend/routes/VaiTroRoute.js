@@ -7,5 +7,6 @@ router.put ("/update",VaiTroController.update)
 router.post("/add",VaiTroController.add)
 router.get ("/", VaiTroController.index)
 router.get ("/:id",VaiTroController.getById)
+router.get ("/nguoidung/:idNguoiDung", VaiTroController.getRoleByNguoiDung)
 
 module.exports = router

@@ -1,5 +1,7 @@
 const VaiTro = require ("../models/VaiTro")
 const Exception = require ("../models/Exception")
+const VaiTroNguoiDung = require ("../models/VaiTro_NguoiDung")
+const vaiTro = require ("../utils/constants/VaiTroConstant")
 class VaiTroController 
 {
     async index (req,res,next)
@@ -38,6 +40,14 @@ class VaiTroController
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
+    }
+
+    async getRoleByNguoiDung (req,res,next)
+    {
+        let obj = await VaiTroNguoiDung.getByNguoiDung (req.params.idNguoiDung)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id Role of NguoiDung which has id = ${req.params.idNguoiDung}`},404))
+        return res.status (200).json (obj.res.map (elem => elem[vaiTro.tableName]))
     }
 }
 
