@@ -14,7 +14,7 @@ class TaiXe
 
     async add (obj)
     {
-        return await query.insert (taiXe.tableName,obj,taiXe.id)
+        return await query.insertWithManualPrimaryKey (taiXe.tableName,obj,taiXe.id,[taiXe.id])
     }
 
     async update (obj)

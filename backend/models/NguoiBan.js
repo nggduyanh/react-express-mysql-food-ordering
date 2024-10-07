@@ -14,7 +14,7 @@ class NguoiBan
 
     async add (obj)
     {
-        return await query.insert (nguoiban.tableName,obj,nguoiban.id)
+        return await query.insertWithManualPrimaryKey (nguoiban.tableName,obj,nguoiban.id,[nguoiban.id])
     }
 
     async update (obj)
