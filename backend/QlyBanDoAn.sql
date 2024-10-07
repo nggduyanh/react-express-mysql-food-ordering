@@ -1,6 +1,6 @@
 create table NguoiDung (
 	MaNguoiDung int primary key auto_increment,
-    TenNguoiDung varchar (50),
+    TenNguoiDung varchar (50) unique,
     Email varchar (255),
     Anh varchar (255),
     MatKhau varchar (50),
@@ -149,23 +149,23 @@ create table VaiTro_NguoiDung (
 );
 
 # Drop Table 
-drop table NhanXet;
-drop table NguoiMua_KhuyenMai;
-drop table LoaiNguoiBan_NguoiBan;
-drop table ChiTietDonHang;
-drop table VaiTro_NguoiDung;
-drop table NguoiBanYeuThich;
-drop table DonHang;
-drop table MonAn;
-drop table LoaiMonAn;
-drop table LoaiNguoiBan;
-drop table KhuyenMai;
-drop table NguoiBan;
-drop table TaiXe;
-drop table NguoiDung;
-drop table PhuongThucGiaoDich;
-drop table TrangThaiDonHang;
-drop table VaiTro;
+-- drop table NhanXet;
+-- drop table NguoiMua_KhuyenMai;
+-- drop table LoaiNguoiBan_NguoiBan;
+-- drop table ChiTietDonHang;
+-- drop table VaiTro_NguoiDung;
+-- drop table NguoiBanYeuThich;
+-- drop table DonHang;
+-- drop table MonAn;
+-- drop table LoaiMonAn;
+-- drop table LoaiNguoiBan;
+-- drop table KhuyenMai;
+-- drop table NguoiBan;
+-- drop table TaiXe;
+-- drop table NguoiDung;
+-- drop table PhuongThucGiaoDich;
+-- drop table TrangThaiDonHang;
+-- drop table VaiTro;
 # Trigger
 
 create trigger tinhDiemNguoiBanInsert after insert on NhanXet
@@ -208,10 +208,88 @@ insert into vaitro (vaitro.TenVaiTro) values
     ("Seller"),
     ("Driver");
 
-select * from vaitro
 -- NguoiDung
 insert into nguoidung (nguoidung.TenNguoiDung,nguoidung.MatKhau) values 
 	("abc","1"),
     ("root","1"),
-    ("custard","1");
+    ("custard","1"),
+    ("malenia423","1"),
+    ("dizzy", "1"),
+    ("dope","1"),
+    ("sktt1","1");
+
+-- VaiTroNguoiDung
+insert into vaitro_nguoidung (vaitro_nguoidung.MaNguoiDung, vaitro_nguoidung.MaVaiTro) values 
+	(2,1),
+    (1,2),
+    (3,2),
+    (4,2),
+    (5,3),
+    (6,3),
+    (7,3);
+
+-- NguoiBan
+insert into nguoiban (nguoiban.MaNguoiBan,nguoiban.TenNguoiBan,nguoiban.ThanhPho, nguoiban.ThoiGianMoCua, nguoiban.ThoiGianDongCua, nguoiban.DiaChi) values 
+	(5,"Thiên Đường ăn vặt","Hà Nội","8:00","10:00","Hàm Tử Quan"),
+    (6,"Salt and lime", "Hà Nội", "8:00","19:00", "Đặng Thai Mai"),
+    (7, "King Roti", "Hà Nội", "7:00","23:00","Hàng Gai");
     
+-- LoaiMonAn
+insert into loaimonan (loaimonan.TenLoaiMonAn,loaimonan.MaNguoiBan) values 
+	("Ăn vặt",5),
+    ("Salads, (California Burritos style)",6),
+    ("American BBQ Menu",6),
+    ("Roti",7);
+-- MonAn
+insert into monan (monan.TenMonAn,monan.MoTa,monan.MaNguoiBan,monan.GiaBan,monan.MaLoaiMonAn) values 
+	("Mỳ cay","Cay xè lưỡi",5,25000,1),
+    ("Nem nướng","Đậm ngậy mỗi miếng",5,10000,1),
+    ("Pizza", "Ngất ngây",5,250000,null),
+    ("Salad Grill Chicken","Black beans, 100 grams fresh grilled chicken, cheddar cheese, picante, sour cream, lettuce and your choice of Salt n' Lime salsa",6,80000,2),
+    ("Salad slow cooked Beef Burrito","Black beans, 100 grams braised pulled Australian beef, cheddar cheese, picante, sour cream, lettuce and your choice of Salt n' Lime salsa",6,95000,2),
+    ("Smoked Brisket","Slow n' low smoked beef brisket per order served with mashed potatoes or corn on the cob, with small salad and house BBQ sauce",6,250000,3),
+    ("Roti socola","Bánh Roti socola là loại bánh có Nhân socola - Vỏ bánh cà phê",7,20000,4),
+    ("Roti trà xanh","Bánh Roti Trà Xanh là loại bánh có Nhân bơ sữa - Vỏ bánh Trà Xanh",7,20000,4),
+    ("Roti bơ mặn","Bánh Roti Bơ Mặn với nhân phô mai mặn - Vỏ bánh cà phê",7,20000,4);
+
+-- NguoiBanYeuThich 
+insert into nguoibanyeuthich values 
+	(5,1),
+    (6,1),
+    (7,1),
+    (6,3),
+    (7,3),
+    (5,4),
+    (7,4);
+    
+-- KhuyenMai
+insert into khuyenmai (khuyenmai.TenKhuyenMai,khuyenmai.PhanTram,khuyenmai.GiaTri,khuyenmai.MaNguoiBan,khuyenmai.SoLuong,khuyenmai.NgayTao,khuyenmai.NgayHetHan) values 
+	("Giảm sâu",null,100000,5,10,"2024-12-1 00:00:00","2024-12-2 00:00:00"),
+    ("Giảm nông",5,null,5,10,"2024-10-7 00:00:00","2024-10-9 00:00:00"),
+    ("Giảm siêu to",null,1000,5,2,"2024-10-5 00:00:00", "2024-10-6 00:00:00" );
+
+-- NguoiMua_KhuyenMai
+insert into nguoimua_khuyenmai values 
+	(1,1),
+    (3,1),
+    (4,1);
+
+-- NhanXet 
+insert into nhanxet (nhanxet.MaNguoiMua,nhanxet.MaMonAn,nhanxet.Diem,nhanxet.NoiDung,nhanxet.TraLoi) values 
+	(1,4,10,null),
+    (1,8,2,"Hơi ngọt",null),
+    (3,5,10,"Tuyệt","Shop cám ơn ạ");
+
+-- PhuongThucGiaoDich
+insert into phuongthucgiaodich values 
+	("Cash on delivery"),
+    ("Card"),
+    ("E-wallet");
+
+-- TrangThaiDonHang
+insert into trangthaidonhang values 
+	("Đã nhận đon hàng"),
+    ("Đang chuẩn bị món ăn"),
+    ("Đang giao"),
+    ("Đã giao"),
+    ("Đã hủy")
