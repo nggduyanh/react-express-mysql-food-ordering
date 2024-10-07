@@ -3,7 +3,7 @@ const router = express.Router ()
 const nguoiDungController = require ("../controllers/NguoiDungController")
 
 router.delete ("/delete",nguoiDungController.delete)
-router.put ("/update",nguoiDungController.update)
+router.patch ("/update",nguoiDungController.update)
 router.post("/add",nguoiDungController.add)
 router.get ("/", nguoiDungController.index)
 router.get ("/:id",nguoiDungController.getById)
