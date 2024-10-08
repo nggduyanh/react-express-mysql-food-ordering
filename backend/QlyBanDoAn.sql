@@ -282,7 +282,7 @@ insert into nhanxet (nhanxet.MaNguoiMua,nhanxet.MaMonAn,nhanxet.Diem,nhanxet.Noi
 
 -- PhuongThucGiaoDich
 insert into phuongthucgiaodich (phuongthucgiaodich.TenPhuongThucGiaoDich) values 
-	("Cash"),
+	("Cash on Delivery"),
     ("Card"),
     ("E-wallet");
 
