@@ -281,13 +281,13 @@ insert into nhanxet (nhanxet.MaNguoiMua,nhanxet.MaMonAn,nhanxet.Diem,nhanxet.Noi
     (3,5,10,"Tuyệt","Shop cám ơn ạ");
 
 -- PhuongThucGiaoDich
-insert into phuongthucgiaodich values 
-	("Cash on delivery"),
+insert into phuongthucgiaodich (phuongthucgiaodich.TenPhuongThucGiaoDich) values 
+	("Cash on Delivery"),
     ("Card"),
     ("E-wallet");
 
 -- TrangThaiDonHang
-insert into trangthaidonhang values 
+insert into trangthaidonhang (trangthaidonhang.TenTrangThai) values 
 	("Đã nhận đon hàng"),
     ("Đang chuẩn bị món ăn"),
     ("Đang giao"),
