@@ -3,7 +3,7 @@ const router = express.Router ()
 const KhuyenMaiController = require ("../controllers/KhuyenMaiController")
 
 router.delete ("/delete",KhuyenMaiController.delete)
-router.put ("/update",KhuyenMaiController.update)
+router.patch ("/update",KhuyenMaiController.update)
 router.post("/add",KhuyenMaiController.add)
 router.get ("/", KhuyenMaiController.index)
 router.get ("/:id",KhuyenMaiController.getById)

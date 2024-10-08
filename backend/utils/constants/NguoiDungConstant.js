@@ -1,7 +1,7 @@
 const constant = {
-    tableName: "NguoiMua",
-    id: "MaNguoiMua",
-    ten: "TenNguoiMua",
+    tableName: "NguoiDung",
+    id: "MaNguoiDung",
+    ten: "TenNguoiDung",
     sdt: "SoDienThoai",
     mk: "MatKhau",
     anh: "Anh",

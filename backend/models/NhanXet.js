@@ -1,6 +1,6 @@
 const query = require ("../services/QueryService")
 const nhanxet = require ("../utils/constants/NhanXetConstant")
-const nguoimua = require ("../utils/constants/NguoiMuaConstant")
+const nguoimua = require ("../utils/constants/NguoiDungConstant")
 const monan = require ("../utils/constants/MonAnConstant")
 class NhanXet 
 {

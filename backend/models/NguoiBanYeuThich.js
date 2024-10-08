@@ -1,7 +1,7 @@
 const query = require ("../services/QueryService")
 const nguoiBanYeuThich = require ("../utils/constants/NguoiBanYeuThichConstant")
 const nguoiBan = require ("../utils/constants/NguoiBanConstant")
-const nguoimua = require ("../utils/constants/NguoiMuaConstant")
+const nguoimua = require ("../utils/constants/NguoiDungConstant")
 class NguoiBanYeuThich 
 {
     
