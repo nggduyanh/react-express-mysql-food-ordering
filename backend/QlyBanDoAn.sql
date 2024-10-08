@@ -276,7 +276,7 @@ insert into nguoimua_khuyenmai values
 
 -- NhanXet 
 insert into nhanxet (nhanxet.MaNguoiMua,nhanxet.MaMonAn,nhanxet.Diem,nhanxet.NoiDung,nhanxet.TraLoi) values 
-	(1,4,10,null),
+	(1,4,10,null,null),
     (1,8,2,"Hơi ngọt",null),
     (3,5,10,"Tuyệt","Shop cám ơn ạ");
 
