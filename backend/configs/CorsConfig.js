@@ -1,6 +1,6 @@
 const option = 
 {
-    origin: "*"
+    origin: process.env.clientDomain
 }
 
 module.exports = option
