@@ -2,7 +2,6 @@ import { Link, Outlet } from "react-router-dom";
 import imageFood from "../assets/orderfood1.png";
 import avatar from "../assets/avatar.png";
 import { IoLocationOutline } from "react-icons/io5";
-import { CiShoppingCart } from "react-icons/ci";
 import { MdAccessTimeFilled } from "react-icons/md";
 export default function LayoutHeader() {
   const userActive = true;
