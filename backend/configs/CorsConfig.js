@@ -1,6 +1,7 @@
 const option = 
 {
-    origin: process.env.clientDomain
+    origin: process.env.clientDomain,
+    credentials: true
 }
 
 module.exports = option
