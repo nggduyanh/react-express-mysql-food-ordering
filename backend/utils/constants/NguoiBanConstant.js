@@ -8,7 +8,8 @@ const constant = {
     cccd: "CanCuoc",
     giayPhep: "GiayPhep",
     diem: "Diem",
-    luotDanhGia: "luotDanhGia" 
+    luotDanhGia: "luotDanhGia",
+    anh: "AnhNguoiBan"
 }
 
 module.exports = constant

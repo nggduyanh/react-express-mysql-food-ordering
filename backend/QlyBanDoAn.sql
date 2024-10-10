@@ -2,7 +2,7 @@ create table NguoiDung (
 	MaNguoiDung int primary key auto_increment,
     TenNguoiDung varchar (50) unique,
     Email varchar (255),
-    Anh varchar (255),
+    AnhNguoiDung varchar (255),
     MatKhau varchar (50),
     SoDienThoai varchar (50)
 );
@@ -14,6 +14,7 @@ create table NguoiBan (
     ThoiGianMoCua time,
     ThoiGianDongCua time,
     DiaChi varchar (255),
+    AnhNguoiBan varchar (255),
     CanCuoc varchar (255),
     GiayPhep varchar (255),
     Diem double default 0,
@@ -36,7 +37,7 @@ create table LoaiMonAn (
 create table MonAn (
 	MaMonAn int primary key auto_increment,
     TenMonAn varchar (50),
-    Anh varchar (255),
+    AnhMonAn varchar (255),
     GiaBan int,
     MoTa varchar (255),
     MaNguoiBan int,
