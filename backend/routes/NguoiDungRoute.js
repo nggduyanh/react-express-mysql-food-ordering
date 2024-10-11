@@ -6,7 +6,7 @@ const addImageFile = require ("../middlewares/FormFile")
 
 router.delete ("/delete",nguoiDungController.delete)
 router.patch ("/update",addImageFile (nguoiDung.anh),nguoiDungController.update)
-router.post("/add",addImageFile (nguoiDung.anh), nguoiDungController.add)
+router.post("/add", nguoiDungController.add)
 router.get ("/", nguoiDungController.index)
 router.get ("/:id",nguoiDungController.getById)
 router.post ("/vaitro/add", nguoiDungController.addRole)
