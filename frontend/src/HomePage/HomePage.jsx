@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import Slider from "./Slider";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { GrFormNext } from "react-icons/gr";
 import { useState, createContext } from "react";
 const LazyResInfo = lazy(() => import("../RestaurantPage/InfoRes/ResInfo"));
@@ -19,6 +19,8 @@ export default function HomePage() {
       </LazyResInfo>
     );
   });
+  const location = useLocation();
+  const getUserInfoLocation = location.state;
   const get3TrendingRandom = Math.floor(Math.random() * Food.length);
   const TrendingFood = () => {
     return <h1>Hello</h1>;

@@ -1,20 +1,21 @@
 import { useReducer } from "react";
 import videoRegister from "../assets/food_register.mp4";
-import { Link, Navigate } from "react-router-dom";
-import { GetUserInfo } from "../Route";
-import api from "../Route/api";
+import { Link, useNavigate } from "react-router-dom";
+import { AddUserInfo } from "../Route";
+import axios from "axios";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX =
   /^(0[3|5|7|8|9][0-9]{8}|(01[2|6|8|9]|09[0-9]|[3|5|7|8|9][0-9])[0-9]{8})$/;
 const RegisterAction = {
   inputError: "",
   form: {
-    username: "",
-    phoneNumber: "",
-    email: "",
-    password: "",
+    TenNguoiDung: "",
+    Email: "",
+    Anh: null,
+    MatKhau: "",
+    SoDienThoai: "",
   },
 };
 const RegisterReducer = (state, action) => {
@@ -30,25 +31,20 @@ const RegisterReducer = (state, action) => {
       };
     }
     case "submitValue": {
-      try {
-        let errorNotifcation = "";
-        if (!USER_REGEX.test(state.form.username))
-          errorNotifcation += " username ";
-        if (!PHONE_REGEX.test(state.form.phoneNumber))
-          errorNotifcation += " phone number";
-        if (!EMAIL_REGEX.test(state.form.email)) errorNotifcation += " email ";
-        if (!PWD_REGEX.test(state.form.password))
-          errorNotifcation += " password ";
-        return {
-          inputError: errorNotifcation,
-          form: {
-            ...state.form,
-          },
-        };
-      } catch (err) {
-        console.log(err);
-      }
-      return state;
+      console.log("Submit Value");
+      let errorNotifcation = "";
+      if (!USER_REGEX.test(state.form.TenNguoiDung))
+        errorNotifcation += " TenNguoiDung ";
+      if (!PHONE_REGEX.test(state.form.SoDienThoai))
+        errorNotifcation += " SoDienThoai";
+      if (!EMAIL_REGEX.test(state.form.Email)) errorNotifcation += " Email ";
+      if (!PWD_REGEX.test(state.form.MatKhau)) errorNotifcation += " MatKhau ";
+      return {
+        inputError: errorNotifcation,
+        form: {
+          ...state.form,
+        },
+      };
     }
     default:
       return state;
@@ -56,22 +52,33 @@ const RegisterReducer = (state, action) => {
 };
 export default function Register() {
   const [RegisterForm, dispatch] = useReducer(RegisterReducer, RegisterAction);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     dispatch({ type: "inputValue", event: e });
   };
-  console.log(RegisterForm.form);
   const handleSubmit = async (event) => {
     event.preventDefault();
     dispatch({ type: "submitValue" });
-
-    if (RegisterForm.inputError.length === 0) {
-      await api.post(GetUserInfo, RegisterForm.form, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-      Navigate("/");
-    } else {
-      alert("Something went wrong please check: ", RegisterForm.inputError);
+    console.log(RegisterForm.inputError);
+    if (RegisterForm.inputError.length > 0) {
+      console.log("Hello this is error");
+      alert(RegisterForm.inputError.join(" "));
+      return;
+    }
+    try {
+      const response = await axios.post(
+        AddUserInfo,
+        JSON.stringify(RegisterForm.form),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
+      navigate("/");
+    } catch (err) {
+      alert("Something went wrong please check: ", err.message);
+      console.log(err);
     }
   };
 
@@ -97,54 +104,54 @@ export default function Register() {
           </label>
           <br />
           <input
+            name="TenNguoiDung"
             className="input_setup"
             type="text"
             placeholder="enter username"
             id="username"
-            name="username"
-            value={RegisterForm.form.username}
+            value={RegisterForm.form.TenNguoiDung}
             onChange={handleChange}
           />
+          <label htmlFor="Email" className="text-xs">
+            Email
+          </label>
+          <br />
+          <input
+            name="Email"
+            className="input_setup"
+            type="text"
+            placeholder="Enter Email"
+            id="Email"
+            onChange={handleChange}
+            value={RegisterForm.form.Email}
+          />
+          <br />
+          <label htmlFor="Password" className="text-xs">
+            Password
+          </label>
+          <br />
+          <input
+            name="MatKhau"
+            className="input_setup"
+            type="password"
+            placeholder="Enter password"
+            id="Password"
+            onChange={handleChange}
+            value={RegisterForm.form.MatKhau}
+          />
+          <br />
           <label htmlFor="phoneNumber" className="text-xs">
             Phone number
           </label>
           <br />
           <input
+            name="SoDienThoai"
             className="input_setup"
             type="text"
             placeholder="Enter Phone Number"
             id="phoneNumber"
             onChange={handleChange}
-            name="phoneNumber"
-            value={RegisterForm.form.phoneNumber}
-          />
-          <br />
-          <label htmlFor="email" className="text-xs">
-            Email
-          </label>
-          <br />
-          <input
-            className="input_setup"
-            type="text"
-            placeholder="Enter email"
-            id="email"
-            onChange={handleChange}
-            name="email"
-            value={RegisterForm.form.email}
-          />
-          <br />
-          <label htmlFor="password" className="text-xs">
-            Password
-          </label>
-          <br />
-          <input
-            className="input_setup"
-            type="password"
-            placeholder="Enter password"
-            id="password"
-            onChange={handleChange}
-            name="password"
-            value={RegisterForm.form.password}
+            value={RegisterForm.form.SoDienThoai}
           />
           <br />
           <button
