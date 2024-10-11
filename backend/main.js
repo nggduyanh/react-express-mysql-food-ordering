@@ -5,6 +5,7 @@ const router = require ("./routes/index")
 const errorHandler = require ("./middlewares/ExceptionHandler")
 const cors = require ("cors")
 const corsOption = require ("./configs/CorsConfig")
+
 // middlewares
 app.use (cors (corsOption))
 app.use (express.urlencoded ({extended: true}))

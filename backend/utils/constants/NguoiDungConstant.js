@@ -4,7 +4,7 @@ const constant = {
     ten: "TenNguoiDung",
     sdt: "SoDienThoai",
     mk: "MatKhau",
-    anh: "Anh",
+    anh: "AnhNguoiDung",
     mail: "Email",
 }
 
