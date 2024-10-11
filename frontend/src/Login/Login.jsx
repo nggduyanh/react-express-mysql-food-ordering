@@ -1,6 +1,6 @@
 import { useState } from "react";
 import videoLogin from "../assets/food_login.mp4";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GetUserInfo } from "../Route";
 export default function Login() {
@@ -43,6 +43,7 @@ export default function Login() {
       }
     } catch (err) {
       alert("Something went wrong between sending data");
+      console.log(err.message);
     }
   };
 
