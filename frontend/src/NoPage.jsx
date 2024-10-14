@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 export default function NoPage() {
   return (
     <div className="flex justify-between items-center">
-      <img src="../public/404.jpg" alt="" className="bg-cover w-1/2 h-screen" />
+      <img src="../404.jpg" alt="" className="bg-cover w-1/2 h-screen" />
       <div className="w-1/2 ">
         <p className="font-bold text-5xl mb-10">
           Page Not <br /> Found{" "}

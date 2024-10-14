@@ -2,6 +2,7 @@ import ResInfo from "./InfoRes/ResInfo";
 import GridDiv from "../Function/GridDiv";
 import { FaSearch } from "react-icons/fa";
 import useFilterRes_Type from "../Hook/useFilterRes_Type";
+import Search from "../Function/Search";
 export default function ListRes() {
   const listFood = useFilterRes_Type().map((res) => {
     return (
@@ -22,16 +23,7 @@ export default function ListRes() {
   return (
     <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">Good food near you</p>
-      <div className="flex items-center">
-        <input
-          type="text"
-          placeholder="Search"
-          className="w-full border border-gray-500 p-3 rounded-l-lg"
-        />
-        <div className="bg-red-500 p-4 text-white text-lg rounded-r-lg cursor-pointer">
-          <FaSearch className="" />
-        </div>
-      </div>
+      <Search />
       <GridDiv cols={4} classname="listFood mt-5">
         {listFood}
       </GridDiv>

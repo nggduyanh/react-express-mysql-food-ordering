@@ -16,20 +16,37 @@ import OrderDetails from "./OrderDetails";
 import ListComment from "../Comment/ListComment";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
+import { GetFoodRestaurant } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
 export default function SpecificRes() {
   const [close, setClose] = useState(true);
   const [Food, setFood] = useState([]);
   const ResInfor = useLocation();
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
+    fetch(GetFoodRestaurant)
       .then((res) => res.json())
-      .then((data) => setFood(data));
+      .then((listFood) => {
+        const filterFood = listFood.filter((food) => {
+          return (
+            parseInt(food.MaNguoiBan) === parseInt(ResInfor.state.MaNguoiBan)
+          );
+        });
+        const assignTypeFood = filterFood.map((food) => {
+          const getType = ResInfor.state.loaiMonAn.find((type) => {
+            return type.MaLoaiMonAn === food.MaLoaiMonAn;
+          });
+          return {
+            ...food,
+            loaiMonAn: getType.TenLoaiMonAn,
+          };
+        });
+        setFood(assignTypeFood);
+      });
   }, []);
   const categoryFood = useMemo(() => {
     const array = Food.reduce((accumulate, currentVal) => {
-      if (!accumulate.includes(currentVal.category)) {
-        accumulate.push(currentVal.category);
+      if (!accumulate.includes(currentVal.loaiMonAn)) {
+        accumulate.push(currentVal.loaiMonAn);
       }
       return accumulate;
     }, []);
@@ -40,9 +57,9 @@ export default function SpecificRes() {
       let filterArray = [];
       categoryFood.forEach((cate, index) => {
         let resCateFood = Food.filter((items) => {
-          return cate === items.category;
+          return cate === items.loaiMonAn;
         });
-        filterArray.push({ id: index, category: cate, list: resCateFood });
+        filterArray.push({ id: index, loaiMonAn: cate, list: resCateFood });
       });
       return filterArray;
     }
@@ -73,20 +90,36 @@ export default function SpecificRes() {
       <div className="bg-black bckImage">
         <div className="overlay"></div>
         <MarginJustifi classname=" text-white flex justify-between py-10 header_content">
-          <ResInfo rate={ResInfor.state.rate}>
+          <ResInfo details={true} rate={ResInfor.state.Diem}>
             <p className="font-bold capitalize text-4xl tracking-widest">
-              {ResInfor.state.title}
+              {ResInfor.state.TenNguoiBan}
             </p>
-            <p className="my-2">Address: Thanh Pho Ha Noi</p>
-            <i className="my-2 block">{ResInfor.state.category}</i>
-            <p>Open Time: 12:00am</p>
+            <p className="my-2">Address: {ResInfor.state.ThanhPho}</p>
+            <i className="my-2 block">
+              Restaurant Type:{" "}
+              {ResInfor.state.loaiMonAn.map((type) => {
+                return type.TenLoaiMonAn + " ";
+              })}
+            </i>
+            <p>
+              Time: {ResInfor.state.ThoiGianMoCua} -{" "}
+              {ResInfor.state.ThoiGianDongCua}
+            </p>
           </ResInfo>
           <div className="res_image flex justify-end">
-            <img
-              src={ResInfor.state.img}
-              alt=""
-              className="w-10/12  h-48 rounded-xl"
-            />
+            {ResInfor.state.AnhNguoiBan !== null ? (
+              <img
+                src={ResInfor.state.img}
+                alt=""
+                className="w-11/12 h-48 rounded-xl"
+              />
+            ) : (
+              <img
+                src="/resDefault.jpg"
+                alt=""
+                className="w-11/12 h-48 rounded-xl"
+              />
+            )}
           </div>
         </MarginJustifi>
 
@@ -113,7 +146,7 @@ export default function SpecificRes() {
       <MarginJustifi>
         <p className="text-2xl font-bold my-4">Combo Food</p>
         <GridDiv cols={4}>
-          {Food.slice(0, 4).map((food) => {
+          {/* {Food.slice(0, 4).map((food) => {
             return (
               <FoodDetails
                 getInfo={(val) => console.log(val)}
@@ -122,7 +155,7 @@ export default function SpecificRes() {
                 {...food}
               />
             );
-          })}
+          })} */}
         </GridDiv>
       </MarginJustifi>
 

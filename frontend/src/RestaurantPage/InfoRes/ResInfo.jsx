@@ -3,7 +3,7 @@ import { TiStarOutline } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Toggle from "../../Function/Toggle/LayoutToggle";
-export default function ResInfo({ children, ...rest }) {
+export default function ResInfo({ children, details, ...rest }) {
   const NumberOfStar = rest.Diem;
   const DecimalOfStar = Number.parseInt(NumberOfStar);
   let arrayOfStar = new Array(5);
@@ -16,9 +16,9 @@ export default function ResInfo({ children, ...rest }) {
   return (
     <Toggle>
       <div className="FoodItems p-2 rounded-lg flex flex-col justify-between">
-        {
+        {details !== true && (
           <div className="relative">
-            <Link to={`/restaurant/:${rest.TenNguoiBan}`} state={rest}>
+            <Link to={`/home/restaurant/:${rest.TenNguoiBan}`} state={rest}>
               {rest.img !== undefined ? (
                 <img src={rest.img} alt="" className="w-full h-48 rounded-lg" />
               ) : (
@@ -47,7 +47,7 @@ export default function ResInfo({ children, ...rest }) {
               </div>
             </div>
           </div>
-        }
+        )}
         <div className="mt-3"></div>
         {/* <Link to={`/restaurant/:${rest.title}`} state={rest}> */}
         {children}

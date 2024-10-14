@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense } from "react";
 import Slider from "./Slider";
 import { Link } from "react-router-dom";
 import { GrFormNext } from "react-icons/gr";

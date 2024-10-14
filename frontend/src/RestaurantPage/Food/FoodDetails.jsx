@@ -10,19 +10,31 @@ export default function FoodDetails({ isOrder, getInfo, mini, ...rest }) {
     >
       <div>
         <div className={mini ? "flex items-center gap-2" : ""}>
-          <img
-            src={rest.image}
-            alt=""
-            className={
-              mini
-                ? "h-16 w-16 border border-pink-400 p-1 rounded-full"
-                : "h-72 relative left-1/2 -translate-x-1/2"
-            }
-          />
-          <p>{rest.title}</p>
+          {rest.AnhMonAn !== null ? (
+            <img
+              src={rest.AnhMonAn}
+              alt=""
+              className={
+                mini
+                  ? "h-16 w-16 border border-pink-400 p-1 rounded-full"
+                  : "h-72 relative left-1/2 -translate-x-1/2"
+              }
+            />
+          ) : (
+            <img
+              src="/Food/NoFoodPhoto.jpg"
+              alt=""
+              className={
+                mini
+                  ? "h-16 w-16 border border-pink-400 p-1 rounded-full"
+                  : "h-72 relative left-1/2 -translate-x-1/2"
+              }
+            />
+          )}
+          <p>{rest.TenMonAn}</p>
         </div>
-        <p>{`Has been orderd: ${rest.rating.count}`}</p>
-        <p>${rest.price}</p>
+        <p className="text-xs text-gray italic">Mota: {rest.MoTa}</p>
+        <p className="text-pink-500">${rest.GiaBan}</p>
       </div>
       {!isOrder ? (
         <button

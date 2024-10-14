@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  ScrollRestoration,
+} from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
 import Login from "./Login/Login";
 import Register from "./Login/Register";

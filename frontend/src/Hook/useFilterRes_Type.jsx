@@ -21,7 +21,11 @@ export default function useFilterRes_Type(valueFilter = " ") {
   const filterRes = useMemo(() => {
     const trimValueFilter = valueFilter.trim();
     return listRestaurant.filter((value) => {
-      return value.TenNguoiBan.includes(trimValueFilter);
+      const matchesName = value.TenNguoiBan.includes(trimValueFilter);
+      const matchesTypeFood = value.loaiMonAn.some((food) =>
+        food.TenLoaiMonAn.includes(trimValueFilter)
+      );
+      return matchesName || matchesTypeFood;
     });
   }, [listRestaurant, valueFilter]);
   if (filterRes.length !== 0) {
