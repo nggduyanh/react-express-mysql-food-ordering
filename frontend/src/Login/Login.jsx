@@ -39,7 +39,7 @@ export default function Login() {
             user.MatKhau === loginForm.MatKhau
           );
         });
-        navigate("/", { state: userResult });
+        navigate("/home", { state: userResult });
       }
     } catch (err) {
       alert("Something went wrong between sending data");

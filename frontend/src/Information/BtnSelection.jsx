@@ -1,7 +1,6 @@
 import { GrNext } from "react-icons/gr";
 import { Link } from "react-router-dom";
 export default function BtnSelection({ children, src, des, ...rest }) {
-  console.log(rest);
   if (src !== undefined) {
     return (
       <Link to="." className={rest.className}>

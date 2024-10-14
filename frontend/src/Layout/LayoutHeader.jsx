@@ -1,10 +1,36 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import imageFood from "../assets/orderfood1.png";
-import avatar from "../assets/avatar.png";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 export default function LayoutHeader() {
-  const userActive = true;
+  const OneDaysMilliseconds = 86400000;
+  const [userData, setUserData] = useState([]);
+  const UserGetlocation = useLocation();
+  const getUserInfo = UserGetlocation.state;
+  useEffect(() => {
+    const setSessionsStorageExpires = async (key, timeExpire) => {
+      const now = new Date();
+      const expireDate = {
+        value: getUserInfo,
+        expire: now.setMilliseconds(now.getMilliseconds() + timeExpire),
+      };
+      sessionStorage.setItem(key, JSON.stringify(expireDate));
+    };
+    const checkSessionStorage = async (key, timeExpire) => {
+      setSessionsStorageExpires(key, timeExpire);
+      const getJsonData = sessionStorage.getItem(key);
+      const data = JSON.parse(getJsonData);
+      const now = new Date();
+      if (now.getMilliseconds() > data.expire) {
+        sessionStorage.removeItem(key);
+        return null;
+      }
+      setUserData(data.value);
+    };
+    checkSessionStorage("user", OneDaysMilliseconds);
+  }, []);
   return (
     <>
       <div className="bg-white shadow-lg">
@@ -42,51 +68,52 @@ export default function LayoutHeader() {
             </div>
           </div>
 
-          <div className="infor flex items-center">
-            <input
-              type="text"
-              placeholder="Search"
-              className=" mx-5 border border-gray-300 rounded-xl p-2 min-w-72 transition-all hover:border-black hover:duration-200 ease-in"
-            />
-            {userActive === false ? (
-              <div>
-                <Link
-                  to="register"
-                  className=" btnInputReLog bg-gradient-to-r from-cyan-500 to-blue-400 mx-1"
-                >
-                  Register
-                </Link>
-                <Link
-                  to="login"
-                  className=" btnInputReLog bg-gradient-to-r from-pink-500 to-pink-600  "
-                >
-                  Login
-                </Link>
-              </div>
-            ) : (
-              <div className="user flex items-center gap-5">
-                <div className="avatar">
-                  <Link to="information" className="flex items-center">
-                    <img src={avatar} alt="" className="w-8 h-8 mx-2" />
-                    <p className="text-gray-500 text-xs"> Nguyen Van A</p>
-                  </Link>
-                </div>
+          <div className="infor flex items-center gap-3">
+            <Link
+              to="all"
+              className="flex items-center gap-2 border border-gray-300 p-2 rounded-md hover:border-pink-400 transition-all ease-in duration-300"
+            >
+              <FaSearch />
+              <p>Search</p>
+            </Link>
 
-                <div className="activity">
-                  <Link
-                    to="activity"
-                    className="flex items-center text-md text-gray-400 gap-2"
-                  >
-                    <MdAccessTimeFilled className="text-green-500" />
-                    <p className="text-green-500">Activity</p>
-                  </Link>
-                </div>
+            <div className="user flex items-center gap-5">
+              <div className="avatar">
+                <Link
+                  to="information"
+                  className="flex items-center"
+                  state={userData}
+                >
+                  <img
+                    src={
+                      userData?.AnhNguoiDung !== null
+                        ? userData?.AnhNguoiDung
+                        : "/avatar.png"
+                    }
+                    alt=""
+                    className="w-8 h-8 mx-2"
+                  />
+                  <p className="text-gray-500 text-xs">
+                    {" "}
+                    {userData?.TenNguoiDung}
+                  </p>
+                </Link>
               </div>
-            )}
+
+              <div className="activity">
+                <Link
+                  to="activity"
+                  className="flex items-center text-md text-gray-400 gap-2"
+                >
+                  <MdAccessTimeFilled className="text-green-500" />
+                  <p className="text-green-500">Activity</p>
+                </Link>
+              </div>
+            </div>
           </div>
         </header>
       </div>
-      <Outlet />
+      <Outlet context={userData} />
       <div className="bg-black text-white">
         <footer className="marginJustification  py-24">Hello Footer</footer>
       </div>

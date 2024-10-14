@@ -13,7 +13,7 @@ const RegisterAction = {
   form: {
     TenNguoiDung: "",
     Email: "",
-    Anh: null,
+    AnhNguoiDung: null,
     MatKhau: "",
     SoDienThoai: "",
   },

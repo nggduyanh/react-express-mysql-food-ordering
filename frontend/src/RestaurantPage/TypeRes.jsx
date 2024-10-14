@@ -1,11 +1,14 @@
 import { useParams, useLocation } from "react-router-dom";
 import ResInfo from "./InfoRes/ResInfo";
-import FoodData from "../data/FoodData";
 import { useState } from "react";
 import GridDiv from "../Function/GridDiv";
+import useFetchData from "../Hook/useFetchData";
+import { GetRestaurant, GetTypeRes } from "../Route";
 export default function TypeRes() {
-  const [foodData, setFoodData] = useState(FoodData);
+  const [Restaurant, setRestaurant] = useFetchData(GetRestaurant);
+  const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
   const typeValue = useParams();
+  console.log("typeValue", typeValue);
   const value = useLocation();
   const listFood = foodData
     .filter((items) => items.category === value.state)

@@ -23,7 +23,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LayoutHeader />}>
+        <Route path="/" element={<Login />} />
+        <Route path="home" element={<LayoutHeader />}>
           <Route index element={<HomePage />} />
           <Route path="information" element={<UserInfor />}>
             <Route index element={<ChangeAccount />} />
@@ -42,7 +43,6 @@ function App() {
           <Route path="typeRes/:type" element={<TypeRes />} />
           <Route path="restaurant/:resname" element={<SpecificRes />} />
         </Route>
-        <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="*" element={<NoPage />} />
       </Routes>

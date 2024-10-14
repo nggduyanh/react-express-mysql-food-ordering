@@ -1,15 +1,11 @@
-import { useState } from "react";
-import FoodType from "../data/FoodType";
 import ResTypeButton from "../RestaurantPage/ResTypeButton";
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
+import { GetTypeRes } from "../Route";
+import useFetchData from "../Hook/useFetchData";
 export default function Slider() {
-  const [listTypeFood] = useState(FoodType);
-  console.log(listTypeFood);
-  // useEffect(() => {
-
-  // }, []);
-  const listType = listTypeFood.map((food) => {
+  const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
+  const listType = typeRes.map((food) => {
     return <ResTypeButton key={food.id} {...food} />;
   });
   return (

@@ -1,21 +1,38 @@
-import { useLocation } from "react-router-dom";
 import ResInfo from "./InfoRes/ResInfo";
 import GridDiv from "../Function/GridDiv";
+import { FaSearch } from "react-icons/fa";
+import useFilterRes_Type from "../Hook/useFilterRes_Type";
 export default function ListRes() {
-  const value = useLocation();
-  const listFood = value.state.map((items) => {
+  const listFood = useFilterRes_Type().map((res) => {
     return (
-      <ResInfo {...items} key={items.id}>
-        <p className="text-xl font-bold">{items.title} </p>
-        <i>{items.category}</i>
-        <p className="text-md text-gray-500">Open - Close: 12:00am - 23:00pm</p>
+      <ResInfo {...res} key={res.id}>
+        <p className="text-xl font-bold">{res.TenNguoiBan} </p>
+        <i>
+          {res.loaiMonAn.map((loaiMonAn) => {
+            return loaiMonAn.TenLoaiMonAn + " ";
+          })}
+        </i>
+        <p className="text-md text-gray-500">
+          Time: {res.ThoiGianMoCua} - {res.ThoiGianDongCua}
+        </p>
       </ResInfo>
     );
   });
+  const handleChangeSearch = (event) => {};
   return (
-    <div className="marginJustification">
+    <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">Good food near you</p>
-      <GridDiv cols={4} classname="listFood ">
+      <div className="flex items-center">
+        <input
+          type="text"
+          placeholder="Search"
+          className="w-full border border-gray-500 p-3 rounded-l-lg"
+        />
+        <div className="bg-red-500 p-4 text-white text-lg rounded-r-lg cursor-pointer">
+          <FaSearch className="" />
+        </div>
+      </div>
+      <GridDiv cols={4} classname="listFood mt-5">
         {listFood}
       </GridDiv>
     </div>
