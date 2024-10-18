@@ -149,24 +149,6 @@ create table VaiTro_NguoiDung (
     foreign key (MaNguoiDung) references nguoidung (MaNguoiDung) on delete cascade
 );
 
-# Drop Table 
--- drop table NhanXet;
--- drop table NguoiMua_KhuyenMai;
--- drop table LoaiNguoiBan_NguoiBan;
--- drop table ChiTietDonHang;
--- drop table VaiTro_NguoiDung;
--- drop table NguoiBanYeuThich;
--- drop table DonHang;
--- drop table MonAn;
--- drop table LoaiMonAn;
--- drop table LoaiNguoiBan;
--- drop table KhuyenMai;
--- drop table NguoiBan;
--- drop table TaiXe;
--- drop table NguoiDung;
--- drop table PhuongThucGiaoDich;
--- drop table TrangThaiDonHang;
--- drop table VaiTro;
 # Trigger
 
 create trigger tinhDiemNguoiBanInsert after insert on NhanXet
@@ -200,6 +182,26 @@ delimiter ;
 create trigger xoaNguoiMua_KhuyenMai after delete on NguoiMua_KhuyenMai
 for each row
 update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
+
+
+# Drop Table 
+drop table NhanXet;
+drop table NguoiMua_KhuyenMai;
+drop table LoaiNguoiBan_NguoiBan;
+drop table ChiTietDonHang;
+drop table VaiTro_NguoiDung;
+drop table NguoiBanYeuThich;
+drop table DonHang;
+drop table MonAn;
+drop table LoaiMonAn;
+drop table LoaiNguoiBan;
+drop table KhuyenMai;
+drop table NguoiBan;
+drop table TaiXe;
+drop table NguoiDung;
+drop table PhuongThucGiaoDich;
+drop table TrangThaiDonHang;
+drop table VaiTro;
 
 -- Dữ liệu
 -- VaiTro
@@ -293,4 +295,115 @@ insert into trangthaidonhang (trangthaidonhang.TenTrangThai) values
     ("Đang chuẩn bị món ăn"),
     ("Đang giao"),
     ("Đã giao"),
-    ("Đã hủy")
+    ("Đã hủy");
+    
+-- AI Generate
+insert into NguoiDung (TenNguoiDung, Email, MatKhau, SoDienThoai, MaNguoiDung) values 
+        ('bnegro0', 'abaythrop0@jigsy.com', '5912817173', '3243002103', 8),
+        ('smackie1', 'tstemson1@w3.org', '4358268451', '4698044816', 67),
+        ('ypoon2', 'mollin2@salon.com', '2531790398', '5932872011', 51),
+        ('msighart3', 'ifeatonby3@surveymonkey.com', '4609442693', '5707027362', 72),
+        ('trichardet4', 'dwotton4@go.com', '4082761156', '6324859481', 74),
+        ('mmccolley5', 'jhendrich5@macromedia.com', '4011313085', '3474722204', 75),
+        ('ehinkensen6', 'mraynor6@omniture.com', '2562276322', '6193987219', 11),
+        ('xketchaside7', 'mtidball7@nifty.com', '1586364893', '7964924853', 44),
+        ('srutherforth8', 'eparkman8@eepurl.com', '8846782572', '9948476914', 24),
+        ('dliddell9', 'dlockier9@dell.com', '6042418151', '9754869208', 16),
+        ('gmacintosha', 'osteggalsa@rakuten.co.jp', '3785331786', '9217562751', 32),
+        ('dmaberb', 'bbramhillb@netscape.com', '9243440124', '1915215160', 56),
+        ('jperryc', 'giozefovichc@joomla.org', '1319410818', '3093805396', 60),
+        ('nrobusd', 'lalflattd@bloglines.com', '6407077530', '4716251289', 13),
+        ('ncurnesse', 'tgrunsone@bizjournals.com', '1979225777', '4447182245', 84),
+        ('cscotchbourougef', 'mrudgerdf@ustream.tv', '6444536756', '3931089767', 47),
+        ('gsinncockg', 'lsurmeirg@smh.com.au', '7694304194', '5034522249', 100),
+        ('agourdonh', 'jmacchaellh@github.com', '2168135728', '1401041347', 29),
+        ('dbuffeyi', 'mkubelkai@webmd.com', '8528446677', '7355874573', 58),
+        ('gwitulj', 'tbrechej@tinyurl.com', '5538413942', '6257133844', 63);
+
+insert into nguoiban (nguoiban.MaNguoiBan,nguoiban.TenNguoiBan,nguoiban.DiaChi,nguoiban.ThanhPho,nguoiban.ThoiGianMoCua,nguoiban.ThoiGianDongCua) values 
+        (8,"Taste of the Countryside","345 Bạch Đằng, Quận Hải Châu","Đà Nẵng","07:00","22:00"),
+        (67,"Four Seasons Dining","123 Nguyễn Thị Minh Khai, Quận 1","Hồ Chí Minh","08:30","21:30"),
+        (51,"Pho House Hanoi","45 Lý Thái Tổ, Quận Hoàn Kiếm","Hà Nội","06:00","23:00"),
+        (72,"Saigon Rice Plates","678 Trần Phú, Phường 5","Lâm Đồng","09:00","22:00"),
+        (74,"Rustic Charm","890 Võ Văn Kiệt, Quận Ninh Kiều","Cần Thơ","07:30","21:00"),
+        (75,"Mountain Breeze Café","76 Nguyễn Huệ, Quận 1","Hồ Chí Minh","06:30","22:30"),
+        (11,"Zen Vegetarian Café","220 Phạm Văn Đồng, Quận Bắc Từ Liêm","Hà Nội","08:00","23:00"),
+        (44,"Royal BBQ & Hotpot","909 Trần Hưng Đạo, Quận 5","Hồ Chí Minh","10:00","21:00"),
+        (24,"Sunshine Sushi","560 Nguyễn Văn Linh, Quận Long Biên","Hà Nội","06:00","20:00"),
+        (16,"Golden Harvest Restaurant","33 Lê Lợi, Quận Ngô Quyền","Hải Phòng","09:00","22:30"),
+        (32,"Chân Quê","114 Võ Thị Sáu, Quận 3","Hồ Chí Minh","07:00","23:30"),
+        (56,"Quán Xưa","732 Điện Biên Phủ, Quận Thanh Khê","Đà Nẵng","08:00","22:00"),
+        (60,"Vườn Nướng Lẩu","29 Phan Chu Trinh, Quận Bình Thạnh","Hồ Chí Minh","07:30","21:30"),
+        (13,"Nhà Hàng Mùa Vàng","455 Nguyễn Đình Chiểu, Phường 2, Quận 3","Hồ Chí Minh","06:00","23:00"),
+        (84,"Hương Vị Quê","128 Hùng Vương, Phường Vĩnh Trường","Nha Trang","09:30","20:30"),
+        (47,"Nhà Hàng Đất Việt","612 Cách Mạng Tháng 8, Quận 10","Hồ Chí Minh","07:00","21:00"),
+        (100,"Gió Núi Quán","84 Hai Bà Trưng, Quận 1","Hồ Chí Minh","01:00","05:00"),
+        (29,"Quán Chay Tịnh Tâm","271 Trần Quốc Toản, Quận Hải Châu","Đà Nẵng","04:00","06:00"),
+        (58,"Sushi Nắng Hồng","99 Quang Trung, Quận Gò Vấp","Hồ Chí Minh","01:00","07:00"),
+        (63,"Old Town Bistro","789 Nguyễn Văn Cừ, Quận Long Biên","Hà Nội","10:00","11:00");
+
+insert into vaitro_nguoidung values
+	    (3,8),
+        (3,67),
+        (3,51),
+        (3,72),
+        (3,74),
+        (3,75),
+        (3,11),
+        (3,44),
+        (3,24),
+        (3,16),
+        (3,32),
+        (3,56),
+        (3,60),
+        (3,13),
+        (3,84),
+        (3,47),
+        (3,100),
+        (3,29),
+        (3,58),
+        (3,63);
+        
+insert into loaimonan (loaimonan.MaLoaiMonAn,loaimonan.MaNguoiBan,loaimonan.TenLoaiMonAn) values
+	    (10,8,"Món chính tỏa hương vị quê nhà"),
+        (11,8,"Khai vị hấp dẫn"),
+        (12,8,"Canh thanh mát"),
+        (13,8,"Tráng miệng ngọt ngào"),
+        (14,8,"Món phụ đi kèm"),
+        (15,75,"Cà phê"),
+        (16,75,"Trà"),
+        (17,75,"Đồ uống lạnh"),
+        (18,75,"Nước hoa quả"),
+        (19,75,"Bánh"),
+        (20,24,"Sashimi"),
+        (21,24,"Sushi Cake"),
+        (22,24,"Maki"),
+        (23,24,"Yakimono"),
+        (24,24,"Tempura"),
+        (25,100,"Món kho"),
+        (26,100,"Món xào"),
+        (27,100,"Món chiên"),
+        (28,100,"Món hấp"),
+        (29,100,"Món nướng");
+        
+insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBan,monan.MoTa) values 
+	    (10,8,"Gà kho gừng",250000,"Gà tươi được kho với gừng và gia vị, tạo ra món ăn thơm ngon và bổ dưỡng"),
+        (10,8,"Bò nướng lá lốt",300000,"Thịt bò xay nhuyễn cuốn trong lá lốt, nướng trên than hồng, tỏa ra hương vị đặc trưng"),
+        (10,8,"Cơm lam",100000,"Gạo nếp được nấu trong ống tre, có vị thơm đặc biệt, thường ăn kèm với muối vừng"),
+        (13,8,"Chè đậu xanh",30000,"Chè ngọt thanh từ đậu xanh và nước cốt dừa, rất thích hợp cho những ngày hè nóng bức"),
+        (13,8,"Xôi gấc",20000,"Xôi gấc dẻo thơm, có màu đỏ đặc trưng, thường được dùng trong các dịp lễ hội"),
+        (14,8,"Nem nướng",20000,"Nem được nướng thơm lừng, ăn kèm với rau sống và nước mắm chua ngọt"),
+        (15,75,"Cà phê sữa",45000,"Cà phê phin pha với sữa đặc, thường được uống nóng hoặc lạnh"),
+        (15,75,"Cà phê đen",40000,"Cà phê phin không đường, đậm đà hương vị"),
+        (15,75,"Cappuccino",45000,"Cà phê espresso kết hợp với sữa nóng và bọt sữa, tạo ra một lớp kem mịn"),
+        (16,75,"Trà xanh",40000,"Trà tươi, thanh mát, có thể uống nóng hoặc lạnh"),
+        (16,75,"Trà nhài xanh táo chanh",45000,"Trà nhài với nước táo ép"),
+        (16,75,"Trà đào quất",30000,"Trà đào túi lọc với quất"),
+        (19,75,"Red Velvet",50000,"Bánh gato vị dâu"),
+        (19,75,"Brownie",55000,"Bánh socola"),
+        (19,75,"Cookie",30000,"Bánh quy với vụn socola"),
+        (20,24,"AKAGAI SASHIMI",179000,"Sò lông"),
+        (20,24,"CHUBUNE SASHIMI",1089000,"Thuyền sashimi cỡ trung"),
+        (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
+        (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
+        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên")  
