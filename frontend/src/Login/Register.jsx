@@ -75,7 +75,7 @@ export default function Register() {
         }
       );
       console.log(response.data);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       alert("Something went wrong please check: ", err.message);
       console.log(err);

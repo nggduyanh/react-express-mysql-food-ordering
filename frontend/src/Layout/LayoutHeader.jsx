@@ -4,6 +4,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import { localStaticFile } from "../Route";
 export default function LayoutHeader() {
   const OneDaysMilliseconds = 86400000;
   const [userData, setUserData] = useState([]);
@@ -87,7 +88,7 @@ export default function LayoutHeader() {
                   <img
                     src={
                       userData?.AnhNguoiDung !== null
-                        ? userData?.AnhNguoiDung
+                        ? localStaticFile + userData?.AnhNguoiDung
                         : "/avatar.png"
                     }
                     alt=""

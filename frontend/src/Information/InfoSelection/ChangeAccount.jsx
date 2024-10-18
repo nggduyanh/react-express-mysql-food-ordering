@@ -7,6 +7,7 @@ export default function ChangeAccount() {
   const userData = useLocation();
   const imgRef = useRef(null);
   const [updateUser, setUpdateUser] = useState({
+    MaNguoiDung: userData.state.MaNguoiDung,
     TenNguoiDung: "",
     Email: "",
     AnhNguoiDung: null,
@@ -26,7 +27,11 @@ export default function ChangeAccount() {
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     const formUserData = new FormData();
-    formUserData.append("AnhNguoiDung", updateUser.AnhNguoiDung);
+    formUserData.append(
+      "AnhNguoiDung",
+      "http://localhost:3030/" + updateUser.AnhNguoiDung
+    );
+    formUserData.append("MaNguoiDung", updateUser.MaNguoiDung);
     formUserData.append("TenNguoiDung", updateUser.TenNguoiDung);
     formUserData.append("SoDienThoai", updateUser.SoDienThoai);
     formUserData.append("Email", updateUser.Email);
