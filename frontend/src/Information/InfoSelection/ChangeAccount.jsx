@@ -1,17 +1,19 @@
 import { useRef, useState } from "react";
 import BtnSelection from "../BtnSelection";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { UpdateUser } from "../../Route";
+import { localStaticFile, UpdateUser } from "../../Route";
+import { UserContext } from "../../Layout/LayoutHeader";
+import { useContext } from "react";
 export default function ChangeAccount() {
-  const userData = useLocation();
+  const { userData } = useContext(UserContext);
   const imgRef = useRef(null);
+  console.log("userData", userData);
   const [updateUser, setUpdateUser] = useState({
-    MaNguoiDung: userData.state.MaNguoiDung,
+    MaNguoiDung: userData.MaNguoiDung,
     TenNguoiDung: "",
     Email: "",
     AnhNguoiDung: null,
-    AnhNguoiDungShow: null,
+    AnhNguoiDungShow: localStaticFile + userData.AnhNguoiDung || null,
     SoDienThoai: "",
   });
   const handleUpdate = (event) => {
@@ -27,17 +29,14 @@ export default function ChangeAccount() {
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     const formUserData = new FormData();
-    formUserData.append(
-      "AnhNguoiDung",
-      "http://localhost:3030/" + updateUser.AnhNguoiDung
-    );
+    formUserData.append("AnhNguoiDung", updateUser.AnhNguoiDung);
     formUserData.append("MaNguoiDung", updateUser.MaNguoiDung);
     formUserData.append("TenNguoiDung", updateUser.TenNguoiDung);
     formUserData.append("SoDienThoai", updateUser.SoDienThoai);
     formUserData.append("Email", updateUser.Email);
-    for (let pair of formUserData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of formUserData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
     try {
       const response = await axios.patch(UpdateUser, formUserData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -62,6 +61,8 @@ export default function ChangeAccount() {
     }
   };
 
+  // console.log("AnhNguoiDungShow", updateUser.AnhNguoiDungShow);
+  // console.log("AnhNguoiDung", updateUser.AnhNguoiDung);
   return (
     <div className="p-5">
       <p className="text-2xl font-bold">My Account</p>

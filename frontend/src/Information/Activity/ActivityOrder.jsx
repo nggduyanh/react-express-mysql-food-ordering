@@ -2,7 +2,10 @@ import { TiTick } from "react-icons/ti";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { MdCancel } from "react-icons/md";
 import { NavLink, Outlet } from "react-router-dom";
+import useFetchData from "../../Hook/useFetchData";
+import { Order } from "../../Route";
 export default function OrderHistory() {
+  const [order, setOrder] = useFetchData(Order);
   return (
     <div className="bg_homeScreen">
       <div className="orderHistory marginJustification min-h-screen ">
@@ -51,7 +54,7 @@ export default function OrderHistory() {
             </NavLink>
           </div>
           <div className="Order status rounded-md col-span-2 flex-grow ">
-            <Outlet />
+            <Outlet context={{ order }} />
           </div>
         </div>
         {/* <div className="listOrderHistory">

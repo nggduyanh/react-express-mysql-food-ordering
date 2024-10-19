@@ -1,4 +1,4 @@
-export default function FoodDetails({ isOrder, getInfo, mini, ...rest }) {
+export default function FoodDetails({ disabled, getInfo, mini, ...rest }) {
   const handleAdd = (value) => {
     getInfo(value);
   };
@@ -33,19 +33,15 @@ export default function FoodDetails({ isOrder, getInfo, mini, ...rest }) {
           )}
           <p>{rest.TenMonAn}</p>
         </div>
-        <p className="text-xs text-gray italic">Mota: {rest.MoTa}</p>
+        {mini && <p className="text-xs text-gray italic">Mota: {rest.MoTa}</p>}
         <p className="text-pink-500">${rest.GiaBan}</p>
       </div>
-      {!isOrder ? (
-        <button
-          onClick={() => handleAdd(rest)}
-          className="uppercase border border-gray-600 py-2 px-4 rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
-        >
-          Add
-        </button>
-      ) : (
-        <h1>Hello</h1>
-      )}
+      <button
+        onClick={() => handleAdd(rest)}
+        className="uppercase border border-gray-600 py-2 px-4 rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
+      >
+        Add
+      </button>
     </div>
   );
 }

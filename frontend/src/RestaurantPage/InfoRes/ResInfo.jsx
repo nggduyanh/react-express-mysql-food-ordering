@@ -19,8 +19,12 @@ export default function ResInfo({ children, details, ...rest }) {
         {details !== true && (
           <div className="relative">
             <Link to={`/home/restaurant/:${rest.TenNguoiBan}`} state={rest}>
-              {rest.img !== undefined ? (
-                <img src={rest.img} alt="" className="w-full h-48 rounded-lg" />
+              {rest.AnhNguoiBan !== null ? (
+                <img
+                  src={rest.AnhNguoiBan}
+                  alt=""
+                  className="w-full h-48 rounded-lg"
+                />
               ) : (
                 <img
                   src="/resDefault.jpg"

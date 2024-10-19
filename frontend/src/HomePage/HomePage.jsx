@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useContext } from "react";
 import Slider from "./Slider";
 import { Link } from "react-router-dom";
 import { GrFormNext } from "react-icons/gr";
@@ -9,11 +9,13 @@ import TrendingRes from "../RestaurantPage/Trending/TrendingRes";
 import { GetRestaurant, GetTypeRes } from "../Route";
 import useFetchData from "../Hook/useFetchData";
 import useFilterRes_Type from "../Hook/useFilterRes_Type";
+import { UserContext } from "../Layout/LayoutHeader";
 const RestaurantContext = createContext();
 export default function HomePage() {
+  const { place } = useContext(UserContext);
   const [Restaurant, setRestaurant] = useFetchData(GetRestaurant);
   const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
-  const listRestaurant = useFilterRes_Type().map((items) => {
+  const listRestaurant = useFilterRes_Type(place).map((items) => {
     return (
       <LazyResInfo key={items.id} {...items}>
         <p className="text-xl font-bold">{items.TenNguoiBan} </p>
@@ -28,12 +30,6 @@ export default function HomePage() {
       </LazyResInfo>
     );
   });
-  // const getUserInfoLocation = location.state;
-  // const get3TrendingRandom = Math.floor(Math.random() * Food.length);
-  // const TrendingFood = () => {
-  //   return <h1>Hello</h1>;
-  // };
-
   return (
     <RestaurantContext.Provider value={{ Restaurant, typeRes }}>
       <div className="min-h-screen">
@@ -46,7 +42,7 @@ export default function HomePage() {
             <br />
             <div className="flex items-center justify-between">
               <p className="text-2xl">
-                Restaurant near you: <strong>Ha Noi</strong>
+                Restaurant near you: <strong>{place}</strong>
               </p>
               <Link to="all" className="flex items-center text-red-500">
                 See more
@@ -56,7 +52,7 @@ export default function HomePage() {
             <br />
             <Suspense fallback={<p>Loading...</p>}>
               <GridDiv cols={4} classname="listFood">
-                {listRestaurant}
+                {listRestaurant.slice(0, 8)}
               </GridDiv>
             </Suspense>
             <br />

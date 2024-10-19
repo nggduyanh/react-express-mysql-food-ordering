@@ -2,12 +2,6 @@ import { useLocation } from "react-router-dom";
 import ResInfo from "../InfoRes/ResInfo";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useMemo } from "react";
-// const FoodDetails = lazy(() => import("../Food/foodDetails"));
-// const MarginJustifi = lazy(() => import("../../Function/MarginJustifi"));
-// const GridDiv = lazy(() => import("../../Function/GridDiv"));
-// const Rating = lazy(() => import("../Comment/Rating"));
-// const OrderDetails = lazy(() => import("./OrderDetails"));
-// const ListComment = lazy(() => import("../Comment/ListComment"));
 import FoodDetails from "../Food/FoodDetails";
 import MarginJustifi from "../../Function/MarginJustifi";
 import GridDiv from "../../Function/GridDiv";
@@ -21,6 +15,7 @@ import Card from "../../Information/Payment/Card";
 export default function SpecificRes() {
   const [close, setClose] = useState(true);
   const [Food, setFood] = useState([]);
+  const [order, setOrder] = useState([]);
   const ResInfor = useLocation();
   useEffect(() => {
     fetch(GetFoodRestaurant)
@@ -38,6 +33,7 @@ export default function SpecificRes() {
           return {
             ...food,
             loaiMonAn: getType.TenLoaiMonAn,
+            AmountOrder: 0,
           };
         });
         setFood(assignTypeFood);
@@ -69,14 +65,22 @@ export default function SpecificRes() {
     return getFoodByCategory().map((food) => {
       return (
         <div key={food.id}>
-          <p className="font-bold text-2xl my-2 capitalize">{food.category}</p>
+          <p className="font-bold text-2xl my-2 capitalize">{food.loaiMonAn}</p>
           <div>
             {food.list.map((items) => (
               <FoodDetails
-                isOrder={false}
-                getInfo={(val) => console.log("Restaurant", val)}
+                getInfo={(value) => {
+                  setOrder((prevOrder) => {
+                    const checkOrder = prevOrder.find((prev) => {
+                      return prev.MaMonAn === value.MaMonAn;
+                    });
+                    if (!checkOrder) {
+                      return [...prevOrder, value];
+                    } else return [...prevOrder];
+                  });
+                }}
                 mini={true}
-                key={items.id}
+                key={items.MaMonAn}
                 {...items}
               />
             ))}
@@ -143,47 +147,46 @@ export default function SpecificRes() {
         </MarginJustifi>
       </div>
       <br />
-      <MarginJustifi>
-        <p className="text-2xl font-bold my-4">Combo Food</p>
-        <GridDiv cols={4}>
-          {/* {Food.slice(0, 4).map((food) => {
-            return (
-              <FoodDetails
-                getInfo={(val) => console.log(val)}
-                mini={false}
-                key={food.id}
-                {...food}
-              />
-            );
-          })} */}
-        </GridDiv>
-      </MarginJustifi>
 
-      <div className="grid grid-cols-3 my-3">
-        <div className="col-span-2">
-          <MarginJustifi>
-            <p className="text-2xl font-bold my-4">Menu</p>
-            <GridDiv cols={1}>{listFoodbyCategory}</GridDiv>
-          </MarginJustifi>
-          <br />
-          <MarginJustifi>
-            <Rating />
-            <br />
-            <ListComment />
-          </MarginJustifi>
-        </div>
-        <OrderDetails InputCard={(paymentMethod) => {}} />
-      </div>
-      {!close && (
-        <div
-          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20`}
-        >
-          <div className="absolute top-24 right-80 text-3xl">
-            <IoCloseCircleSharp className="text-red-500 cursor-pointer" />
+      {listFoodbyCategory.length !== 0 ? (
+        <>
+          <div className="grid grid-cols-3 my-3">
+            <div className="col-span-2 ">
+              <MarginJustifi>
+                <p className="text-2xl font-bold my-4">Menu</p>
+                <GridDiv cols={1}>{listFoodbyCategory}</GridDiv>
+              </MarginJustifi>
+              <br />
+              <MarginJustifi>
+                <Rating />
+                <br />
+                {ResInfor.LuotDanhGia > 0 && <ListComment />}
+              </MarginJustifi>
+            </div>
+            <OrderDetails
+              orderList={order}
+              setOrderList={setOrder}
+              name={ResInfor.state.TenNguoiBan}
+              img={ResInfor.state.AnhNguoiBan}
+              InputCard={(paymentMethod) => {}}
+            />
           </div>
-          <div className="bg-white w-7/12 h-3/4 p-6 rounded shadow-lg">
-            <Card />
-          </div>
+          {!close && (
+            <div
+              className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20`}
+            >
+              <div className="absolute top-24 right-80 text-3xl">
+                <IoCloseCircleSharp className="text-red-500 cursor-pointer" />
+              </div>
+              <div className="bg-white w-7/12 h-3/4 p-6 rounded shadow-lg">
+                <Card />
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="mx-20 py-10">
+          <img src="/Closed.jpg" alt="" className="" />
         </div>
       )}
     </div>

@@ -1,21 +1,24 @@
-import { Outlet, useLocation, useOutletContext } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import BtnSelection from "./BtnSelection";
-
+import { UserContext } from "../Layout/LayoutHeader";
+import { useContext } from "react";
+import { localStaticFile } from "../Route";
 export default function UserInfo() {
-  const userData = useLocation();
+  const { userData } = useContext(UserContext);
+  console.log(userData);
   return (
     <div className="w-11/12 mx-auto flex m-14 gap-6">
       <div className="shadow-xl border border-gray-300 w-1/4 h-screen">
         <BtnSelection
           src={
-            userData.state?.AnhNguoiDung === null
+            userData?.AnhNguoiDung === null
               ? "/avatar.png"
-              : userData.state?.AnhNguoiDung
+              : localStaticFile + userData?.AnhNguoiDung
           }
           className="btnSelections p-5"
         >
-          <p>{userData.state?.TenNguoiDung}</p>
-          <p>{userData.state?.Email}</p>
+          <p>{userData?.TenNguoiDung}</p>
+          <p>{userData?.Email}</p>
         </BtnSelection>
         <BtnSelection className="btnSelections p-5" des="address">
           <p>Setting Address</p>

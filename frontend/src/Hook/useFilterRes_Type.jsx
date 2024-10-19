@@ -25,7 +25,8 @@ export default function useFilterRes_Type(valueFilter = " ") {
       const matchesTypeFood = value.loaiMonAn.some((food) =>
         food.TenLoaiMonAn.includes(trimValueFilter)
       );
-      return matchesName || matchesTypeFood;
+      const matchesPlaces = value.ThanhPho.includes(trimValueFilter);
+      return matchesName || matchesTypeFood || matchesPlaces;
     });
   }, [listRestaurant, valueFilter]);
   if (filterRes.length !== 0) {

@@ -3,7 +3,7 @@ import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GetUserInfo } from "../Route";
-export default function Login() {
+export default function Login({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
     MatKhau: "",
@@ -39,6 +39,7 @@ export default function Login() {
             user.MatKhau === loginForm.MatKhau
           );
         });
+        assignAccount(userResult);
         navigate("/home", { state: userResult });
       }
     } catch (err) {

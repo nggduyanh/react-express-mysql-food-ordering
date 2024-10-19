@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AddUserInfo } from "../Route";
 import axios from "axios";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+// const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX =
   /^(0[3|5|7|8|9][0-9]{8}|(01[2|6|8|9]|09[0-9]|[3|5|7|8|9][0-9])[0-9]{8})$/;
@@ -38,7 +38,7 @@ const RegisterReducer = (state, action) => {
       if (!PHONE_REGEX.test(state.form.SoDienThoai))
         errorNotifcation += " SoDienThoai";
       if (!EMAIL_REGEX.test(state.form.Email)) errorNotifcation += " Email ";
-      if (!PWD_REGEX.test(state.form.MatKhau)) errorNotifcation += " MatKhau ";
+      // if (!PWD_REGEX.test(state.form.MatKhau)) errorNotifcation += " MatKhau ";
       return {
         inputError: errorNotifcation,
         form: {
