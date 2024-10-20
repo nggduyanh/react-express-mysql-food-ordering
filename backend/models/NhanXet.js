@@ -33,6 +33,11 @@ class NhanXet
     {
         return await query.selectWithJoin ("*",nhanxet.tableName,`join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}` , `where ${nhanxet.maNguoiMua} = ?`, [id])   
     }
+
+    async getByNguoiBan (id)
+    {
+        return await query.selectWithJoin ("*",nhanxet.tableName, `join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}`,`where ${monan.maNguoiBan} = ?`, [id])    
+    }
 }
 
 module.exports = new NhanXet

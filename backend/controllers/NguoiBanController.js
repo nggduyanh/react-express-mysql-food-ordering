@@ -75,7 +75,15 @@ class NguoiBanController
         let obj = await NguoiBanYeuThich.getByNguoiMua (req.params.idNguoiMua)
         if (!obj.success) return next (new Exception (obj.res,500))
         if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.idNguoiMua}`},404))
-        return res.json (obj.res.map (elem => elem[nguoiBan.tableName]))
+        return res.status (200).json (obj.res.map (elem => elem[nguoiBan.tableName]))
+    }
+
+    async getNhanXetByNguoiBan (req,res,next)
+    {
+        let obj = await NhanXet.getByNguoiMua (req.params.idNguoiBan)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.idNguoiMua}`},404))
+        return res.status (200).json (obj.res)
     }
 }
 
