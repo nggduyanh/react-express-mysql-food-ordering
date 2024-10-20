@@ -5,13 +5,14 @@ import { useMemo } from "react";
 import FoodDetails from "../Food/FoodDetails";
 import MarginJustifi from "../../Function/MarginJustifi";
 import GridDiv from "../../Function/GridDiv";
-import Rating from "../Comment/Rating";
+const Rating = lazy(() => import("../Comment/Rating"));
 import OrderDetails from "./OrderDetails";
-import ListComment from "../Comment/ListComment";
+const ListComment = lazy(() => import("../Comment/ListComment"));
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
 import { GetFoodRestaurant } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
+import { MdCommentsDisabled } from "react-icons/md";
 export default function SpecificRes() {
   const [close, setClose] = useState(true);
   const [Food, setFood] = useState([]);
@@ -158,9 +159,25 @@ export default function SpecificRes() {
               </MarginJustifi>
               <br />
               <MarginJustifi>
-                <Rating />
+                <Suspense fallback={<p>Loading...</p>}>
+                  <Rating />
+                </Suspense>
                 <br />
-                {ResInfor.LuotDanhGia > 0 && <ListComment />}
+                <Suspense fallback={<p>Loading...</p>}>
+                  <ListComment />
+                </Suspense>
+                {/* {ResInfor.LuotDanhGia > 0 ? (
+                  <ListComment />
+                ) : (
+                  <div className="h-40 border border-gray-400 rounded-md ">
+                    <div className="flex justify-center items-center translate-y-3/4">
+                      <MdCommentsDisabled className="text-5xl text-gray-500" />
+                    </div>
+                    <p className="flex items-center justify-center translate-y-full mt-4 text-gray-500">
+                      No comment
+                    </p>
+                  </div>
+                )} */}
               </MarginJustifi>
             </div>
             <OrderDetails

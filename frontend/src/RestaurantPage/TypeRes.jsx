@@ -2,6 +2,11 @@ import { useParams } from "react-router-dom";
 import ResInfo from "./InfoRes/ResInfo";
 import GridDiv from "../Function/GridDiv";
 import useFilterRes_Type from "../Hook/useFilterRes_Type";
+import {
+  FaSortAlphaDown,
+  FaSortNumericUp,
+  FaSortNumericDownAlt,
+} from "react-icons/fa";
 export default function TypeRes() {
   const typeValue = useParams();
   const getDataFromParams = typeValue.type.slice(1, typeValue.type.length + 1);
@@ -20,24 +25,24 @@ export default function TypeRes() {
       </ResInfo>
     );
   });
+  const handleA_Z = () => {};
+  const handleIncrease = () => {};
+  const handleDecrease = () => {};
   return (
     <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">
         Restaurant type {typeValue.type}
       </p>
-      <div className="filterOption">
-        <select
-          name=""
-          id=""
-          className="min-w-36 border border-gray-500 p-2 ml-2 rounded-xl"
-        >
-          <option value="" hidden>
-            Filter
-          </option>
-          <option value="">A-Z</option>
-          <option value=""></option>
-          <option value=""></option>
-        </select>
+      <div className="filterOption flex items-center gap-3 ml-2">
+        <button className="flex items-center gap-2 p-2 border font-bold hover:bg-green-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md">
+          A - Z <FaSortAlphaDown />
+        </button>
+        <button className="flex items-center gap-2 p-2 border font-bold hover:bg-blue-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md">
+          Increase <FaSortNumericUp />
+        </button>
+        <button className="flex items-center gap-2 p-2 border font-bold hover:bg-red-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md">
+          Decrease <FaSortNumericDownAlt />
+        </button>
       </div>
       {listFood.length !== 0 ? (
         <GridDiv cols={4} classname="listFood">

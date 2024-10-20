@@ -7,13 +7,12 @@ import { useContext } from "react";
 export default function ChangeAccount() {
   const { userData } = useContext(UserContext);
   const imgRef = useRef(null);
-  console.log("userData", userData);
   const [updateUser, setUpdateUser] = useState({
     MaNguoiDung: userData.MaNguoiDung,
     TenNguoiDung: "",
     Email: "",
     AnhNguoiDung: null,
-    AnhNguoiDungShow: localStaticFile + userData.AnhNguoiDung || null,
+    AnhNguoiDungShow: localStaticFile + userData?.AnhNguoiDung || null,
     SoDienThoai: "",
   });
   const handleUpdate = (event) => {
@@ -25,7 +24,6 @@ export default function ChangeAccount() {
       };
     });
   };
-  console.log("UpdateUser", updateUser);
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     const formUserData = new FormData();
@@ -61,22 +59,28 @@ export default function ChangeAccount() {
     }
   };
 
-  // console.log("AnhNguoiDungShow", updateUser.AnhNguoiDungShow);
+  const imgResults = updateUser?.AnhNguoiDungShow?.slice(
+    updateUser.AnhNguoiDungShow.lastIndexOf("/") + 1
+  );
+  console.log(imgResults);
   // console.log("AnhNguoiDung", updateUser.AnhNguoiDung);
   return (
     <div className="p-5">
       <p className="text-2xl font-bold">My Account</p>
       <div>
         <div className="flex flex-col items-center">
-          <img
-            src={
-              updateUser?.AnhNguoiDungShow === null
-                ? "/avatar.png"
-                : updateUser?.AnhNguoiDungShow
-            }
-            alt=""
-            className="w-40 h-40 border rounded-full border-pink-400 mb-2"
-          />
+          {imgResults !== "null" ? (
+            <img
+              src={updateUser?.AnhNguoiDungShow}
+              alt=""
+              className="w-40 h-40 border rounded-full border-pink-400 mb-2"
+            />
+          ) : (
+            <img
+              src="/avatar.png"
+              className="w-40 h-40 border rounded-full border-pink-400 mb-2"
+            />
+          )}
           <input
             type="file"
             name="AnhNguoiDungShow"

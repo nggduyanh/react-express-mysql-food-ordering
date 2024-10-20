@@ -107,7 +107,12 @@ export default function LayoutHeader() {
       </div>
       <Outlet />
       <div className="bg-black text-white">
-        <footer className="marginJustification  py-24">Hello Footer</footer>
+        <footer className="marginJustification  py-24">
+          <div className="flex items-center">
+            <img src={imageFood} alt="" className="w-20 h-w-20" />
+            <p>About us</p>
+          </div>
+        </footer>
       </div>
     </UserContext.Provider>
   );
