@@ -54,7 +54,7 @@ class DonHangController
     {
         let obj = await ChiTietDonHang.update (req.body)
         if (!obj.success) return next (new Exception (obj.res,500))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.body[chiTietDonHang.maMonAn]} and id DonHang = ${req.body[chiTietDonHang.maDonHang]}`},404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`},404))
         return res.json (obj.res)
     }
 
