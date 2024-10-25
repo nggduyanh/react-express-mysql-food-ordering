@@ -25,9 +25,24 @@ export default function TypeRes() {
       </ResInfo>
     );
   });
-  const handleA_Z = () => {};
-  const handleIncrease = () => {};
-  const handleDecrease = () => {};
+  const compareAToZ = (a, b) => {
+    return a.TenNguoiBan - b.TenNguoiBan;
+  };
+  const compareRatingIncrease = (a, b) => {
+    return a.Diem - b.Diem;
+  };
+  const compareRatingDecrease = (a, b) => {
+    return b.Diem - a.Diem;
+  };
+  const handleA_Z = (arrayOfListFood) => {
+    return arrayOfListFood.sort(compareAToZ);
+  };
+  const handleIncrease = (arrayOfListFood) => {
+    return arrayOfListFood.sort(compareRatingIncrease);
+  };
+  const handleDecrease = (arrayOfListFood) => {
+    return arrayOfListFood.sort(compareRatingDecrease);
+  };
   return (
     <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">

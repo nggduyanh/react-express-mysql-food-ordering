@@ -50,7 +50,7 @@ const RegisterReducer = (state, action) => {
       return state;
   }
 };
-export default function Register() {
+export default function Register({ assignAccount }) {
   const [RegisterForm, dispatch] = useReducer(RegisterReducer, RegisterAction);
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -74,7 +74,19 @@ export default function Register() {
           withCredentials: true,
         }
       );
+      const responseRole = await axios.post(
+        "http://localhost:3030/nguoidung/vaitro/add",
+        JSON.stringify({
+          MaNguoiDung: response.data[0].MaNguoiDung,
+          MaVaiTro: 2,
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
       console.log(response.data);
+      assignAccount(response.data[0]);
       navigate("/home");
     } catch (err) {
       alert("Something went wrong please check: ", err.message);

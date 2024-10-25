@@ -39,8 +39,17 @@ export default function Login({ assignAccount }) {
             user.MatKhau === loginForm.MatKhau
           );
         });
-        assignAccount(userResult);
-        navigate("/home", { state: userResult });
+        const responseRole = await axios.get(
+          `http://localhost:3030/vaitro/nguoidung/${userResult.MaNguoiDung}`
+        );
+        const getRole = responseRole.data[0].TenVaiTro;
+        userResult.TenVaiTro = responseRole.data[0].TenVaiTro;
+        if (getRole === "Buyer") {
+          assignAccount(userResult);
+          navigate("/home", { state: userResult });
+        } else {
+          alert("User not found");
+        }
       }
     } catch (err) {
       alert("Something went wrong between sending data");
