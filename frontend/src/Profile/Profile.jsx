@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Profile() {
+    const [sellerInfo, setSellerInfo] = useState({
+        id: "",
+        thanhPho: "",
+        moCua: "",
+        dongCua: "",
+        diaChi: "",
+        cccd: "",
+        giayPhep: "",
+        diem: "",
+        luotDanhGia: "",
+        anh: ""
+    })
+    const handleChange = (event) => {
+
+    }
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(sellerInfo);
+    }
     return (
         <div className="h-screen w-screen">
             <div className="flex h-full">

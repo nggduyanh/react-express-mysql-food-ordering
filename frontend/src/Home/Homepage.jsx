@@ -1,7 +1,29 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GetSellerInfo, GetUserInfo, localStaticFile } from "../routebackend";
+import { useActionData } from "react-router-dom";
+import axios from "axios";
+import { UserAccount } from "../App";
 
 export default function Homepage() {
+    const { userData } = useContext(UserAccount);
+    console.log("useData", userData);
+    const [seller, setSeller] = useState({});
+    useEffect(() => {
+       fetch(GetSellerInfo)
+            .then(res => res.json())
+            .then(data => {
+                const filterSeller = data.find(seller => {
+                    return seller.MaNguoiBan === userData.MaNguoiDung
+                })
+                setSeller(filterSeller);
+                console.log("TenNguoiBan",seller.TenNguoiBan)
+            })
+    }, []);
+
+    // Array data => find: Trả về 1 thông tin duy nhất <=> filter 
+    // map , reduce
+    //some => true, any
     return (
         <div className="h-screen w-screen">
             <div className="flex h-full">
@@ -37,9 +59,11 @@ export default function Homepage() {
                             </svg>
                         </div>
                         <div className='bg-white h-10 w-10 rounded-full  overflow-hidden'>
-                            <img src='./images/avatar.png' className='object-cover w-full h-full' />
+                            {
+                                userData?.AnhNguoiDung !== null ? <img src={ localStaticFile + userData.AnhNguoiDung} className='object-cover w-full h-full' /> : <img src="./images/avatar.png" className="object-cover w-full h-full" />
+                            }
                         </div>
-                        <h3 className='font-medium ml-2'>Kaiya Botosh</h3>
+                        <h3 className='font-medium ml-2'>{seller.TenNguoiBan}</h3>
                     </nav>
                     <section className="p-6">
                         <h1 className="text-xl font-medium">Dashboard</h1>
