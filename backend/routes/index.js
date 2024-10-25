@@ -10,7 +10,7 @@ const donHangRouter = require ("./DonHangRouter")
 const taiXeRouter = require ("./TaiXeRouter")
 const vaiTroRouter = require ("./VaiTroRoute")
 const nguoiMuaRouter = require ("./NguoiMuaRouter")
-const authRouter = require ("./AuthRouter")
+// const authRouter = require ("./AuthRouter")
 const authorize = require("../middlewares/Authorization")
 
 function route (app)
@@ -27,7 +27,7 @@ function route (app)
     app.use ("/taixe",authorize ("Driver"),taiXeRouter)
     app.use ("/vaitro",vaiTroRouter)
     app.use ("/nguoimua",authorize ("Buyer"),nguoiMuaRouter)
-    app.use ("/auth",authRouter)
+    // app.use ("/auth",authRouter)
 }
 
 module.exports = route
