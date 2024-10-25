@@ -44,7 +44,8 @@ class DonHangController
 
     async addChiTietDonHang (req,res,next)
     {
-        let obj = await ChiTietDonHang.add (req.body)
+        if (!req.body.arr) return next (new Exception ({msg: "There is no arr in body"}, 400))
+        let obj = await ChiTietDonHang.add (req.body.arr)
         if (!obj.success) return next (new Exception (obj.res,400))
         return res.status(201).json (obj.res) 
     }
