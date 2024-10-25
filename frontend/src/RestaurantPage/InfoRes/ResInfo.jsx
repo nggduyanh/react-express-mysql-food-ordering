@@ -9,8 +9,11 @@ export default function ResInfo({ children, details, ...rest }) {
   let arrayOfStar = new Array(5);
   let i = 0;
   while (i < 5) {
-    if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline />);
-    else arrayOfStar.push(<TiStarFullOutline className="text-yellow-500" />);
+    if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
+    else
+      arrayOfStar.push(
+        <TiStarFullOutline key={i} className="text-yellow-500" />
+      );
     i++;
   }
   return (

@@ -7,3 +7,5 @@ export const GetFoodRestaurant = "http://localhost:3030/monan";
 export const localStaticFile = "http://localhost:3030/";
 export const Order = "http://localhost:3030/donhang";
 export const OrderStatus = "http://localhost:3030/trangthaidonhang";
+export const GetRole = "http://localhost:3030/vaitro";
+export const GetPromotion = "http://localhost:3030/khuyenmai";

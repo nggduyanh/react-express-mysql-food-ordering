@@ -3,7 +3,8 @@ import Toggle from "../../Function/Toggle/LayoutToggle";
 import { useContext, useState } from "react";
 import { UserAccount } from "../../App";
 import { localStaticFile } from "../../Route";
-export default function ListComment() {
+import { MdCommentsDisabled } from "react-icons/md";
+export default function ListComment({ comment }) {
   const { userData } = useContext(
     UserAccount !== undefined ? UserAccount : " "
   );
@@ -41,19 +42,30 @@ export default function ListComment() {
           </div>
         </div>
         <div className="list">
-          <SpecificComment />
-          <SpecificComment />
-          <Toggle.On>
+          {comment !== 0 ? (
             <div>
-              <SpecificComment />
-              <SpecificComment />
-              <SpecificComment />
+              <Toggle.On>
+                <div>
+                  <SpecificComment />
+                  <SpecificComment />
+                  <SpecificComment />
+                </div>
+              </Toggle.On>
+              <Toggle.Button className="w-full text-center cursor-pointer text-red-400">
+                <Toggle.Off>Show reviews</Toggle.Off>
+                <Toggle.On>Hide Reviews</Toggle.On>
+              </Toggle.Button>
             </div>
-          </Toggle.On>
-          <Toggle.Button className="w-full text-center cursor-pointer text-red-400">
-            <Toggle.Off>Show reviews</Toggle.Off>
-            <Toggle.On>Hide Reviews</Toggle.On>
-          </Toggle.Button>
+          ) : (
+            <div className="h-40 border border-gray-400 rounded-md ">
+              <div className="flex justify-center items-center translate-y-3/4">
+                <MdCommentsDisabled className="text-5xl text-gray-500" />
+              </div>
+              <p className="flex items-center justify-center translate-y-full mt-4 text-gray-500">
+                No comment
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </Toggle>

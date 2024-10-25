@@ -7,16 +7,18 @@ import MarginJustifi from "../../Function/MarginJustifi";
 import GridDiv from "../../Function/GridDiv";
 const Rating = lazy(() => import("../Comment/Rating"));
 import OrderDetails from "./OrderDetails";
-const ListComment = lazy(() => import("../Comment/ListComment"));
+import ListComment from "../Comment/ListComment";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
-import { GetFoodRestaurant } from "../../Route/index.js";
+import { GetFoodRestaurant, GetPromotion } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
-import { MdCommentsDisabled } from "react-icons/md";
+
 export default function SpecificRes() {
   const [close, setClose] = useState(true);
   const [Food, setFood] = useState([]);
   const [order, setOrder] = useState([]);
+  const [promotions, setPromotions] = useState([]);
+  const [amountOrder, setAmountOrder] = useState([]);
   const ResInfor = useLocation();
   useEffect(() => {
     fetch(GetFoodRestaurant)
@@ -38,6 +40,17 @@ export default function SpecificRes() {
           };
         });
         setFood(assignTypeFood);
+      });
+  }, []);
+  useEffect(() => {
+    fetch(GetPromotion)
+      .then((res) => res.json())
+      .then((data) => {
+        const getIdRestaurant = ResInfor.state.MaNguoiBan;
+        const filterPromotion = data.filter((promotion) => {
+          return promotion.MaNguoiBan === getIdRestaurant;
+        });
+        setPromotions(filterPromotion);
       });
   }, []);
   const categoryFood = useMemo(() => {
@@ -79,6 +92,14 @@ export default function SpecificRes() {
                       return [...prevOrder, value];
                     } else return [...prevOrder];
                   });
+                  setAmountOrder((prevAmount) => {
+                    const checkAmount = prevAmount.find((prev) => {
+                      return prev.id === value.MaMonAn;
+                    });
+                    if (!checkAmount) {
+                      return [...prevAmount, { id: value.MaMonAn, amount: 1 }];
+                    } else return [...prevAmount];
+                  });
                 }}
                 mini={true}
                 key={items.MaMonAn}
@@ -90,6 +111,7 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
+  console.log(ResInfor);
   return (
     <div className="background_res relative">
       <div className="bg-black bckImage">
@@ -164,25 +186,16 @@ export default function SpecificRes() {
                 </Suspense>
                 <br />
                 <Suspense fallback={<p>Loading...</p>}>
-                  <ListComment />
+                  <ListComment comment={ResInfor?.state.LuotDanhGia} />
                 </Suspense>
-                {/* {ResInfor.LuotDanhGia > 0 ? (
-                  <ListComment />
-                ) : (
-                  <div className="h-40 border border-gray-400 rounded-md ">
-                    <div className="flex justify-center items-center translate-y-3/4">
-                      <MdCommentsDisabled className="text-5xl text-gray-500" />
-                    </div>
-                    <p className="flex items-center justify-center translate-y-full mt-4 text-gray-500">
-                      No comment
-                    </p>
-                  </div>
-                )} */}
               </MarginJustifi>
             </div>
             <OrderDetails
+              lstPromotions={promotions}
               orderList={order}
               setOrderList={setOrder}
+              AmountList={amountOrder}
+              setAmount={setAmountOrder}
               name={ResInfor.state.TenNguoiBan}
               img={ResInfor.state.AnhNguoiBan}
               InputCard={(paymentMethod) => {}}

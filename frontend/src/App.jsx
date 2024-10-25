@@ -87,7 +87,10 @@ function App() {
             <Route path="typeRes/:type" element={<TypeRes />} />
             <Route path="restaurant/:resname" element={<SpecificRes />} />
           </Route>
-          <Route path="register" element={<Register />} />
+          <Route
+            path="register"
+            element={<Register assignAccount={(value) => setAccount(value)} />}
+          />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

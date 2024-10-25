@@ -21,7 +21,6 @@ export default function ListRes() {
       </ResInfo>
     );
   });
-  const handleChangeSearch = (event) => {};
   return (
     <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">Good food near you</p>
