@@ -9,3 +9,13 @@ export const Order = "http://localhost:3030/donhang";
 export const OrderStatus = "http://localhost:3030/trangthaidonhang";
 export const GetRole = "http://localhost:3030/vaitro";
 export const GetPromotion = "http://localhost:3030/khuyenmai";
+export const addLoveRestaurant =
+  "http://localhost:3030/nguoimua/nguoibanyeuthich/add";
+export const getLoveRestaurant =
+  "http://localhost:3030/nguoiban/nguoibanyeuthich/";
+export const getCommentForSpecificFood =
+  "http://localhost:3030/nguoimua/nhanxet/";
+export const setCommendForSpecificFood =
+  "http://localhost:3030/nguoimua/nhanxet/add";
+export const updateCommendForSpecificFood =
+  "http://localhost:3030/nguoimua/nhanxet/update";

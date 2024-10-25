@@ -1,8 +1,8 @@
 import { TiStarFullOutline } from "react-icons/ti";
 import { TiStarOutline } from "react-icons/ti";
 import { Link } from "react-router-dom";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Toggle from "../../Function/Toggle/LayoutToggle";
+import LoveButton from "../../Function/LoveButton";
 export default function ResInfo({ children, details, ...rest }) {
   const NumberOfStar = rest.Diem;
   const DecimalOfStar = Number.parseInt(NumberOfStar);
@@ -18,9 +18,13 @@ export default function ResInfo({ children, details, ...rest }) {
   }
   return (
     <Toggle>
-      <div className="FoodItems p-2 rounded-lg flex flex-col justify-between">
+      <div
+        className={`FoodItems p-2 rounded-lg flex flex-col justify-between ${
+          details !== true && "bg-white border border-gray-300"
+        }`}
+      >
         {details !== true && (
-          <div className="relative">
+          <div className="relative ">
             <Link to={`/home/restaurant/:${rest.TenNguoiBan}`} state={rest}>
               {rest.AnhNguoiBan !== null ? (
                 <img
@@ -36,16 +40,7 @@ export default function ResInfo({ children, details, ...rest }) {
                 />
               )}
             </Link>
-            <Toggle.Button>
-              <div className="absolute top-0 right-0 p-2 m-2 text-lg text-pink-500 z-10 cursor-pointer border rounded-full border-white bg-white">
-                <Toggle.Off>
-                  <FaRegHeart />
-                </Toggle.Off>
-                <Toggle.On>
-                  <FaHeart className="text-red-500" />
-                </Toggle.On>
-              </div>
-            </Toggle.Button>
+            <LoveButton idSeller={rest.MaNguoiBan} />
             <div className="absolute bottom-0 right-0 p-2">
               <div className="flex items-center bg-green-700 gap-1 text-white font-bold text-xs p-1 rounded-md">
                 <TiStarOutline />

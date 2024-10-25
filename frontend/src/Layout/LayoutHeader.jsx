@@ -52,7 +52,11 @@ export default function LayoutHeader() {
                   className="text-xs  border border-gray-400 py-0.5 rounded-md "
                 >
                   {getPlaceRestaurant.map((place) => {
-                    return <option value={place}>{place}</option>;
+                    return (
+                      <option key={place} value={place}>
+                        {place}
+                      </option>
+                    );
                   })}
                 </select>
               </div>

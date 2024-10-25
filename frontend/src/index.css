@@ -81,3 +81,11 @@
 .setupForRound{
     @apply text-4xl p-2 text-black font-bold cursor-pointer  hover:text-white 
 }
+
+.foodDetails{
+    height: 95%;
+}
+.Xbutton{
+    top: 12px;
+    right: 10px;
+}

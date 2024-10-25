@@ -1,14 +1,23 @@
-export default function FoodDetails({ disabled, getInfo, mini, ...rest }) {
+export default function FoodDetails({
+  disabled,
+  isShown,
+  getInfo,
+  mini,
+  ...rest
+}) {
   const handleAdd = (value) => {
     getInfo(value);
   };
+  const handleShow = () => {
+    isShown(rest);
+  };
   return (
     <div
-      className={`bg-white border border-gray-300 rounded-lg p-4 mb-3 hover:border-pink-400 transition-all duration-300 ease-in ${
+      className={`bg-white border border-gray-300 rounded-lg p-4 mb-3 hover:border-pink-400 transition-all duration-300 ease-in  ${
         mini ? "flex items-center justify-between" : " "
       }`}
     >
-      <div>
+      <div onClick={handleShow} className="cursor-pointer">
         <div className={mini ? "flex items-center gap-2" : ""}>
           {rest.AnhMonAn !== null ? (
             <img

@@ -1,7 +1,7 @@
 import { FiMessageSquare } from "react-icons/fi";
 import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import axios from "axios";
 import { GetPromotion } from "../../Route";
 const OrderReducer = {
@@ -75,7 +75,6 @@ export default function OrderDetails(props) {
     return totalPrice;
   };
   const applyPromotions = (order) => {
-    console.log(order);
     let totalPrice = handleTotal();
     if (totalPrice === 0) return totalPrice;
     if (order.promotions && Object.keys(order.promotions).length > 0) {

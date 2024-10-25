@@ -10,12 +10,19 @@ import OrderDetails from "./OrderDetails";
 import ListComment from "../Comment/ListComment";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
-import { GetFoodRestaurant, GetPromotion } from "../../Route/index.js";
+import {
+  GetFoodRestaurant,
+  GetPromotion,
+  localStaticFile,
+} from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
+import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 
 export default function SpecificRes() {
   const [close, setClose] = useState(true);
+  const [showFood, setShowFood] = useState(false);
   const [Food, setFood] = useState([]);
+  const [detailsFood, setDetailsFood] = useState();
   const [order, setOrder] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [amountOrder, setAmountOrder] = useState([]);
@@ -35,7 +42,7 @@ export default function SpecificRes() {
           });
           return {
             ...food,
-            loaiMonAn: getType.TenLoaiMonAn,
+            loaiMonAn: getType?.TenLoaiMonAn,
             AmountOrder: 0,
           };
         });
@@ -83,6 +90,10 @@ export default function SpecificRes() {
           <div>
             {food.list.map((items) => (
               <FoodDetails
+                isShown={(value) => {
+                  setShowFood(true);
+                  setDetailsFood(value);
+                }}
                 getInfo={(value) => {
                   setOrder((prevOrder) => {
                     const checkOrder = prevOrder.find((prev) => {
@@ -111,7 +122,12 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
-  console.log(ResInfor);
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  };
   return (
     <div className="background_res relative">
       <div className="bg-black bckImage">
@@ -180,15 +196,68 @@ export default function SpecificRes() {
                 <GridDiv cols={1}>{listFoodbyCategory}</GridDiv>
               </MarginJustifi>
               <br />
-              <MarginJustifi>
-                <Suspense fallback={<p>Loading...</p>}>
-                  <Rating />
-                </Suspense>
-                <br />
-                <Suspense fallback={<p>Loading...</p>}>
-                  <ListComment comment={ResInfor?.state.LuotDanhGia} />
-                </Suspense>
-              </MarginJustifi>
+              {showFood && (
+                <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                  <div className="bg-white w-8/12 foodDetails p-6 rounded shadow-lg overflow-y-auto relative">
+                    <div className="absolute Xbutton text-3xl">
+                      <IoCloseCircleSharp
+                        onClick={() => setShowFood(false)}
+                        className="text-red-500 cursor-pointer"
+                      />
+                    </div>
+                    <div className="InforFoods ">
+                      <div className="flex gap-5">
+                        {detailsFood.AnhMonAn !== null ? (
+                          <img
+                            src={localStaticFile + detailsFood.AnhMonAn}
+                            alt=""
+                            className="w-80 h-80 border border-pink-400 "
+                          />
+                        ) : (
+                          <img
+                            src="/Food/NoFoodPhoto.jpg"
+                            className="w-64 h-64 border border-pink-400 "
+                          />
+                        )}
+                        <div className="flex flex-col justify-between">
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-2xl">Name: </p>
+                            <p className="text-2xl font-bold uppercase">
+                              {detailsFood.TenMonAn}
+                            </p>
+                          </div>
+                          <div className="flex items-center">
+                            <p className=" italic ">
+                              <b>Description:</b> {detailsFood.MoTa}
+                            </p>
+                          </div>
+                          <div className="flex items-center">
+                            <p className="font-bold">Type: </p>
+                            <p className="my-3">{detailsFood.loaiMonAn}</p>
+                          </div>
+                          <p className=" text-green-700 font-bold">
+                            <b className="text-green-500 text-xl">Price: </b>
+                            {formatCurrency(detailsFood.GiaBan)}
+                          </p>
+                          <div className="btn flex items-center gap-5 x">
+                            <button className=" bg-pink-400 font-bold text-white  w-24 rounded-lg hover:bg-pink-600 transition-all duration-200 ease-in">
+                              Add
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="Ratings mt-2">
+                      <Suspense fallback={<p>Loading...</p>}>
+                        <Rating />
+                      </Suspense>
+                      <Suspense fallback={<p>Loading...</p>}>
+                        <ListComment foodDetails={detailsFood} />
+                      </Suspense>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <OrderDetails
               lstPromotions={promotions}

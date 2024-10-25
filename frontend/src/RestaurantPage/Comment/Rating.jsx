@@ -1,6 +1,6 @@
 export default function Rating() {
   return (
-    <div className="border bg-white border-gray-300 p-3 rounded-lg">
+    <div className="border bg-white border-pink-300 p-3 rounded-lg">
       <p>Ratings and Reviews</p>
       <div>
         <div className="flex items-center justify-between">
