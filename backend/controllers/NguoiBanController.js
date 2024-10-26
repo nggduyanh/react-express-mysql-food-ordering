@@ -51,7 +51,7 @@ class NguoiBanController
     {
         let obj = await LoaiNguoiBanNguoiBan.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found id NguoiBan = ${req.body[loaiNguoiBanNguoiBan.maNguoiBan]} or id LoaiNguoiBan = ${req.body[loaiNguoiBanNguoiBan.maLoaiNguoiBan]}`}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found resource`}, 404))
         return res.sendStatus (204)
     }
 
@@ -66,7 +66,7 @@ class NguoiBanController
     {
         let obj = await NhanXet.update (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found id MonAn = ${req.body[nhanXet.maMonAn]} or not found id NguoiMua = ${req.body[nhanXet.maNguoiMua]}`}, 404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
         return res.status (200).json (obj.res)
     }
 
