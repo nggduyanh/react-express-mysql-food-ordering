@@ -3,7 +3,7 @@ import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-import { GetPromotion } from "../../Route";
+import { formatCurrency, GetPromotion } from "../../Route";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -58,12 +58,7 @@ export default function OrderDetails(props) {
     event.preventDefault();
     console.log("Order Reducer", detailsOrder);
   };
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
+
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {

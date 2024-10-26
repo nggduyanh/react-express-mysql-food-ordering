@@ -19,3 +19,12 @@ export const setCommendForSpecificFood =
   "http://localhost:3030/nguoimua/nhanxet/add";
 export const updateCommendForSpecificFood =
   "http://localhost:3030/nguoimua/nhanxet/update";
+export const formatCurrency = (value) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(value);
+};
+export const refreshPage = () => {
+  window.location.reload();
+};

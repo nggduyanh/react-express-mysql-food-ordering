@@ -5,10 +5,14 @@ import { UserAccount } from "../../App";
 import {
   getCommentForSpecificFood,
   localStaticFile,
+  refreshPage,
   setCommendForSpecificFood,
 } from "../../Route";
 import { MdCommentsDisabled } from "react-icons/md";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function ListComment({ foodDetails }) {
   const { userData } = useContext(
     UserAccount !== undefined ? UserAccount : " "
@@ -18,8 +22,8 @@ export default function ListComment({ foodDetails }) {
     MaMonAn: foodDetails.MaMonAn,
     noiDung: "",
     diem: "",
+    HienThi: 1,
   });
-  console.log(foodDetails.MaMonAn);
   const [listComments, setListComments] = useState([]);
   useEffect(() => {
     fetch(getCommentForSpecificFood + `${foodDetails.MaMonAn}`)
@@ -42,6 +46,7 @@ export default function ListComment({ foodDetails }) {
   }, [foodDetails]);
   const handleComment = (event) => {
     const { name, value } = event.target;
+
     setComments((prevComments) => {
       return {
         ...prevComments,
@@ -51,6 +56,7 @@ export default function ListComment({ foodDetails }) {
   };
   const createComment = async () => {
     try {
+      console.log(`Comment`, Comments);
       const response = await axios.post(
         setCommendForSpecificFood,
         JSON.stringify(Comments),
@@ -59,9 +65,18 @@ export default function ListComment({ foodDetails }) {
           withCredentials: true,
         }
       );
-      alert("create message successfull");
+      toast.success("Comment created successfully", {
+        autoClose: 2000,
+        onClose: () => {
+          refreshPage();
+        },
+      });
     } catch (err) {
-      console.log(err.message);
+      if (err.code === "ER_DUP_ENTRY") {
+        toast.error("Bạn đã bình luận cho món ăn này rồi.");
+      } else {
+        toast.error(`Cannot comment: ${err.message}`);
+      }
     }
   };
   return (
@@ -117,18 +132,27 @@ export default function ListComment({ foodDetails }) {
         <div className="list">
           {listComments.length !== 0 ? (
             <div>
-              <SpecificComment />
-              <Toggle.On>
+              {listComments
+                .map((comment) => {
+                  return <SpecificComment key={comment} {...comment} />;
+                })
+                .slice(0, 4)}
+
+              {listComments.length > 4 && (
                 <div>
-                  <SpecificComment />
-                  <SpecificComment />
-                  <SpecificComment />
+                  <Toggle.On>
+                    <div>
+                      <SpecificComment />
+                      <SpecificComment />
+                      <SpecificComment />
+                    </div>
+                  </Toggle.On>
+                  <Toggle.Button className="w-full text-center cursor-pointer text-red-400">
+                    <Toggle.Off>Show reviews</Toggle.Off>
+                    <Toggle.On>Hide Reviews</Toggle.On>
+                  </Toggle.Button>
                 </div>
-              </Toggle.On>
-              <Toggle.Button className="w-full text-center cursor-pointer text-red-400">
-                <Toggle.Off>Show reviews</Toggle.Off>
-                <Toggle.On>Hide Reviews</Toggle.On>
-              </Toggle.Button>
+              )}
             </div>
           ) : (
             <div className="h-40 border border-gray-400 rounded-md ">

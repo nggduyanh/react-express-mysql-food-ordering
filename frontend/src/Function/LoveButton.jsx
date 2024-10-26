@@ -3,13 +3,12 @@ import Toggle from "../Function/Toggle/LayoutToggle";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { UserAccount } from "../App";
 import axios from "axios";
-import { addLoveRestaurant, getLoveRestaurant } from "../Route";
+import { addLoveRestaurant, getLoveRestaurant, refreshPage } from "../Route";
+import { toast, ToastContainer } from "react-toastify";
 export default function LoveButton({ idSeller }) {
   const { userData } = useContext(UserAccount);
   const [listOfLove, setListOfLove] = useState([]);
-  const refreshPage = () => {
-    window.location.reload();
-  };
+
   const handleAddLove = async () => {
     try {
       const response = await axios.post(
@@ -23,8 +22,12 @@ export default function LoveButton({ idSeller }) {
           withCredentials: true,
         }
       );
-      alert("Add success");
-      refreshPage();
+      toast.success("Successfully added, wait to reload page", {
+        autoClose: 1000,
+        onClose: () => {
+          refreshPage();
+        },
+      });
     } catch (err) {
       alert(err);
     }
@@ -35,14 +38,19 @@ export default function LoveButton({ idSeller }) {
         "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
         JSON.stringify({
           MaNguoiMua: userData.MaNguoiDung,
-          maNguoiBan: idSeller,
+          MaNguoiBan: idSeller,
         }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
-      refreshPage();
+      toast.success("Successfully remove, wait to reload page", {
+        autoClose: 1000,
+        onClose: () => {
+          refreshPage();
+        },
+      });
     } catch (err) {
       alert(err);
     }
@@ -83,6 +91,7 @@ export default function LoveButton({ idSeller }) {
                 <FaRegHeart />
               </Toggle.On>
             </div>
+            <ToastContainer position="top-center" />
           </div>
         ) : (
           <div>

@@ -3,6 +3,7 @@ import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GetUserInfo } from "../Route";
+import { toast, ToastContainer } from "react-toastify";
 export default function Login({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
@@ -31,7 +32,9 @@ export default function Login({ assignAccount }) {
         );
       });
       if (filterResult === false) {
-        alert("User not found");
+        toast.error("User not found", {
+          autoClose: 2000,
+        });
       } else {
         const userResult = getUserInfoArray.find((user) => {
           return (
@@ -46,13 +49,21 @@ export default function Login({ assignAccount }) {
         userResult.TenVaiTro = responseRole.data[0].TenVaiTro;
         if (getRole === "Buyer") {
           assignAccount(userResult);
-          navigate("/home", { state: userResult });
+          toast.success("Login success ", {
+            className: "",
+            autoClose: 1000,
+            onClose: () => {
+              navigate("/home", { state: userResult });
+            },
+          });
         } else {
           alert("User not found");
         }
       }
     } catch (err) {
-      alert("Something went wrong between sending data");
+      toast.error(`Error: ${err.message}`, {
+        autoClose: 2000,
+      });
       console.log(err.message);
     }
   };

@@ -11,6 +11,7 @@ import ListComment from "../Comment/ListComment";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
 import {
+  formatCurrency,
   GetFoodRestaurant,
   GetPromotion,
   localStaticFile,
@@ -132,12 +133,6 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
   return (
     <div className="background_res relative">
       <div className="bg-black bckImage">
