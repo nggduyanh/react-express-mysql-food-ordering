@@ -29,7 +29,12 @@ export default function SpecificRes() {
   const ResInfor = useLocation();
   useEffect(() => {
     fetch(GetFoodRestaurant)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("No list was found");
+        }
+        return res.json();
+      })
       .then((listFood) => {
         const filterFood = listFood.filter((food) => {
           return (
@@ -47,6 +52,11 @@ export default function SpecificRes() {
           };
         });
         setFood(assignTypeFood);
+      })
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          setFood([]);
+        } else console.log(err.message);
       });
   }, []);
   useEffect(() => {

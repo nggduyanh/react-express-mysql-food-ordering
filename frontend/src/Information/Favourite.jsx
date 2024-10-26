@@ -8,8 +8,20 @@ export default function Favourite() {
   const [listFavourites, setListFavourites] = useState([]);
   useEffect(() => {
     fetch(getLoveRestaurant + `${userData.MaNguoiDung}`)
-      .then((res) => res.json())
-      .then((data) => setListFavourites(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("List empty");
+        }
+        return res.json();
+      })
+      .then((data) => setListFavourites(data))
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          setListFavourites([]);
+        } else {
+          console.log("Another error:", err.message);
+        }
+      });
   }, []);
   const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
 
@@ -31,7 +43,7 @@ export default function Favourite() {
     <div className="p-5">
       <p className="text-2xl font-bold mb-2">Favourite Restaurant</p>
       <div className="overflow-auto max-h-[650px]">
-        {!Array.isArray(listFavourites) ? (
+        {listFavourites.length === 0 ? (
           <p className="text-gray-500">Not found favourite list</p>
         ) : (
           combineListFavourites.map((fav) => {

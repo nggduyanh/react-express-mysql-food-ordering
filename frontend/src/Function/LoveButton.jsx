@@ -50,8 +50,20 @@ export default function LoveButton({ idSeller }) {
 
   useEffect(() => {
     fetch(getLoveRestaurant + `${userData.MaNguoiDung}`)
-      .then((res) => res.json())
-      .then((data) => setListOfLove(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("No list of love restaurant");
+        }
+        return res.json();
+      })
+      .then((data) => setListOfLove(data))
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          console.error("Empty list of love restaurant");
+        } else {
+          console.log(err.message);
+        }
+      });
   }, []);
   const results = listOfLove.some((items) => {
     return items.MaNguoiBan === idSeller;
