@@ -41,7 +41,7 @@ class NguoiMuaController
     {
         let obj = await KhuyenMaiNguoiMua.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found resource `}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found resource `}, 404))
         return res.sendStatus (204) 
     }
 
@@ -56,7 +56,7 @@ class NguoiMuaController
     {
         let obj = await NguoiBanYeuThich.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found resource `}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found resource `}, 404))
         return res.sendStatus (204) 
     }
 }
