@@ -128,6 +128,9 @@ create table ChiTietDonHang (
     foreign key (MaDonHang) references DonHang (MaDonHang) 
 );
 
+alter table chitietdonhang add foreign key (MaDonHang) references DonHang (MaDonHang) on delete cascade;
+alter table chitietdonhang drop foreign key chitietdonhang_ibfk_2;
+
 create table NguoiBanYeuThich (
 	MaNguoiBan int,
     MaNguoiMua int,
@@ -406,4 +409,4 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (20,24,"CHUBUNE SASHIMI",1089000,"Thuyền sashimi cỡ trung"),
         (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
-        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên")  
+        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
