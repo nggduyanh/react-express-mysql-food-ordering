@@ -128,9 +128,6 @@ create table ChiTietDonHang (
     foreign key (MaDonHang) references DonHang (MaDonHang) 
 );
 
-alter table chitietdonhang add foreign key (MaDonHang) references DonHang (MaDonHang) on delete cascade;
-alter table chitietdonhang drop foreign key chitietdonhang_ibfk_2;
-
 create table NguoiBanYeuThich (
 	MaNguoiBan int,
     MaNguoiMua int,
