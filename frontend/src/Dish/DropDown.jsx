@@ -1,65 +1,51 @@
-import React, { useState } from 'react';
-
-const Dropdown = () => {
+import React, { useState } from "react";
+export default function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen((prev) => !prev);
-  };
-
   return (
-    <div className="relative inline-block text-left w-full">
-      <div>
-        <button
-          onClick={toggleDropdown}
-          className=" w-full inline-flex justify-between w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
-        >
-          Options
+    <div className="relative flex flex-col items-center w-[340px] h-340px rounded-lg">
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="bg-blue-400 p-4 w-full flex items-center justify-between font-bold text-lg rounded-lg tracking-wider border-4 border-transparent active:border-white duration-300 active:text-white"
+      >
+        Dropdown
+        {!isOpen ? (
           <svg
-            className="-mr-1 ml-2 h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
+            height="20"
+            width="20"
             viewBox="0 0 20 20"
-            fill="currentColor"
             aria-hidden="true"
+            focusable="false"
+            class="css-8mmkcg"
           >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
+            <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
           </svg>
-        </button>
-      </div>
+        ) : (
+          <svg
+            height="20"
+            width="20"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            focusable="false"
+            class="css-8mmkcg"
+          >
+            <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
+          </svg>
+        )}
+      </button>
 
       {isOpen && (
-        <div className="absolute w-full right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none -translate-x-1/2">
-          <div className="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
+        <div className="bg-blue-400 absolute top-20 flex flex-col items-start rounded-lg p-2 w-full">
+          {list.map((item, i) => (
+            <div
+              className="flex w-full justify-between p-4 hover:bg-blue-300 cusor-pointer rounded-r-lg border-l-transparent hover:border-l-white border-l-4"
+              key={i}
             >
-              Option 1
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Option 2
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Option 3
-            </a>
-          </div>
+              <h3>{item.city}</h3>
+              <h3>{item.emoticon}</h3>
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
-};
-
-export default Dropdown;
+}

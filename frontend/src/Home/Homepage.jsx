@@ -4,22 +4,12 @@ import { GetSellerInfo, GetUserInfo, localStaticFile } from "../routebackend";
 import { useActionData } from "react-router-dom";
 import axios from "axios";
 import { UserAccount } from "../App";
+import SideBar from "../Components/SideBar";
 
 export default function Homepage() {
     const { userData } = useContext(UserAccount);
     console.log("useData", userData);
-    const [seller, setSeller] = useState({});
-    useEffect(() => {
-       fetch(GetSellerInfo)
-            .then(res => res.json())
-            .then(data => {
-                const filterSeller = data.find(seller => {
-                    return seller.MaNguoiBan === userData.MaNguoiDung
-                })
-                setSeller(filterSeller);
-                console.log("TenNguoiBan",seller.TenNguoiBan)
-            })
-    }, []);
+    
 
     // Array data => find: Trả về 1 thông tin duy nhất <=> filter 
     // map , reduce
@@ -27,22 +17,7 @@ export default function Homepage() {
     return (
         <div className="h-screen w-screen">
             <div className="flex h-full">
-                <div id="sidebar" class="flex flex-col transition-all duration-300 w-64 p-4 border-r border-[#F58220]">
-                    <img src='./images/logo.png' className='relative h-10 w-10 mx-auto' />
-                    <div className="flex flex-col h-full mt-5 text-sm">
-                        <Link to="/home" className='py-3 px-4 mt-1 rounded-lg bg-gray-200 hover:bg-gray-200 hover:rounded-lg'>Dashboard</Link>
-                        <Link to="/orders_list" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Orders List</Link>
-                        <Link to="/order_details" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Order Details</Link>
-                        <Link to="/dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Dish List</Link>
-                        <Link to="/dish_details" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Dish Details</Link>
-                        <Link to="/add_dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Add Dish</Link>
-                        <Link to="/edit_dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Edit Dish</Link>
-
-                        <Link to="/profile" className='py-3 px-4 mt-auto hover:bg-gray-200 hover:rounded-lg'>Profile</Link>
-                        <Link to="/" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Logout</Link>
-
-                    </div>
-                </div>
+                <SideBar />
                 <div class="flex-1 mt-0">
                     <nav className='flex h-16 px-6 items-center border-b border-[#F58220]  text-sm'>
                         <div class="flex items-center border border-gray-300 rounded-full p-2">
@@ -63,7 +38,7 @@ export default function Homepage() {
                                 userData?.AnhNguoiDung !== null ? <img src={ localStaticFile + userData.AnhNguoiDung} className='object-cover w-full h-full' /> : <img src="./images/avatar.png" className="object-cover w-full h-full" />
                             }
                         </div>
-                        <h3 className='font-medium ml-2'>{seller.TenNguoiBan}</h3>
+                        <h3 className='font-medium ml-2'>{userData.TenNguoiBan}</h3>
                     </nav>
                     <section className="p-6">
                         <h1 className="text-xl font-medium">Dashboard</h1>

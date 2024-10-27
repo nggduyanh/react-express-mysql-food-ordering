@@ -5,7 +5,7 @@ import Logo from "./Logo";
 import Heading from "./Heading";
 import Account from "./Account";
 import CreateAccount from "./CreateAccount";
-import { GetUserInfo } from "../routebackend";
+import { GetSellerInfo, GetUserInfo } from "../routebackend";
 
 export default function Signin({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
@@ -46,9 +46,14 @@ export default function Signin({ assignAccount }) {
           `http://localhost:3030/vaitro/nguoidung/${userResult.MaNguoiDung}`
         );
         const getRole = responseRole.data[0].TenVaiTro;
-        userResult.TenVaiTro = responseRole.data[0].TenVaiTro;
+        const getSellerInfor = await axios.get(GetSellerInfo);
+        const filterSeller = getSellerInfor.data.find(seller => {
+          return seller.MaNguoiBan === userResult.MaNguoiDung;
+        })
+        filterSeller.TenVaiTro = responseRole.data[0].TenVaiTro;
+        console.log(filterSeller);
         if (getRole === "Seller") {
-          assignAccount(userResult);
+          assignAccount(filterSeller);
           navigate("/home");
         } else {
           alert("User not found");

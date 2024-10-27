@@ -1,88 +1,81 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { Link } from "react-router-dom";
-import Dropdown from "./DropDown";
-import { UserAccount } from "../App";
-import {
-  AddFoodRestaurant,
-  GetFoodTypeRestaurant,
-  handleRefreshPage,
-} from "../routebackend";
-import axios from "axios";
 import SideBar from "../Components/SideBar";
+import { UserAccount } from "../App";
+import { vi } from "date-fns/locale";
+import { AddVoucher, getFormattedDate, handleRefreshPage } from "../routebackend";
+import axios from "axios";
 
-export default function AddDish() {
+export default function VoucherAdd() {
+  
   const { userData } = useContext(UserAccount);
-  const [typeFood, setTypeFood] = useState([]);
-  useEffect(() => {
-    fetch(GetFoodTypeRestaurant)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("List empty");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        const filterTypeFood = data.filter((type) => {
-          return type.MaNguoiBan === userData.MaNguoiBan;
-        });
-        console.log("FilterTypeFood", filterTypeFood);
-        setTypeFood(filterTypeFood);
-      })
-      .catch((err) => {
-        if (err.message.includes("404")) {
-          setTypeFood([]);
-        } else console.log("Another error", err.message);
-      });
-  }, [userData]);
-  const [dish, setDish] = useState({
-    TenMonAn: "",
-    AnhMonAn: null,
-    GiaBan: "",
-    MoTa: "",
-    MaLoaiMonAn: "",
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+  const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(null);
+  const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(null);
+  // Handler for date change
+  const handleDateChangeStart = (date) => {
+    setSelectedDateTimeStart(date);
+    setVoucher((prevVoucher) => ({
+        ...prevVoucher,
+        NgayTao: getFormattedDate(date),
+    }));
+  };
+  const handleDateChangeEnd = (date) => {
+    setSelectedDateTimeEnd(date);
+    setVoucher((prevVoucher) => ({
+        ...prevVoucher,
+        NgayHetHan: getFormattedDate(date),
+    }));
+  };
+  const [voucher, setVoucher] = useState({
+    TenKhuyenMai: "",
+    PhanTram: null,
+    GiaTri: null,
     MaNguoiBan: userData.MaNguoiBan,
+    SoLuong: "",
+    NgayTao: null,
+    NgayHetHan: null,
   });
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setDish((prevForm) => {
+    setVoucher((prevForm) => {
       return {
         ...prevForm,
-        [name]: name === "gia" ? parseInt(value) : value,
+        [name]:
+          name === "GiaTri" || name === "soluong" || name === "PhanTram"
+            ? parseInt(value)
+            : value,
       };
     });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(dish);
-    try {
-      const response = await axios.post(
-        AddFoodRestaurant,
-        JSON.stringify(dish),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+    console.log(voucher);
+    try{
+      const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      })
       alert("Add sucesss");
       handleRefreshPage();
-    } catch (err) {
-      console.error("Error adding dish:", err);
-    }
-  };
-  const [srcimg, setSrcImg] = useState(null);
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSrcImg(URL.createObjectURL(file));
+      
+    }catch(err){
+      console.error("Error adding voucher:", err);
     }
   };
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
-            <div class="flex items-center border border-gray-300 rounded-full p-2">
+            <div className="flex items-center border border-gray-300 rounded-full p-2">
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -129,83 +122,100 @@ export default function AddDish() {
             <h3 className="font-medium ml-2">Kaiya Botosh</h3>
           </nav>
           <section className="p-6">
-            <h1>Add Dish</h1>
-            <Link to="/dish">
+            <h1>Add Voucher</h1>
+            <Link to="/voucher">
               <h3>Back to list</h3>
             </Link>
             <div className="grid grid-cols-3 gap-6">
-              <div className="border border-default-200 p-6 rounded-lg">
-                <div className="border border-default-200 p-6 rounded-lg mb-4 flex justify-center items-center">
-                  <div
-                    aria-hidden="true"
-                    className="relative h-[300px] flex flex-col items-center justify-center"
-                  >
-                    <input
-                      type="file"
-                      accept=".jpeg,.jpg,.png,.gif,.svg"
-                      name="bgfile"
-                      id="bgfile"
-                      onChange={handleFileChange}
-                      className="relative z-10 opacity-0 w-full h-full"
-                    />
-                    <div className="absolute h-full w-full border border-[#F97316] border-dashed border-2 rounded-lg flex items-center justify-center bg-[#FFF0E9]">
-                      <label htmlFor="">Upload Image</label>
-                    </div>
-                    <img src={srcimg} alt="" className="absolute h-full w-full"/>
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-2">
+              <div className="col-span-3">
                 <div className="border border-default-200 p-6 rounded-lg grid grid-cols-2 gap-6 mb-4">
                   <div>
-                    <h5 className="mb-2">Product Name</h5>
+                    <h5 className="mb-2">Ten Khuyen Mai</h5>
                     <input
                       type="text"
-                      name="TenMonAn"
+                      name="TenKhuyenMai"
                       onChange={handleChange}
                       placeholder="Product Name"
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     />
-                    <h5 className="mb-2">Product Catagory</h5>
+                    <h5 className="mb-2">Loai Khuyen Mai</h5>
                     <select
-                      name="MaLoaiMonAn"
-                      onChange={handleChange}
+                      name=""
+                      onChange={handleSelectChange}
                       id=""
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     >
                       <option value="" hidden>
                         Choose category
                       </option>
-                      {typeFood.map((type) => {
-                        return (
-                          <option value={type.MaLoaiMonAn}>
-                            {type.TenLoaiMonAn}
-                          </option>
-                        );
-                      })}
+                      <option value="PhanTram">Theo phan tram</option>
+                      <option value="Gia">Theo gia</option>
                     </select>
-                    <div className="grid grid-cols-2 gap-6 mb-6">
+
+                    {selectedOption === "PhanTram" && (
                       <div>
-                        <h5 className="mb-2">Selling Price</h5>
+                        <h5 className="mb-2">Phan tram</h5>
                         <input
                           type="text"
-                          name="GiaBan"
+                          name="PhanTram"
+                          onChange={handleChange}
+                          placeholder="Enter percentage"
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
+                        />
+                      </div>
+                    )}
+                    {selectedOption === "Gia" && (
+                      <div>
+                        <h5 className="mb-2">Gia tri</h5>
+                        <input
+                          type="text"
+                          name="GiaTri"
+                          onChange={handleChange}
+                          placeholder="Enter price"
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex mb-6 gap-6">
+                      <div className=" h-auto">
+                        <h5 className="mb-2">Ngay Bat Dau</h5>
+                        <DatePicker
+                          placeholderText="Select date and time"
+                          dateFormat="Pp"
+                          showTimeSelect
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
+                          selected={selectedDateTimeStart}
+                          onChange={handleDateChangeStart}
+                          locale={vi}
+                        ></DatePicker>
+                      </div>
+                      <div className=" h-auto">
+                        <h5 className="mb-2">Ngay Ket Thuc</h5>
+                        <DatePicker
+                          placeholderText="Select date and time"
+                          dateFormat="Pp"
+                          showTimeSelect
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
+                          selected={selectedDateTimeEnd}
+                          onChange={handleDateChangeEnd}
+                          locale={vi}
+                        ></DatePicker>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <h5 className="mb-2">So Luong</h5>
+                        <input
+                          type="text"
+                          name="SoLuong"
                           onChange={handleChange}
                           placeholder="Selling Price"
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
                         />
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <h5 className="mb-2">Product Name</h5>
-                    <textarea
-                      name="MoTa"
-                      id=""
-                      onChange={handleChange}
-                      placeholder="short Description"
-                      className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6 h-36"
-                    ></textarea>
                   </div>
                 </div>
                 <div className="flex gap-4">

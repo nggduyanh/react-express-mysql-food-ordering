@@ -11,6 +11,8 @@ import Profile from "./Profile/Profile"
 import Login from "./Login/Login"
 import Signup from "./Login/Signup"
 import { createContext, useEffect, useState } from "react"
+import Voucher from "./Voucher/Voucher"
+import VoucherAdd from "./Voucher/AddVoucher"
 const UserAccount = createContext();
 function App() {
   const [account, setAccount] = useState(() => {
@@ -51,7 +53,6 @@ function App() {
     };
     checklocalStorage("user", OneDaysMilliseconds);
   }, [account]);
-
   return(
     <UserAccount.Provider value = {{userData}}>
     <BrowserRouter>
@@ -65,6 +66,8 @@ function App() {
         <Route path = "/edit_dish" element = {<EditDish />} />
         <Route path = "/dish_details" element = {<DishDetails />} />
         <Route path = "/profile" element = {<Profile />} />
+        <Route path = "/voucher" element = {<Voucher />} />
+        <Route path = "/add_voucher" element = {<VoucherAdd />} />
         <Route path = "/login" element = {<Login />} />
         <Route path = "/signup" element = {<Signup />} />
       </Routes>

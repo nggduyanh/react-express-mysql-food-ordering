@@ -1,26 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import SideBar from "../../Components/SideBar";
 
 export default function OrderDetails() {
     return (
         <div className="h-screen w-screen">
             <div className="flex h-full">
-                <div id="sidebar" class="flex flex-col transition-all duration-300 w-64 p-4 border-r border-[#F58220]">
-                    <img src='./images/logo.png' className='relative h-10 w-10 mx-auto' />
-                    <div className="flex flex-col h-full mt-5 text-sm">
-                        <Link to="/home" className='py-3 px-4 mt-1 rounded-lg bg-gray-200 hover:bg-gray-200 hover:rounded-lg'>Dashboard</Link>
-                        <Link to="/orders_list" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Orders List</Link>
-                        <Link to="/order_details" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Order Details</Link>
-                        <Link to="/dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Dish List</Link>
-                        <Link to="/dish_details" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Dish Details</Link>
-                        <Link to="/add_dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Add Dish</Link>
-                        <Link to="/edit_dish" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Edit Dish</Link>
-
-                        <Link to="/profile" className='py-3 px-4 mt-auto hover:bg-gray-200 hover:rounded-lg'>Profile</Link>
-                        <Link to="/" className='py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg'>Logout</Link>
-
-                    </div>
-                </div>
+            <SideBar />
                 <div class="flex-1 mt-0">
                     <nav className='flex h-16 px-6 items-center border-b border-[#F58220]  text-sm'>
                         <div class="flex items-center border border-gray-300 rounded-full p-2">

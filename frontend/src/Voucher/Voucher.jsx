@@ -1,45 +1,64 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { DeleteFoodRestaurant, GetFoodRestaurant, handleRefreshPage} from "../routebackend";
+import {
+  DeleteFoodRestaurant,
+  DeleteVoucher,
+  formatCurrency,
+  formatDate,
+  formatPercent,
+  formatTime,
+  GetFoodRestaurant,
+  GetVoucher,
+  handleRefreshPage,
+} from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
-export default function Dish() {
+export default function Voucher() {
   const { userData } = useContext(UserAccount);
-  console.log("useData", userData);
-  const [listDish, setListDish] = useState([]);
   
+  const [listVoucher, setListVoucher] = useState([]);
+
   useEffect(() => {
-    fetch(GetFoodRestaurant)
+    fetch(GetVoucher)
       .then((response) => response.json())
       .then((data) => {
-        const filterDish = data.filter((dish) => {
-          return dish.MaNguoiBan === userData.MaNguoiBan;
+        const filterVoucher = data.filter((voucher) => {
+          return voucher.MaNguoiBan === userData.MaNguoiBan;
         });
-        // console.log("filterDish", filterDish);
-        setListDish(filterDish);
+        setListVoucher(filterVoucher);
       });
   }, [userData]);
 
-  const handleRemoveFood = async (id) => {
-    const findDish = listDish.find((dish) => dish.MaMonAn === id);
-    try{
-      const deleteId = {
-        MaMonAn: findDish.MaMonAn
+    const handleRemoveVoucher = async (id) => {
+      const findVoucher = listVoucher.find((voucher) => voucher.MaKhuyenMai === id);
+      console.log("findVoucher", findVoucher);
+      try{
+        const deleteId = {
+          MaKhuyenMai: findVoucher.MaKhuyenMai
+        }
+        const response = await axios.delete(DeleteVoucher, {
+          data: deleteId, // Truyền dữ liệu trong thuộc tính data
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        });
+        alert("Success Delete");
+        handleRefreshPage();
+      }catch(err) {
+        console.error("Error deleting dish:", err);
       }
-      const response = await axios.delete("http://localhost:3030/monan/delete", {
-        data: deleteId, // Truyền dữ liệu trong thuộc tính data
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-      alert("Success Delete");
-      handleRefreshPage();
-    }catch(err) {
-      console.error("Error deleting dish:", err);
-    }
-  };
+    };
 
-  const listFood = listDish?.map((item) => {
+
+  const Voucherlist = listVoucher?.map((item) => {
+    const isoStringStart = item.NgayTao;
+    const isoStringEnd = item.NgayHetHan;
+    const dateStart = new Date(isoStringStart);
+    const dateEnd = new Date(isoStringEnd);
+    const localDateStart = formatDate(dateStart);
+    const localTimeStart = formatTime(dateStart);
+    const localDateEnd = formatDate(dateEnd);
+    const localTimeEnd = formatTime(dateEnd);
     return (
       <tr>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
@@ -50,28 +69,32 @@ export default function Dish() {
               className="h-[72px] max-w-[72px]"
             />
             <div>
-              <p className="text-sm mb-1">{item.TenMonAn}</p>
+              <p className="text-sm mb-1">{item.TenKhuyenMai}</p>
             </div>
           </div>
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {item.MaLoaiMonAn}
+          {formatPercent(item.PhanTram)}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          $79
+          {formatCurrency(item.GiaTri)}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          16
+          {item.SoLuong}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          Admin
+          {localDateStart}
+          <br />
+          {localTimeStart}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          Published
+          {localDateEnd}
+          <br />
+          {localTimeEnd}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600 ">
           <div className="flex gap-4">
-            <Link to="/edit_dish" state={item} >
+            <Link to="/edit_dish" state={item}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -105,8 +128,8 @@ export default function Dish() {
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </Link>
-            
-            <button onClick = {() => handleRemoveFood(item.MaMonAn)}>
+
+            <button onClick={() => handleRemoveVoucher(item.MaKhuyenMai)}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -131,11 +154,11 @@ export default function Dish() {
       </tr>
     );
   });
-  // console.log(listFood);
+  
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
-      <SideBar />
+        <SideBar />
         <div class="flex-1 mt-0">
           <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
             <div class="flex items-center border border-gray-300 rounded-full p-2">
@@ -185,16 +208,16 @@ export default function Dish() {
             <h3 className="font-medium ml-2">Kaiya Botosh</h3>
           </nav>
           <section className="p-6">
-            <h1>Dishes List</h1>
+            <h1>Voucher List</h1>
             <div className="rounded-lg border border-default-200">
               <div className="py-4 px-6 flex justify-between items-center">
-                <h2>Dishes List</h2>
+                <h2>Voucher List</h2>
                 <div className="flex gap-4 items-center">
                   <button className="px-4 py-3 rounded-md bg-[#F1F5F9]">
                     Sort
                   </button>
                   <Link
-                    to="/add_dish"
+                    to="/add_voucher"
                     className="bg-[#F58220] px-4 py-3 rounded-md"
                   >
                     <svg
@@ -212,7 +235,7 @@ export default function Dish() {
                       <path d="M5 12h14"></path>
                       <path d="M12 5v14"></path>
                     </svg>
-                    Add Dish
+                    Add Voucher
                   </Link>
                 </div>
               </div>
@@ -223,7 +246,7 @@ export default function Dish() {
                       scope="col"
                       class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      Dish Name
+                      Voucher Name
                     </th>
                     <th
                       scope="col"
@@ -264,7 +287,7 @@ export default function Dish() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-default-200">
-                  {listFood}
+                  {Voucherlist }
                 </tbody>
               </table>
             </div>
