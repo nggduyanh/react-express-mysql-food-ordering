@@ -10,6 +10,7 @@ import { GetRestaurant, GetTypeRes } from "../Route";
 import useFetchData from "../Hook/useFetchData";
 import useFilterRes_Type from "../Hook/useFilterRes_Type";
 import { UserContext } from "../Layout/LayoutHeader";
+import { Toaster } from "react-hot-toast";
 const RestaurantContext = createContext();
 export default function HomePage() {
   const { place } = useContext(UserContext);
@@ -59,6 +60,19 @@ export default function HomePage() {
           </main>
         </div>
       </div>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
     </RestaurantContext.Provider>
   );
 }

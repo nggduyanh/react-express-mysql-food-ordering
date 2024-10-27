@@ -3,9 +3,16 @@ import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { MdCancel } from "react-icons/md";
 import { NavLink, Outlet } from "react-router-dom";
 import useFetchData from "../../Hook/useFetchData";
-import { Order } from "../../Route";
+import { Order, OrderStatus } from "../../Route";
+import { useContext, useEffect } from "react";
+import { UserAccount } from "../../App";
 export default function OrderHistory() {
-  const [order, setOrder] = useFetchData(Order);
+  const { userData } = useContext(UserAccount);
+  const [Listorder, setOrder] = useFetchData(Order);
+  const [orderStatus, setOrderStatus] = useFetchData(OrderStatus);
+  const order = Listorder.filter((items) => {
+    return items.MaNguoiMua === userData.MaNguoiDung;
+  });
   return (
     <div className="bg_homeScreen">
       <div className="orderHistory marginJustification min-h-screen ">
@@ -54,7 +61,7 @@ export default function OrderHistory() {
             </NavLink>
           </div>
           <div className="Order status rounded-md col-span-2 flex-grow ">
-            <Outlet context={{ order }} />
+            <Outlet context={{ order, orderStatus }} />
           </div>
         </div>
         {/* <div className="listOrderHistory">

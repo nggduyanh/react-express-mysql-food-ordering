@@ -4,9 +4,12 @@ import axios from "axios";
 import { localStaticFile, UpdateUser } from "../../Route";
 import { UserContext } from "../../Layout/LayoutHeader";
 import { useContext } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 export default function ChangeAccount() {
   const { userData } = useContext(UserContext);
   const imgRef = useRef(null);
+  const navigate = useNavigate();
   const [updateUser, setUpdateUser] = useState({
     MaNguoiDung: userData.MaNguoiDung,
     TenNguoiDung: "",
@@ -35,15 +38,33 @@ export default function ChangeAccount() {
     // for (let pair of formUserData.entries()) {
     //   console.log(pair[0], pair[1]);
     // }
-    try {
-      const response = await axios.patch(UpdateUser, formUserData, {
+    toast.promise(
+      axios.patch(UpdateUser, formUserData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
-      });
-      alert("Uploaded successfully: ", response.data);
-    } catch (err) {
-      console.error("Error uploading data: ", err);
-    }
+      }),
+      {
+        loading: "Update information...",
+        success: (response) => {
+          const successMessage = `Updated successfully: ${response.status}`; // Lưu thông báo thành công
+          // Hiển thị thông báo
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+          return successMessage;
+        },
+        error: (err) => `Error uploading data: ${err.message}`,
+      }
+    );
+    // try {
+    //   const response = await axios.patch(UpdateUser, formUserData, {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //     withCredentials: true,
+    //   });
+    //   alert("Uploaded successfully: ", response.data);
+    // } catch (err) {
+    //   console.error("Error uploading data: ", err);
+    // }
   };
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -62,14 +83,16 @@ export default function ChangeAccount() {
   const imgResults = updateUser?.AnhNguoiDungShow?.slice(
     updateUser.AnhNguoiDungShow.lastIndexOf("/") + 1
   );
-  console.log(imgResults);
+  console.log("imgResults", imgResults);
   // console.log("AnhNguoiDung", updateUser.AnhNguoiDung);
   return (
     <div className="p-5">
       <p className="text-2xl font-bold">My Account</p>
       <div>
         <div className="flex flex-col items-center">
-          {imgResults !== "null" ? (
+          {imgResults !== null &&
+          imgResults !== "null" &&
+          imgResults !== "undefined" ? (
             <img
               src={updateUser?.AnhNguoiDungShow}
               alt=""
@@ -97,7 +120,7 @@ export default function ChangeAccount() {
             Update avatar
           </button>
         </div>
-        <form action="" onSubmit={handleSubmitUpdate}>
+        <form onSubmit={handleSubmitUpdate}>
           <label htmlFor="username" className="text-xs">
             Username
           </label>
@@ -132,7 +155,9 @@ export default function ChangeAccount() {
             onChange={handleUpdate}
             name="Email"
           />
-          <button className="btnGradientPink w-full">Update</button>
+          <button type="submit" className="btnGradientPink w-full">
+            Update
+          </button>
         </form>
       </div>
       <BtnSelection className="btnSelections mt-3 p-3">
@@ -141,6 +166,35 @@ export default function ChangeAccount() {
       <button className="bg-gradient-to-r from-red-400 to-red-600 font-bold text-white p-3 rounded-xl mt-3">
         Delete account
       </button>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

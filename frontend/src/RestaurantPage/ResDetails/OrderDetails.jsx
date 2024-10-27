@@ -3,7 +3,6 @@ import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
 import { useContext, useEffect, useReducer, useState } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import { UserAccount } from "../../App";
 import {
   formatCurrency,
@@ -11,8 +10,9 @@ import {
   OrderAdd,
   OrderDetailAdd,
   PaymentMethod,
-  refreshPage,
 } from "../../Route";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -49,6 +49,7 @@ export default function OrderDetails(props) {
   const [detailsOrder, dispatch] = useReducer(OrderAction, OrderReducer);
   const [totalMoney, settotalMoney] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState([]);
+  const navigate = useNavigate();
   const handlePayment = async (e) => {
     dispatch({ type: "PAYMENT", event: e });
   };
@@ -109,23 +110,37 @@ export default function OrderDetails(props) {
       //   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
       // });
 
-      const response = await axios.post(
-        OrderAdd,
+      const response = await toast.promise(
+        axios.post(
+          OrderAdd,
+          {
+            DiaChiDen: "De La Thanh",
+            TrangThai: 1,
+            GiaBan: total,
+            MaTaiXe: null,
+            MaNguoiMua: userData.MaNguoiDung,
+            MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+            MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        ),
         {
-          DiaChiDen: "De La Thanh",
-          TrangThai: 1,
-          GiaBan: total,
-          MaTaiXe: null,
-          MaNguoiMua: userData.MaNguoiDung,
-          MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
-          MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          loading: "Creating order...",
+          success: (response) => {
+            const successMessage = `Order created successfully: ${response.data[0].MaDonHang}`; // Lưu thông báo thành công
+            // Hiển thị thông báo
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
+            return successMessage;
+          },
+          error: (err) => `Error creating order: ${err.message}`,
         }
       );
-      toast.success("Order created successfully!");
+      // toast.success("Order created successfully!");
       const addOrderDetaisl = props.orderList.map((order) => {
         const amountNumber = props.AmountList.find((amount) => {
           return amount.id === order.MaMonAn;
@@ -136,18 +151,34 @@ export default function OrderDetails(props) {
           SoLuong: parseInt(amountNumber.amount),
         };
       });
-      toast.success("Order details created successfully!");
-      const reponseDetailsOrder = await axios.post(
-        OrderDetailAdd,
+      // toast.success("Order details created successfully!");
+      const reponseDetailsOrder = await toast.promise(
+        axios.post(
+          OrderDetailAdd,
+          {
+            arr: addOrderDetaisl,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        ),
         {
-          arr: addOrderDetaisl,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          loading: "Creating order details...",
+          success: (response) => {
+            const successMessage = `Order details created successfully!`; // Lưu thông báo thành công
+            // Hiển thị thông báo
+            setTimeout(() => {
+              navigate("/home/activity/ongoing");
+            }, 2000);
+            return successMessage;
+          },
+          // success: () => {
+          //   return "Order details created successfully!"
+          // },
+          error: (err) => `Error creating order details: ${err.message}`,
         }
       );
-      toast.success("successfully!");
     } catch (err) {
       toast.error("An error occurred while processing your order!");
       console.log(err);
@@ -300,6 +331,38 @@ export default function OrderDetails(props) {
           </div>
         </div>
       </div>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            zIndex: 9999,
+          },
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

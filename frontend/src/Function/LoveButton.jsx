@@ -4,7 +4,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { UserAccount } from "../App";
 import axios from "axios";
 import { addLoveRestaurant, getLoveRestaurant, refreshPage } from "../Route";
-import { toast, ToastContainer } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 export default function LoveButton({ idSeller }) {
   const { userData } = useContext(UserAccount);
   const [listOfLove, setListOfLove] = useState([]);
@@ -22,14 +22,18 @@ export default function LoveButton({ idSeller }) {
           withCredentials: true,
         }
       );
-      toast.success("Successfully added, wait to reload page", {
-        autoClose: 1000,
-        onClose: () => {
-          refreshPage();
+      toast.success("Love success, wait to refresh!", {
+        style: {
+          backgroundColor: "green",
+          fontWeight: "bold",
+          color: "white",
         },
       });
+      setTimeout(() => {
+        refreshPage();
+      }, 2000);
     } catch (err) {
-      alert(err);
+      toast.error(`Some thing went wrong ${err.message}`);
     }
   };
   const handleRemoveLove = async () => {
@@ -48,12 +52,16 @@ export default function LoveButton({ idSeller }) {
           withCredentials: true,
         }
       );
-      toast.success("Successfully remove, wait to reload page", {
-        autoClose: 1000,
-        onClose: () => {
-          refreshPage();
+      toast.success("Removed favourite successfully, wait to refresh!!", {
+        style: {
+          backgroundColor: "green",
+          fontWeight: "bold",
+          color: "white",
         },
       });
+      setTimeout(() => {
+        refreshPage();
+      }, 2000);
     } catch (err) {
       alert(err);
     }
@@ -80,10 +88,10 @@ export default function LoveButton({ idSeller }) {
     return items.MaNguoiBan === idSeller;
   });
   return (
-    <Toggle.Button>
+    <Toggle>
       <div className="absolute top-0 right-0 p-2 m-2 text-lg text-pink-500 z-10 cursor-pointer border rounded-full border-white bg-white">
         {results === true ? (
-          <div>
+          <Toggle.Button>
             <div onClick={handleRemoveLove}>
               <Toggle.Off>
                 <FaHeart className="text-red-500" />
@@ -94,10 +102,9 @@ export default function LoveButton({ idSeller }) {
                 <FaRegHeart />
               </Toggle.On>
             </div>
-            <ToastContainer position="top-center" />
-          </div>
+          </Toggle.Button>
         ) : (
-          <div>
+          <Toggle.Button>
             <div onClick={handleAddLove}>
               <Toggle.Off>
                 <FaRegHeart />
@@ -108,9 +115,10 @@ export default function LoveButton({ idSeller }) {
                 <FaHeart className="text-red-500" />
               </Toggle.On>
             </div>
-          </div>
+          </Toggle.Button>
         )}
       </div>
-    </Toggle.Button>
+      <Toaster position="top-center" />
+    </Toggle>
   );
 }

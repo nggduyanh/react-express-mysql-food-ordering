@@ -1,24 +1,38 @@
 import { Link } from "react-router-dom";
-import { getLoveRestaurant, localStaticFile } from "../../Route";
+import { getLoveRestaurant, localStaticFile, refreshPage } from "../../Route";
 import axios from "axios";
 import { useContext } from "react";
 import { UserAccount } from "../../App";
-
+import toast, { Toaster } from "react-hot-toast";
 export default function ResMini(props) {
   const { userData } = useContext(UserAccount);
   const handleRemoveLove = async () => {
     try {
       const response = await axios.delete(
-        "http://localhost:3030/nguoimua/nguoibanyeuthich/delete".JSON.stringyfy(
-          {
-            maNguoiMua: userData.maNguoiMua,
-            maNguoiBan: props.maNguoiBan,
-          }
-        ),
-        { header: "Content-Type: application/json", withCredentials: true }
+        "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
+        {
+          data: {
+            MaNguoiMua: userData.MaNguoiDung,
+            MaNguoiBan: props.MaNguoiBan,
+          },
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
+      toast.success("Removed favourite successfully, wait to refresh!!", {
+        style: {
+          backgroundColor: "green",
+          fontWeight: "bold",
+          color: "white",
+        },
+      });
+      setTimeout(() => {
+        refreshPage();
+      }, 2000);
     } catch (err) {
-      alert("Cannot delete love restaurants");
+      toast.error(`Something went wrong: ${err.message}`);
     }
   };
   return (
@@ -50,12 +64,13 @@ export default function ResMini(props) {
           </div>
         </Link>
         <button
-          onClick={handleRemoveLove}
+          onClick={() => handleRemoveLove(props.MaNguoiBan)}
           className="bg-red-500 text-white font-bold uppercase hover:bg-red-700 p-2 rounded-lg transition-all ease-in duration-200"
         >
           Delete
         </button>
       </div>
+      <Toaster position="top-center" />
     </div>
   );
 }

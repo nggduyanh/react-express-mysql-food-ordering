@@ -5,12 +5,13 @@ import { useContext } from "react";
 import { localStaticFile } from "../Route";
 export default function UserInfo() {
   const { userData } = useContext(UserContext);
+  console.log(userData);
   return (
     <div className="w-11/12 mx-auto flex m-14 gap-6">
       <div className="shadow-xl border border-gray-300 w-1/4 h-screen">
         <BtnSelection
           src={
-            userData?.AnhNguoiDung === null
+            !userData?.AnhNguoiDung || userData.AnhNguoiDung === "null"
               ? "/avatar.png"
               : localStaticFile + userData?.AnhNguoiDung
           }

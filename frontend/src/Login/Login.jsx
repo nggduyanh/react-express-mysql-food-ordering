@@ -3,7 +3,7 @@ import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GetUserInfo } from "../Route";
-import { toast, ToastContainer } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 export default function Login({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
@@ -22,50 +22,44 @@ export default function Login({ assignAccount }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.get(GetUserInfo);
-      const getUserInfoArray = response.data;
-      const filterResult = getUserInfoArray.some((user) => {
-        return (
-          user.SoDienThoai === loginForm.SoDienThoai &&
-          user.MatKhau === loginForm.MatKhau
-        );
-      });
-      if (filterResult === false) {
-        toast.error("User not found", {
-          autoClose: 2000,
-        });
-      } else {
-        const userResult = getUserInfoArray.find((user) => {
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const response = await axios.get(GetUserInfo);
+        const getUserInfoArray = response.data;
+        const filterResult = getUserInfoArray.some((user) => {
           return (
             user.SoDienThoai === loginForm.SoDienThoai &&
             user.MatKhau === loginForm.MatKhau
           );
         });
-        const responseRole = await axios.get(
-          `http://localhost:3030/vaitro/nguoidung/${userResult.MaNguoiDung}`
-        );
-        const getRole = responseRole.data[0].TenVaiTro;
-        userResult.TenVaiTro = responseRole.data[0].TenVaiTro;
-        if (getRole === "Buyer") {
-          assignAccount(userResult);
-          toast.success("Login success ", {
-            className: "",
-            autoClose: 1000,
-            onClose: () => {
-              navigate("/home", { state: userResult });
-            },
-          });
+        if (filterResult === false) {
+          throw new Error("User not found");
         } else {
-          alert("User not found");
+          const userResult = getUserInfoArray.find((user) => {
+            return (
+              user.SoDienThoai === loginForm.SoDienThoai &&
+              user.MatKhau === loginForm.MatKhau
+            );
+          });
+          const responseRole = await axios.get(
+            `http://localhost:3030/vaitro/nguoidung/${userResult.MaNguoiDung}`
+          );
+          const getRole = responseRole.data[0].TenVaiTro;
+          userResult.TenVaiTro = responseRole.data[0].TenVaiTro;
+          if (getRole !== "Buyer") {
+            throw new Error("User not found");
+          }
+          assignAccount(userResult);
+          navigate("/home", { state: userResult });
         }
+      })(),
+      {
+        loading: "Check credentials",
+        success: "Login successful",
+        error: (err) => err.message || "An unexpected error occurred",
       }
-    } catch (err) {
-      toast.error(`Error: ${err.message}`, {
-        autoClose: 2000,
-      });
-      console.log(err.message);
-    }
+    );
   };
 
   return (
@@ -126,6 +120,35 @@ export default function Login({ assignAccount }) {
           </p>
         </div>
       </div>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

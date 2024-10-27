@@ -1,3 +1,5 @@
+import { formatCurrency } from "../../Route";
+
 export default function FoodDetails({
   disabled,
   isShown,
@@ -43,7 +45,7 @@ export default function FoodDetails({
           <p>{rest.TenMonAn}</p>
         </div>
         {mini && <p className="text-xs text-gray italic">Mota: {rest.MoTa}</p>}
-        <p className="text-pink-500">${rest.GiaBan}</p>
+        <p className="text-pink-500 font-bold">{formatCurrency(rest.GiaBan)}</p>
       </div>
       <button
         onClick={() => handleAdd(rest)}
