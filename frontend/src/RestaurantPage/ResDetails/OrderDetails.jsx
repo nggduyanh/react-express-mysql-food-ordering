@@ -1,9 +1,18 @@
 import { FiMessageSquare } from "react-icons/fi";
 import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import axios from "axios";
-import { formatCurrency, GetPromotion } from "../../Route";
+import { toast, ToastContainer } from "react-toastify";
+import { UserAccount } from "../../App";
+import {
+  formatCurrency,
+  GetPromotion,
+  OrderAdd,
+  OrderDetailAdd,
+  PaymentMethod,
+  refreshPage,
+} from "../../Route";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -22,9 +31,6 @@ const OrderAction = (state, action) => {
         ...state,
         promotions: action.payload,
       };
-    case "SET_PROMOTION": {
-      break;
-    }
     case "SUGGESTION":
     case "PAYMENT": {
       const { name, value } = action.event.target;
@@ -33,13 +39,17 @@ const OrderAction = (state, action) => {
         [name]: value,
       };
     }
+
     default:
       return state;
   }
 };
 export default function OrderDetails(props) {
+  const { userData } = useContext(UserAccount);
   const [detailsOrder, dispatch] = useReducer(OrderAction, OrderReducer);
-  const handlePayment = (e) => {
+  const [totalMoney, settotalMoney] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState([]);
+  const handlePayment = async (e) => {
     dispatch({ type: "PAYMENT", event: e });
   };
   const handleSuggestionChange = (e) => {
@@ -54,11 +64,11 @@ export default function OrderDetails(props) {
   useEffect(() => {
     dispatch({ type: "LIST_ORDER", payload: props.orderList });
   }, [props.orderList]);
-  const handlePayOrder = (event) => {
-    event.preventDefault();
-    console.log("Order Reducer", detailsOrder);
-  };
-
+  useEffect(() => {
+    fetch(PaymentMethod)
+      .then((res) => res.json())
+      .then((data) => setPaymentMethod(data));
+  }, []);
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {
@@ -75,17 +85,75 @@ export default function OrderDetails(props) {
     if (order.promotions && Object.keys(order.promotions).length > 0) {
       if (order.promotions.PhanTram !== null) {
         console.log("You choose PhanTram");
-        return (totalPrice =
-          totalPrice - totalPrice * (order.promotions.PhanTram / 100));
-      }
-      if (order.promotions.GiaTri !== null) {
+        totalPrice =
+          totalPrice - totalPrice * (order.promotions.PhanTram / 100);
+      } else if (order.promotions.GiaTri !== null) {
         console.log("You choose GiaTri");
-        return (totalPrice -= order.promotions.GiaTri);
+        totalPrice -= order.promotions.GiaTri;
       }
-    } else {
-      return totalPrice;
+    }
+    return totalPrice;
+  };
+  const handlePayOrder = async (event) => {
+    event.preventDefault();
+    const total = applyPromotions(detailsOrder);
+    settotalMoney(total);
+    try {
+      // console.log({
+      //   DiaChiDen: "De La Thanh",
+      //   TrangThai: 1,
+      //   GiaBan: total,
+      //   MaTaiXe: null,
+      //   MaNguoiMua: userData.MaNguoiDung,
+      //   MaKhuyenMai: detailsOrder.promotions.MaKhuyenMai,
+      //   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+      // });
+
+      const response = await axios.post(
+        OrderAdd,
+        {
+          DiaChiDen: "De La Thanh",
+          TrangThai: 1,
+          GiaBan: total,
+          MaTaiXe: null,
+          MaNguoiMua: userData.MaNguoiDung,
+          MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+          MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      toast.success("Order created successfully!");
+      const addOrderDetaisl = props.orderList.map((order) => {
+        const amountNumber = props.AmountList.find((amount) => {
+          return amount.id === order.MaMonAn;
+        });
+        return {
+          MaMonAn: order.MaMonAn,
+          MaDonHang: response.data[0].MaDonHang,
+          SoLuong: parseInt(amountNumber.amount),
+        };
+      });
+      toast.success("Order details created successfully!");
+      const reponseDetailsOrder = await axios.post(
+        OrderDetailAdd,
+        {
+          arr: addOrderDetaisl,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      toast.success("successfully!");
+    } catch (err) {
+      toast.error("An error occurred while processing your order!");
+      console.log(err);
     }
   };
+
   return (
     <div className="sticky-div">
       <div className="pr-16 -ml-6 ">
@@ -181,9 +249,16 @@ export default function OrderDetails(props) {
               onChange={handlePayment}
             >
               <option value="">Choose Payment method</option>
-              <option value="cash">Cash</option>
-              <option value="card">Card</option>
-              <option value="e-wallet">E-wallet</option>
+              {paymentMethod.map((payment) => {
+                return (
+                  <option
+                    key={payment.MaPhuongThucGiaoDich}
+                    value={payment.MaPhuongThucGiaoDich}
+                  >
+                    {payment.TenPhuongThucGiaoDich}
+                  </option>
+                );
+              })}
             </select>
             <div className="py-3 px-4 bg-green-500 font-bold text-white rounded-e-lg">
               <MdOutlinePayment />

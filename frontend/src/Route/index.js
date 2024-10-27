@@ -28,3 +28,8 @@ export const formatCurrency = (value) => {
 export const refreshPage = () => {
   window.location.reload();
 };
+
+export const PaymentMethod = "http://localhost:3030/phuongthucgiaodich";
+export const OrderAdd = "http://localhost:3030/donhang/add";
+export const OrderDetailAdd =
+  "http://localhost:3030/donhang/chitietdonhang/add";

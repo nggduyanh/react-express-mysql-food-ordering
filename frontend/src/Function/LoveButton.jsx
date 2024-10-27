@@ -34,12 +34,15 @@ export default function LoveButton({ idSeller }) {
   };
   const handleRemoveLove = async () => {
     try {
+      console.log("Removing", userData.MaNguoiDung);
       const response = await axios.delete(
         "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
-        JSON.stringify({
-          MaNguoiMua: userData.MaNguoiDung,
-          MaNguoiBan: idSeller,
-        }),
+        {
+          data: {
+            MaNguoiMua: userData.MaNguoiDung,
+            MaNguoiBan: idSeller,
+          },
+        },
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,

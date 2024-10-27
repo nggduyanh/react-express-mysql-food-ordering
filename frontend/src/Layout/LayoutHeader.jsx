@@ -102,7 +102,10 @@ export default function LayoutHeader() {
                 </Link>
               </div>
               <div className="logout">
-                <Link className=" text-red-500 font-bold p-2 rounded-md uppercase">
+                <Link
+                  to="/"
+                  className=" text-red-500 font-bold p-2 rounded-md uppercase"
+                >
                   Logout
                 </Link>
               </div>
