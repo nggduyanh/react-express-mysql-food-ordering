@@ -18,7 +18,7 @@ class NguoiMuaController
     {
         let obj = await NhanXet.update (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found id NguoiMua = ${req.body[nhanxet.maNguoiMua]} or id MonAn = ${req.body[nhanxet.maMonAn]}`}, 404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
         return res.status (201).json (obj.res)
     }
 
@@ -26,7 +26,7 @@ class NguoiMuaController
     {
         let obj = await NhanXet.getByMonAn (req.params.idMonAn)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found NhanXet has id MonAn = ${req.params.idMonAn} `}, 404))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found NguoiMua with NhanXet has ${req.params.idMonAn} `}, 404))
         return res.status (200).json (obj.res)
     }
 
@@ -41,7 +41,7 @@ class NguoiMuaController
     {
         let obj = await KhuyenMaiNguoiMua.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found KhuyenMai has id KhuyenMai = ${req.body[khuyenMaiNguoiMua.maKhuyenMai]} and NguoiMua has id NguoiMua = ${req.body[khuyenMaiNguoiMua.maNguoiMua]} `}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found resource `}, 404))
         return res.sendStatus (204) 
     }
 
@@ -56,7 +56,7 @@ class NguoiMuaController
     {
         let obj = await NguoiBanYeuThich.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found NguoiBan has id NguoiBan = ${req.body[nguoiBanYeuThich.maNguoiBan]} and NguoiMua has id NguoiMua = ${req.body[nguoiBanYeuThich.maNguoiMua]} `}, 404))
+        if (!obj.res.affectedRows) return next (new Exception ({msg: `Not found resource `}, 404))
         return res.sendStatus (204) 
     }
 }

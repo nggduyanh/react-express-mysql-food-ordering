@@ -10,7 +10,7 @@ class ChiTietDonHang
 
     async add (obj)
     {
-        return await query.insertWithManualPrimaryKey (chiTietDonHang.tableName,obj,[chiTietDonHang.maMonAn,chiTietDonHang.maDonHang])
+        return await query.insertArrayWithManualPrimaryKey (chiTietDonHang.tableName,[chiTietDonHang.maDonHang,chiTietDonHang.maMonAn,chiTietDonHang.soLuong],obj)
     }
 
     async update (obj)
