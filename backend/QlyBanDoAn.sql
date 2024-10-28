@@ -58,6 +58,8 @@ create table NhanXet (
     Diem double
 );
 
+alter table nhanxet add column ThoiGianTao datetime default now();
+
 create table LoaiNguoiBan_NguoiBan (
 	MaNguoiBan int,
     MaLoaiNguoiBan int,
@@ -118,6 +120,8 @@ create table DonHang (
     foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete set null,
     foreign key (MaPhuongThucGiaoDich) references PhuongThucGiaoDich (MaPhuongThucGiaoDich) on delete set null
 );
+
+alter table donhang add column ThoiGianTao datetime default now();
 
 create table ChiTietDonHang (
 	MaMonAn int,
@@ -406,4 +410,5 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (20,24,"CHUBUNE SASHIMI",1089000,"Thuyền sashimi cỡ trung"),
         (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
-        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên")  
+        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
+
