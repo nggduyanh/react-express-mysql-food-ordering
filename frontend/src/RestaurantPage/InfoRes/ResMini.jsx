@@ -70,7 +70,6 @@ export default function ResMini(props) {
           Delete
         </button>
       </div>
-      <Toaster position="top-center" />
     </div>
   );
 }

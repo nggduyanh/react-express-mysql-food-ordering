@@ -20,6 +20,13 @@ import Canceled from "./Information/Activity/Canceled";
 import OrderStatusDetails from "./Information/Activity/OrderStatusDetails";
 import SuccessPayment from "./SuccessPayment";
 import { createContext, useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import ChangePassword from "./Information/ChangePassword";
+import LayoutResetPass from "./Login/ResetPass/LayoutResetPass";
+import Reset from "./Login/ResetPass/Reset";
+import CreateNewPass from "./Login/ResetPass/CreateNewPass";
+import PasswordSuccess from "./Login/ResetPass/PasswordSuccess";
+import ConfirmCode from "./Login/ResetPass/ConfirmCode";
 const UserAccount = createContext();
 function App() {
   const [account, setAccount] = useState(() => {
@@ -62,6 +69,35 @@ function App() {
   }, [account]);
   return (
     <UserAccount.Provider value={{ userData }}>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
           <Route
@@ -75,6 +111,7 @@ function App() {
               <Route path="payment" element={<PaymentCards />} />
               <Route path="favourite" element={<Favourite />} />
               <Route path="address" element={<Address />} />
+              <Route path="change-password" element={<ChangePassword />} />
             </Route>
             <Route path="activity" element={<ActivityOrder />}>
               <Route index element={<Complete />} />
@@ -91,6 +128,12 @@ function App() {
             path="register"
             element={<Register assignAccount={(value) => setAccount(value)} />}
           />
+          <Route path="forgot-password" element={<LayoutResetPass />}>
+            <Route index element={<Reset />} />
+            <Route path="create-new" element={<CreateNewPass />} />
+            <Route path="confirmCode" element={<ConfirmCode />} />
+            <Route path="password-success" element={<PasswordSuccess />} />
+          </Route>
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

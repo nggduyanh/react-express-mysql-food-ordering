@@ -22,7 +22,7 @@ export default function Favourite() {
           console.log("Another error:", err.message);
         }
       });
-  }, []);
+  }, [userData.MaNguoiDung]);
   const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
 
   const combineListFavourites = listFavourites?.reduce(

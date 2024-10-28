@@ -114,41 +114,14 @@ export default function Login({ assignAccount }) {
           </button>
         </form>
         <div className="text-center mt-3">
-          <button className="mb-5">Forgot your password?</button>
+          <Link to="forgot-password" className="mb-5">
+            Forgot your password?
+          </Link>
           <p>
             You do not have an account? <Link to="/register">Sign up</Link>
           </p>
         </div>
       </div>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          success: {
-            style: {
-              border: "2px solid gray",
-              background: "green",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          error: {
-            style: {
-              border: "2px solid gray",
-              background: "red",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          loading: {
-            style: {
-              border: "2px solid gray",
-              background: "#D1006B",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-        }}
-      />
     </div>
   );
 }

@@ -10,31 +10,33 @@ export default function LoveButton({ idSeller }) {
   const [listOfLove, setListOfLove] = useState([]);
 
   const handleAddLove = async () => {
-    try {
-      const response = await axios.post(
-        addLoveRestaurant,
-        JSON.stringify({
-          maNguoiMua: userData.MaNguoiDung,
-          maNguoiBan: idSeller,
-        }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      toast.success("Love success, wait to refresh!", {
-        style: {
-          backgroundColor: "green",
-          fontWeight: "bold",
-          color: "white",
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.post(
+          addLoveRestaurant,
+          JSON.stringify({
+            maNguoiMua: userData.MaNguoiDung,
+            maNguoiBan: idSeller,
+          }),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        return response;
+      })(),
+      {
+        loading: "Adding favourite...",
+        success: (response) => {
+          setTimeout(() => {
+            refreshPage();
+          }, 500);
+          return `Success favourite add: ${response.status}`;
         },
-      });
-      setTimeout(() => {
-        refreshPage();
-      }, 2000);
-    } catch (err) {
-      toast.error(`Some thing went wrong ${err.message}`);
-    }
+        error: (err) => `Error occured ${err.message}`,
+      }
+    );
   };
   const handleRemoveLove = async () => {
     try {
@@ -118,7 +120,6 @@ export default function LoveButton({ idSeller }) {
           </Toggle.Button>
         )}
       </div>
-      <Toaster position="top-center" />
     </Toggle>
   );
 }

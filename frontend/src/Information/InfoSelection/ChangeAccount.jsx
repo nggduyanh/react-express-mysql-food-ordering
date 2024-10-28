@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BtnSelection from "../BtnSelection";
 import axios from "axios";
 import { localStaticFile, UpdateUser } from "../../Route";
@@ -15,7 +15,7 @@ export default function ChangeAccount() {
     TenNguoiDung: "",
     Email: "",
     AnhNguoiDung: null,
-    AnhNguoiDungShow: localStaticFile + userData?.AnhNguoiDung || null,
+    AnhNguoiDungShow: null,
     SoDienThoai: "",
   });
   const handleUpdate = (event) => {
@@ -39,10 +39,14 @@ export default function ChangeAccount() {
     //   console.log(pair[0], pair[1]);
     // }
     toast.promise(
-      axios.patch(UpdateUser, formUserData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      }),
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = axios.patch(UpdateUser, formUserData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        });
+        return response;
+      })(),
       {
         loading: "Update information...",
         success: (response) => {
@@ -50,7 +54,7 @@ export default function ChangeAccount() {
           // Hiển thị thông báo
           setTimeout(() => {
             navigate("/");
-          }, 2000);
+          }, 1000);
           return successMessage;
         },
         error: (err) => `Error uploading data: ${err.message}`,
@@ -66,6 +70,14 @@ export default function ChangeAccount() {
     //   console.error("Error uploading data: ", err);
     // }
   };
+  useEffect(() => {
+    setUpdateUser((prevUser) => {
+      return {
+        ...prevUser,
+        AnhNguoiDungShow: localStaticFile + userData?.AnhNguoiDung,
+      };
+    });
+  }, [userData.MaNguoiDung]);
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -160,41 +172,12 @@ export default function ChangeAccount() {
           </button>
         </form>
       </div>
-      <BtnSelection className="btnSelections mt-3 p-3">
+      <BtnSelection des="change-password" className="btnSelections mt-3 p-3">
         Change password
       </BtnSelection>
       <button className="bg-gradient-to-r from-red-400 to-red-600 font-bold text-white p-3 rounded-xl mt-3">
         Delete account
       </button>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          success: {
-            style: {
-              border: "2px solid gray",
-              background: "green",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          error: {
-            style: {
-              border: "2px solid gray",
-              background: "red",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          loading: {
-            style: {
-              border: "2px solid gray",
-              background: "#D1006B",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-        }}
-      />
     </div>
   );
 }

@@ -174,7 +174,7 @@ export default function Register({ assignAccount }) {
         </form>
         <div className="text-center mt-3">
           <p>
-            Already has account? <Link to="/login">Sign in</Link>
+            Already has account? <Link to="/">Sign in</Link>
           </p>
         </div>
       </div>

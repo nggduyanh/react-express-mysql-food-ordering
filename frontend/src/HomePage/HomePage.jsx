@@ -60,19 +60,6 @@ export default function HomePage() {
           </main>
         </div>
       </div>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          success: {
-            style: {
-              border: "2px solid gray",
-              background: "green",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-        }}
-      />
     </RestaurantContext.Provider>
   );
 }
