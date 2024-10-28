@@ -9,7 +9,17 @@ import SideBar from "../Components/SideBar";
 export default function Homepage() {
     const { userData } = useContext(UserAccount);
     console.log("useData", userData);
-    
+    const [User, setUser] = useState([]);
+    useEffect(() => {
+        fetch(GetUserInfo)
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log("data", data);
+                const findUser = data.find((item) => item.MaNguoiDung === userData.MaNguoiBan);
+                console.log("findUser", findUser);
+                setUser(findUser);
+            })
+    },[])
 
     // Array data => find: Trả về 1 thông tin duy nhất <=> filter 
     // map , reduce
@@ -35,7 +45,7 @@ export default function Homepage() {
                         </div>
                         <div className='bg-white h-10 w-10 rounded-full  overflow-hidden'>
                             {
-                                userData?.AnhNguoiDung !== null ? <img src={ localStaticFile + userData.AnhNguoiDung} className='object-cover w-full h-full' /> : <img src="./images/avatar.png" className="object-cover w-full h-full" />
+                                userData?.AnhNguoiDung !== null ? <img src={localStaticFile + User.AnhNguoiDung} className='object-cover w-full h-full' /> : <img src="./images/avatar.png" className="object-cover w-full h-full" />
                             }
                         </div>
                         <h3 className='font-medium ml-2'>{userData.TenNguoiBan}</h3>

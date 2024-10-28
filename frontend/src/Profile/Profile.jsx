@@ -1,17 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { GetFoodRestaurant, GetSellerInfo, GetUserInfo, GetUserRole } from "../routebackend";
+import {
+  GetFoodRestaurant,
+  GetSellerInfo,
+  GetUserInfo,
+  GetUserRole,
+} from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
+import axios from "axios";
 
 export default function Profile() {
   const { userData } = useContext(UserAccount);
+
   const navigate = useNavigate();
   const [User, setUser] = useState([]);
-  const [restaurantProfile, setRestaurantProfile] = useState([]);
-  const AddressParts = userData.DiaChi.split(",");
-  const Address = AddressParts[0];
-  const State = AddressParts[1];
   useEffect(() => {
     fetch(GetUserInfo)
       .then((res) => {
@@ -25,47 +28,84 @@ export default function Profile() {
           return user.MaNguoiDung === userData.MaNguoiBan;
         });
         setUser(filterUser);
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         if (err.message.includes("404")) {
-            setTypeFood([]);
+          setTypeFood([]);
         } else console.log("Another error", err.message);
-    });
-}, [userData]);
+      });
+  }, [userData]);
 
-//   useEffect(() => {
-//     fetch(GetFoodRestaurant)
-//       .then((response) => response.json())
-//       .then((data) => {
-//         const filterDish = data.filter((dish) => {
-//           return dish.MaNguoiBan === userData.MaNguoiBan;
-//         });
-//         // console.log("filterDish", filterDish);
-//         setListDish(filterDish);
-//       });
-//   }, [userData]);
-
-  const [sellerInfo, setSellerInfo] = useState({
-    id: "",
-    thanhPho: "",
-    moCua: "",
-    dongCua: "",
-    diaChi: "",
-    cccd: "",
-    giayPhep: "",
-    diem: "",
-    luotDanhGia: "",
-    anh: "",
+  const [Seller, setSeller] = useState({
+    MaNguoiBan: userData.MaNguoiBan,
+    TenNguoiBan: "",
+    ThanhPho: "",
+    ThoiGianMoCua: userData.ThoiGianMoCua,
+    ThoiGianDongCua: userData.ThoiGianDongCua,
+    DiaChi: "",
+    AnhNguoiBan: null,
+    CanCuoc: null,
+    GiayPhep: null,
+    Diem: userData.Diem,
+    LuotDanhGia: userData.LuotDanhGia,
   });
-  const handleChange = (event) => {};
-  const handleSubmit = (event) => {
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUser((prevForm) => {
+      return {
+        ...prevForm,
+        [name]: value,
+      };
+    });
+  };
+  const handleChange1 = (event) => {
+    const { name, value } = event.target;
+    setSeller((prevForm) => {
+      return {
+        ...prevForm,
+        [name]: value,
+      }
+    })
+  };
+
+  // console.log(userData.TenNguoiBan);
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(sellerInfo);
+    console.log(User);
+    console.log(Seller);
+    try {
+      const response = await axios.patch(
+        `http://localhost:3030/nguoidung/update`,
+        User,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const res = await axios.patch(
+        `http://localhost:3030/nguoiban/update`,
+       Seller,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      if (response.status === 201) {
+        alert("Update successful");
+        handleRefreshPage();
+      } else {
+        console.error("Failed to update dish. Status:", response.status);
+        alert("Failed to update dish. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error adding dish:", err);
+    }
   };
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
-      <SideBar />
+        <SideBar />
         <div class="flex-1 mt-0">
           <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
             <div class="flex items-center border border-gray-300 rounded-full p-2">
@@ -184,50 +224,19 @@ export default function Profile() {
                 </h4>
                 <div className="grid grid-cols-5 gap-6">
                   <div className="flex justify-center">
-                    <div className="bg-[#FFF0E9] border border-[#F97316] border-2 border-dashed rounded-full h-48 w-48 flex items-center justify-center">
+                    <div className="bg-[#FFF0E9] border-[#F97316] border-2 border-dashed rounded-full h-48 w-48 flex items-center justify-center">
                       <p>Add photo</p>
                     </div>
                   </div>
                   <div className="col-span-4">
                     <div className="grid grid-cols-2 gap-6">
-                      <div className="mb-4">
+                      <div className="mb-4 col-span-2">
                         <h5 className="mb-2">Restaurant Name</h5>
                         <input
                           type="text"
+                          name="TenNguoiBan"
+                          onChange={handleChange1}
                           placeholder={userData.TenNguoiBan}
-                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                        />
-                      </div>
-                      <div>
-                        <h5 className="mb-2">Address</h5>
-                        <input
-                          type="text"
-                          placeholder={Address}
-                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                        />
-                      </div>
-
-                      <div>
-                        <h5 className="mb-2">State/Province</h5>
-                        <input
-                          type="text"
-                          placeholder={State}
-                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                        />
-                      </div>
-                      <div>
-                        <h5 className="mb-2">City</h5>
-                        <input
-                          type="text"
-                          placeholder={userData.ThanhPho}
-                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                        />
-                      </div>
-                      <div>
-                        <h5 className="mb-2">Email</h5>
-                        <input
-                          type="text"
-                          placeholder="Cần thêm"
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
                         />
                       </div>
@@ -235,12 +244,47 @@ export default function Profile() {
                         <h5 className="mb-2">Phone Number</h5>
                         <input
                           type="text"
-                          placeholder="Cần thêm"
+                          name="SoDienThoai"
+                          onChange={handleChange}
+                          placeholder={User.SoDienThoai}
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
+                        />
+                      </div>
+                      <div>
+                        <h5 className="mb-2">Email</h5>
+                        <input
+                          type="text"
+                          name="Email"
+                          onChange={handleChange}
+                          placeholder={User.Email}
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
+                        />
+                      </div>
+                      <div>
+                        <h5 className="mb-2">Address</h5>
+                        <input
+                          type="text"
+                          name="DiaChi"
+                          onChange={handleChange1}
+                          placeholder={userData.DiaChi}
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
                         />
                       </div>
 
-                      <button className="col-span-2 px-4 py-2 text-white font-medium flex gap-2 items-center justify-center text-center bg-[#F97316] rounded-lg w-auto ml-auto">
+                      <div>
+                        <h5 className="mb-2">City</h5>
+                        <input
+                          name="ThanhPho"
+                          onChange={handleChange1}
+                          type="text"
+                          placeholder={userData.ThanhPho}
+                          className="border border-default-200 py-3 px-4 rounded-lg w-full"
+                        />
+                      </div>
+                      <button
+                        onClick={handleSubmit}
+                        className="col-span-2 px-4 py-2 text-white font-medium flex gap-2 items-center justify-center text-center bg-[#F97316] rounded-lg w-auto ml-auto"
+                      >
                         Save Changes
                       </button>
                     </div>

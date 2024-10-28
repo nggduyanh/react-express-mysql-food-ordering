@@ -22,6 +22,7 @@ class MonAnController
     async add (req,res,next)
     {
         let obj = await NguoiBan.add (req.body)
+        console.log (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         return res.status(201).json (obj.res)
     }

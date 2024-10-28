@@ -13,6 +13,7 @@ import Signup from "./Login/Signup"
 import { createContext, useEffect, useState } from "react"
 import Voucher from "./Voucher/Voucher"
 import VoucherAdd from "./Voucher/AddVoucher"
+import VoucherEdit from "./Voucher/EditVoucher"
 const UserAccount = createContext();
 function App() {
   const [account, setAccount] = useState(() => {
@@ -68,6 +69,7 @@ function App() {
         <Route path = "/profile" element = {<Profile />} />
         <Route path = "/voucher" element = {<Voucher />} />
         <Route path = "/add_voucher" element = {<VoucherAdd />} />
+        <Route path = "/edit_voucher" element = {<VoucherEdit />} />
         <Route path = "/login" element = {<Login />} />
         <Route path = "/signup" element = {<Signup />} />
       </Routes>

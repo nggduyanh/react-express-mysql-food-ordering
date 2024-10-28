@@ -53,16 +53,22 @@ export default function AddDish() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(dish);
+    const formUserData = new FormData();
+    formUserData.append("TenMonAn", dish.TenMonAn);
+    formUserData.append("AnhMonAn", anoimg);
+    formUserData.append("GiaBan", dish.GiaBan);
+    formUserData.append("MoTa", dish.MoTa);
+    formUserData.append("MaLoaiMonAn", dish.MaLoaiMonAn);
+    formUserData.append("MaNguoiBan", dish.MaNguoiBan);
+    //  for (let pair of formUserData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
+
     try {
-      const response = await axios.post(
-        AddFoodRestaurant,
-        JSON.stringify(dish),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(AddFoodRestaurant, formUserData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
       alert("Add sucesss");
       handleRefreshPage();
     } catch (err) {
@@ -70,10 +76,12 @@ export default function AddDish() {
     }
   };
   const [srcimg, setSrcImg] = useState(null);
+  const [anoimg, setAnoImg] = useState(null);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSrcImg(URL.createObjectURL(file));
+      setAnoImg(file);
     }
   };
   return (
@@ -151,7 +159,11 @@ export default function AddDish() {
                     <div className="absolute h-full w-full border border-[#F97316] border-dashed border-2 rounded-lg flex items-center justify-center bg-[#FFF0E9]">
                       <label htmlFor="">Upload Image</label>
                     </div>
-                    <img src={srcimg} alt="" className="absolute h-full w-full"/>
+                    <img
+                      src={srcimg}
+                      alt=""
+                      className="absolute h-full w-full"
+                    />
                   </div>
                 </div>
               </div>

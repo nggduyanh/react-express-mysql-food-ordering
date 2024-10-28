@@ -94,7 +94,7 @@ export default function Voucher() {
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600 ">
           <div className="flex gap-4">
-            <Link to="/edit_dish" state={item}>
+            <Link to="/edit_voucher" state={item}>
               <svg
                 stroke="currentColor"
                 fill="none"
