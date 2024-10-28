@@ -11,7 +11,7 @@ export default function SideBar() {
       <div className="flex flex-col h-full mt-5 text-sm">
         <Link
           to="/home"
-          className="py-3 px-4 mt-1 rounded-lg bg-gray-200 hover:bg-gray-200 hover:rounded-lg"
+          className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
         >
           Dashboard
         </Link>

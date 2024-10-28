@@ -16,7 +16,7 @@ import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 export default function Voucher() {
   const { userData } = useContext(UserAccount);
-  
+
   const [listVoucher, setListVoucher] = useState([]);
 
   useEffect(() => {
@@ -30,25 +30,26 @@ export default function Voucher() {
       });
   }, [userData]);
 
-    const handleRemoveVoucher = async (id) => {
-      const findVoucher = listVoucher.find((voucher) => voucher.MaKhuyenMai === id);
-      console.log("findVoucher", findVoucher);
-      try{
-        const deleteId = {
-          MaKhuyenMai: findVoucher.MaKhuyenMai
-        }
-        const response = await axios.delete(DeleteVoucher, {
-          data: deleteId, // Truyền dữ liệu trong thuộc tính data
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        });
-        alert("Success Delete");
-        handleRefreshPage();
-      }catch(err) {
-        console.error("Error deleting dish:", err);
-      }
-    };
-
+  const handleRemoveVoucher = async (id) => {
+    const findVoucher = listVoucher.find(
+      (voucher) => voucher.MaKhuyenMai === id
+    );
+    console.log("findVoucher", findVoucher);
+    try {
+      const deleteId = {
+        MaKhuyenMai: findVoucher.MaKhuyenMai,
+      };
+      const response = await axios.delete(DeleteVoucher, {
+        data: deleteId, // Truyền dữ liệu trong thuộc tính data
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      alert("Success Delete");
+      handleRefreshPage();
+    } catch (err) {
+      console.error("Error deleting dish:", err);
+    }
+  };
 
   const Voucherlist = listVoucher?.map((item) => {
     const isoStringStart = item.NgayTao;
@@ -62,14 +63,20 @@ export default function Voucher() {
     return (
       <tr>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-          <div className="flex items-center gap-4">
-            <img
-              src="./images/Dashboard/pizza.png"
-              alt=""
-              className="h-[72px] max-w-[72px]"
-            />
+          <div className="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              class="bi bi-ticket-detailed"
+              viewBox="0 0 20 16"
+            >
+              <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2z" />
+              <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
+            </svg>
             <div>
-              <p className="text-sm mb-1">{item.TenKhuyenMai}</p>
+              <p className="text-sm">{item.TenKhuyenMai}</p>
             </div>
           </div>
         </td>
@@ -154,7 +161,7 @@ export default function Voucher() {
       </tr>
     );
   });
-  
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -287,7 +294,7 @@ export default function Voucher() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-default-200">
-                  {Voucherlist }
+                  {Voucherlist}
                 </tbody>
               </table>
             </div>

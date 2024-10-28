@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { GetSellerInfo, GetUserInfo, localStaticFile } from "../routebackend";
+import { GetOrder, GetOrderStatus, GetSellerInfo, GetUserInfo, localStaticFile } from "../routebackend";
 import { useActionData } from "react-router-dom";
 import axios from "axios";
 import { UserAccount } from "../App";
@@ -8,35 +8,51 @@ import SideBar from "../Components/SideBar";
 
 export default function Homepage() {
     const { userData } = useContext(UserAccount);
-    console.log("useData", userData);
     const [User, setUser] = useState([]);
     useEffect(() => {
         fetch(GetUserInfo)
             .then((response) => response.json())
             .then((data) => {
-                // console.log("data", data);
                 const findUser = data.find((item) => item.MaNguoiDung === userData.MaNguoiBan);
-                console.log("findUser", findUser);
                 setUser(findUser);
             })
+    },[userData])
+
+    const [Orders, setOrders] = useState({
+    });
+    useEffect(() => {
+        fetch(GetOrder)
+            .then((response) => response.json())
+            .then((data) => {
+                setOrders(data);
+            })
+    },[userData])
+
+    console.log("Orders", Orders.MaDonHang);
+
+    const [DetailsOrder, setDetailsOrder] = useState([]);
+    useEffect(() => {
+        fetch(GetOrderStatus)
+        .then((res) => res.json())
+        .then((data) => {
+            setDetailsOrder(data);
+        })
     },[])
 
+    const chitietdonhang = DetailsOrder.forEach(element => {
+        return element;
+    });
+    console.log("DetailsOrder", chitietdonhang);
     // Array data => find: Trả về 1 thông tin duy nhất <=> filter 
     // map , reduce
-    //some => true, any
+    // some => true, any
     return (
         <div className="h-screen w-screen">
             <div className="flex h-full">
                 <SideBar />
                 <div class="flex-1 mt-0">
                     <nav className='flex h-16 px-6 items-center border-b border-[#F58220]  text-sm'>
-                        <div class="flex items-center border border-gray-300 rounded-full p-2">
-                            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="text-default-600" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.3-4.3"></path>
-                            </svg>
-                            <input type="text" class="outline-none w-full ps-2" placeholder="Search" />
-                        </div>
+                        
                         <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
                             <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
@@ -53,32 +69,32 @@ export default function Homepage() {
                     <section className="p-6">
                         <h1 className="text-xl font-medium">Dashboard</h1>
                         <div className="mt-6 grid grid-cols-6 gap-6">
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">Total Revenue</h6>
                                 <p className="text-[#22C55E] text-sm font-medium">10% increase</p>
                             </div>
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">New Orders</h6>
                                 <p className="text-[#22C55E] text-sm font-medium">10% increase</p>
                             </div>
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">Receive Orders</h6>
                                 <p className="text-[#22C55E] text-sm font-medium">10% increase</p>
                             </div>
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">Reviews</h6>
                                 <p className="text-[#EF4444] text-sm font-medium">5% decrease</p>
                             </div>
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">new Reach</h6>
                                 <p className="text-[#22C55E] text-sm font-medium">10% increase</p>
                             </div>
-                            <div className="p-4 border border-[#F58220] rounded-lg flex flex-col items-center justify-between w-auto">
+                            <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">325.7K</h4>
                                 <h6 className="font-medium text-lg mb-4">Successful Orders</h6>
                                 <p className="text-[#22C55E] text-sm font-medium">10% increase</p>

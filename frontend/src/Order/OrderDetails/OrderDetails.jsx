@@ -55,7 +55,7 @@ export default function OrderDetails() {
                                     </div>
                                 </div>
                                 <div className="border border-[#F58220] rounded-lg">
-                                    <h1 className="border-b border-[#F58220] p-4">Billing Address</h1>
+                                    <h1 className="border-b border-[#F58220] p-4">Shipping Address</h1>
                                     <div className="p-4">
                                         <div className="mb-4">
                                             <h4 className="mb-1">Jaylon Calzoni</h4>
@@ -72,7 +72,7 @@ export default function OrderDetails() {
                                     </div>
                                 </div>
                                 <div className="border border-[#F58220] rounded-lg">
-                                    <h1 className="border-b border-[#F58220] p-4">Billing Address</h1>
+                                    <h1 className="border-b border-[#F58220] p-4">Total Payment :</h1>
                                     <div className="px-4">
                                         <div className="py-4 flex justify-between border-b border-[#F58220]">
                                             <p>Subtotal:</p>
@@ -93,7 +93,7 @@ export default function OrderDetails() {
                                     </div>
                                 </div>
                                 <div className="border border-[#F58220] rounded-lg">
-                                    <h1 className="border-b border-[#F58220] p-4">Billing Address</h1>
+                                    <h1 className="border-b border-[#F58220] p-4">Delivery Details</h1>
                                     <div className="p-6 text-center">
                                         <img src="./images/Dashboard/ship.png" alt="" className="mx-auto mb-3" />
                                         <h2 className="mb-3">Jay Logistics</h2>
@@ -117,20 +117,20 @@ export default function OrderDetails() {
                                                 <div className="flex items-center justify-center h-10 w-10 bg-[#F58220] rounded-full">
                                                     <span className="">02</span>
                                                 </div>
-                                                <h4 className="p-2 mt-4">Order received</h4>
+                                                <h4 className="p-2 mt-4">Processing</h4>
                                             </div>
                                             <div className="flex flex-col items-center">
                                                 <div className="flex items-center justify-center h-10 w-10 bg-[#F58220] rounded-full">
                                                     <span className="">03</span>
                                                 </div>
-                                                <h4 className="p-2 mt-4">Order received</h4>
+                                                <h4 className="p-2 mt-4">On the way</h4>
                                             </div>
 
                                             <div className="relative flex flex-col items-center">
                                                 <div className="flex items-center justify-center h-10 w-10 bg-[#F58220] rounded-full">
                                                     <span className="">04</span>
                                                 </div>
-                                                <h4 className="p-2 mt-4">Order received</h4>
+                                                <h4 className="p-2 mt-4">Delivered</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -162,23 +162,26 @@ export default function OrderDetails() {
                                     </table>
                                 </div>
                                 <div className="">
-                                    <h1 className="border border-[#F58220] p-4 rounded-t-lg">Billing Address</h1>
+                                    <h1 className="border border-[#F58220] p-4 rounded-t-lg">Logistics Details</h1>
                                     <div className="px-4 border-x border-b border-[#F58220] rounded-b-lg">
                                         <div className="py-4 flex justify-between border-b border-[#F58220]">
-                                            <p>Subtotal:</p>
-                                            <span>$365.00</span>
+                                            <p>Transaction ID :
+                                            </p>
+                                            <span>#20234567213</span>
                                         </div>
                                         <div className="py-4 flex justify-between border-b border-[#F58220]">
-                                            <p>Subtotal:</p>
-                                            <span>$365.00</span>
+                                            <p>Payment Method :
+                                            </p>
+                                            <span>
+                                            #20234567213</span>
                                         </div>
                                         <div className="py-4 flex justify-between border-b border-[#F58220]">
-                                            <p>Subtotal:</p>
-                                            <span>$365.00</span>
+                                            <p>Card Holder Name :</p>
+                                            <span>Jaylon Calzoni</span>
                                         </div>
                                         <div className="py-4 flex justify-between">
-                                            <p>Subtotal:</p>
-                                            <span>$365.00</span>
+                                            <p>Card Number :</p>
+                                            <span>1234 4354 4564</span>
                                         </div>
                                     </div>
                                 </div>

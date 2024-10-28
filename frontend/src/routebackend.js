@@ -21,6 +21,7 @@ export const OrderAdd = "http://localhost:3030/donhang/add";
 export const OrderDetailAdd ="http://localhost:3030/donhang/chitietdonhang/add";
 export const GetDetailsOrder = "http://localhost:3030/monan/donhang/";
 export const GetOrder = "http://localhost:3030/donhang";
+export const GetOrderStatus = "http://localhost:3030/trangthaidonhang";
 
 export const handleRefreshPage = () => {
     window.location.reload();
