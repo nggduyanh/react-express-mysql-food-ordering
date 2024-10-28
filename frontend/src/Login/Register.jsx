@@ -3,6 +3,7 @@ import videoRegister from "../assets/food_register.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import { AddUserInfo } from "../Route";
 import axios from "axios";
+import toast from "react-hot-toast";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 // const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -65,33 +66,37 @@ export default function Register({ assignAccount }) {
       alert(RegisterForm.inputError.join(" "));
       return;
     }
-    try {
-      const response = await axios.post(
-        AddUserInfo,
-        JSON.stringify(RegisterForm.form),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      const responseRole = await axios.post(
-        "http://localhost:3030/nguoidung/vaitro/add",
-        JSON.stringify({
-          MaNguoiDung: response.data[0].MaNguoiDung,
-          MaVaiTro: 2,
-        }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      console.log(response.data);
-      assignAccount(response.data[0]);
-      navigate("/home");
-    } catch (err) {
-      alert("Something went wrong please check: ", err.message);
-      console.log(err);
-    }
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const response = await axios.post(
+          AddUserInfo,
+          JSON.stringify(RegisterForm.form),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        const responseRole = await axios.post(
+          "http://localhost:3030/nguoidung/vaitro/add",
+          JSON.stringify({
+            MaNguoiDung: response.data[0].MaNguoiDung,
+            MaVaiTro: 2,
+          }),
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        assignAccount(response.data[0]);
+        navigate("/home");
+      })(),
+      {
+        loading: "Check credentials",
+        success: "Register successful",
+        error: (err) => err.message || "An unexpected error occurred",
+      }
+    );
   };
 
   return (

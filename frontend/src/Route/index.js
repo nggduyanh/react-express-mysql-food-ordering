@@ -34,3 +34,21 @@ export const OrderAdd = "http://localhost:3030/donhang/add";
 export const OrderDetailAdd =
   "http://localhost:3030/donhang/chitietdonhang/add";
 export const getDetailsOrder = "http://localhost:3030/monan/donhang/";
+export const formatDate = (ISO_date) => {
+  const date = new Date(ISO_date);
+
+  // Lấy các giá trị ngày tháng
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // getMonth() trả về giá trị từ 0-11
+  const year = date.getUTCFullYear();
+
+  // Lấy giờ và phút và định dạng 12 giờ
+  let hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12; // Chuyển sang 12 giờ, 0 giờ đổi thành 12
+
+  // Ghép lại thành chuỗi định dạng mong muốn
+  const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes} ${ampm}`;
+  return formattedDate;
+};

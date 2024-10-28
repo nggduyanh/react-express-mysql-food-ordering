@@ -7,6 +7,7 @@ import {
   localStaticFile,
   refreshPage,
   setCommendForSpecificFood,
+  updateCommendForSpecificFood,
 } from "../../Route";
 import { MdCommentsDisabled } from "react-icons/md";
 import axios from "axios";
@@ -17,6 +18,7 @@ export default function ListComment({ foodDetails }) {
     UserAccount !== undefined ? UserAccount : " "
   );
   const [isComment, setIsComment] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
   const [Comments, setComments] = useState({
     MaNguoiMua: userData.MaNguoiDung,
     MaMonAn: foodDetails.MaMonAn,
@@ -75,7 +77,7 @@ export default function ListComment({ foodDetails }) {
             const success = `Create commemt successfully: ${response.status}`;
             setTimeout(() => {
               refreshPage();
-            }, 2000);
+            }, 1000);
             return success;
           },
           error: (err) => `Error creating commennt: ${err.message}`,
@@ -89,9 +91,40 @@ export default function ListComment({ foodDetails }) {
       }
     }
   };
-  const checkList = listComments?.some((comment) => {
-    return comment.NhanXet.MaNguoiMua === userData.MaNguoiDung;
-  });
+  const updateComment = async () => {
+    console.log("Update comment", Comments);
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await axios.patch(
+          updateCommendForSpecificFood,
+          Comments,
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+      })(),
+      {
+        loading: "Updatting...",
+        success: () => {
+          setTimeout(() => {
+            refreshPage();
+          }, 1000);
+          return "Update comments successful";
+        },
+        error: (err) => err.message || "An unexpected error occurred",
+      }
+    );
+  };
+  useEffect(() => {
+    const checkList = listComments?.some((comment) => {
+      return comment.NhanXet.MaNguoiMua === userData.MaNguoiDung;
+    });
+    if (checkList) {
+      setIsComment(true);
+    } else setIsComment(false);
+  }, [listComments]);
   return (
     <div>
       <div className="border bg-white border-pink-300 p-3 rounded-lg mt-2">
@@ -114,9 +147,9 @@ export default function ListComment({ foodDetails }) {
                 id="comment"
                 onChange={handleComment}
                 placeholder={
-                  checkList ? "You arlready comment this" : "comment"
+                  isComment ? "You arlready comment this" : "comment"
                 }
-                disabled={checkList}
+                disabled={isComment}
                 className="border border-gray-500 w-full resize-none px-2 h-full"
               ></textarea>
 
@@ -130,7 +163,7 @@ export default function ListComment({ foodDetails }) {
                   placeholder="from 1 to 5 "
                   name="diem"
                   id="star"
-                  disabled={checkList}
+                  disabled={isComment}
                   className="border border-pink-500 px-2 rounded-md "
                 />
               </div>
@@ -138,17 +171,43 @@ export default function ListComment({ foodDetails }) {
           </div>
 
           <div className="commentButton flex items-center justify-end mr-2 mb-3">
-            <button
-              disabled={checkList}
-              onClick={createComment}
-              className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
-                checkList
-                  ? "hover:bg-blue-500 transition-all duration-200 ease-in"
-                  : ""
-              } `}
-            >
-              Comment
-            </button>
+            {isComment ? (
+              <button
+                disabled={isComment}
+                onClick={createComment}
+                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
+                  isComment
+                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
+                    : ""
+                } `}
+              >
+                You cannot comment
+              </button>
+            ) : (
+              <button
+                disabled={isComment}
+                onClick={createComment}
+                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
+                  !isComment
+                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
+                    : ""
+                } `}
+              >
+                comment
+              </button>
+            )}
+            {isUpdated && (
+              <button
+                onClick={updateComment}
+                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
+                  isComment
+                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
+                    : ""
+                } `}
+              >
+                Update
+              </button>
+            )}
           </div>
         </div>
         <div className="list">
@@ -158,6 +217,10 @@ export default function ListComment({ foodDetails }) {
                 .map((comment) => {
                   return (
                     <SpecificComment
+                      checkUpdate={(boolValue) => {
+                        setIsComment(boolValue);
+                        setIsUpdated(!boolValue);
+                      }}
                       key={comment.NguoiDung.MaNguoiDung}
                       {...comment}
                     />
@@ -169,9 +232,20 @@ export default function ListComment({ foodDetails }) {
                 <Toggle>
                   <Toggle.On>
                     <div>
-                      <SpecificComment />
-                      <SpecificComment />
-                      <SpecificComment />
+                      {listComments
+                        .map((comment) => {
+                          return (
+                            <SpecificComment
+                              checkUpdate={(boolValue) => {
+                                setIsComment(boolValue);
+                                setIsUpdated(!boolValue);
+                              }}
+                              key={comment.NguoiDung.MaNguoiDung}
+                              {...comment}
+                            />
+                          );
+                        })
+                        .slice(5)}
                     </div>
                   </Toggle.On>
                   <Toggle.Button className="w-full text-center cursor-pointer text-red-400">
@@ -193,35 +267,6 @@ export default function ListComment({ foodDetails }) {
           )}
         </div>
       </div>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          success: {
-            style: {
-              border: "2px solid gray",
-              background: "green",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          error: {
-            style: {
-              border: "2px solid gray",
-              background: "red",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          loading: {
-            style: {
-              border: "2px solid gray",
-              background: "#D1006B",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-        }}
-      />
     </div>
   );
 }
