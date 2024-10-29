@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import { UserAccount } from "../../App";
 import {
+  formatDate,
   GetDetailsOrder,
   GetOrder,
   GetUserInfo,
@@ -22,7 +23,8 @@ export default function OrdersList() {
         setUser(findUser);
       });
   }, [userData]);
-  const [Orders, setOrders] = useState([]);
+
+  const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
     fetch(GetOrder)
       .then((response) => response.json())
@@ -30,27 +32,74 @@ export default function OrdersList() {
         setOrders(data);
       });
   }, [userData]);
-  Orders.forEach((element) => {
-    console.log("element", element.MaDonHang);
-  });
-  const [Order, setOrder] = useState([]);
+
+  //bắt đầu từ đây không sử dụng foreach do không length bị sai, thay vào đó sử dụng thử map hoặc những cái khác
+  const [Order, setOrder] = useState([]); //Chi tiết và món ăn của đơn hàng của nhà hàng
   useEffect(() => {
     Orders.forEach((element) => {
       fetch(`http://localhost:3030/monan/donhang/${element.MaDonHang}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("data", data);
-          // const filterOrder = data.filter((order) => {
-          //   return order.MaNguoiBan === userData.MaNguoiBan;
-          // });
-          // setOrder(filterOrder);
+          const filterOrder = data.filter((order) => {
+            return order.MonAn.MaNguoiBan === userData.MaNguoiBan;
+          });
+          setOrder(filterOrder);
         });
     });
-  }, [userData]);
+  }, [Orders, userData]);
+  
+  console.log("Số lượng đơn hàng:", Orders.length);
+  const [OrderOfRes, setOrderOfRes] = useState([]); // Đơn hàng của nhà hàng
+  useEffect(() => {
+    Order.forEach((element) => {
+      fetch(`http://localhost:3030/donhang/`)
+        .then((response) => response.json())
+        .then((data) => {
+          const filterOrder = data.filter((order) => {
+            return order.MaDonHang === element.ChiTietDonHang.MaDonHang;
+          });
+          setOrderOfRes(filterOrder);
+        });
+    });
+  }, [Order, userData]);
 
-  Order.forEach((element) => {
-    console.log("element", element);
-  });
+  
+
+  // const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công
+  // useEffect(() => {
+  //   const successfulOrders = OrderOfRes.filter(
+  //     (element) => element.TrangThai === 1
+  //   );
+  //   setSuccessOrder((prevSuccessOrder) => [
+  //     ...prevSuccessOrder,
+  //     ...successfulOrders,
+  //   ]);
+  // }, [OrderOfRes]);
+
+  
+  // const listOrder = SuccessOrder.map((item) => {
+  //   if (SuccessOrder.length > 0) {
+  //     return (
+  //       <tr>
+  //         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
+  //           {formatDate(SuccessOrder.ThoiGianTao)}
+  //         </td>
+  //         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
+  //           {SuccessOrder.MaDonHang}
+  //         </td>
+  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //           {SuccessOrder.MaNguoiMua}
+  //         </td>
+  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //           {SuccessOrder.GiaBan}
+  //         </td>
+  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //           {SuccessOrder.TrangThai}
+  //         </td>
+  //       </tr>
+  //     );
+  //   }
+  // });
 
   return (
     <div className="h-screen w-screen">
@@ -217,7 +266,13 @@ export default function OrdersList() {
                           scope="col"
                           class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
-                          Dish
+                          Buyer
+                        </th>
+                        <th
+                          scope="col"
+                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        >
+                          Address
                         </th>
                         <th
                           scope="col"
@@ -234,94 +289,7 @@ export default function OrdersList() {
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-default-200">
-                      <tr>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-                          12/03/2022
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-                          #C0E4F7
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-                          <div className="flex items-center gap-4">
-                            <img
-                              src="./images/Dashboard/pizza.png"
-                              alt=""
-                              className="h-[72px] max-w-[72px]"
-                            />
-                            <div>
-                              <p className="text-sm mb-1">Italian Pizza</p>
-                              <div className="flex gap-2">
-                                <div className="flex gap-1.5">
-                                  <svg
-                                    stroke="currentColor"
-                                    fill="currentColor"
-                                    stroke-width="0"
-                                    viewBox="0 0 576 512"
-                                    class="fill-yellow-400 text-yellow-400"
-                                    height="18"
-                                    width="18"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                                  </svg>
-                                  <svg
-                                    stroke="currentColor"
-                                    fill="currentColor"
-                                    stroke-width="0"
-                                    viewBox="0 0 576 512"
-                                    class="fill-yellow-400 text-yellow-400"
-                                    height="18"
-                                    width="18"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                                  </svg>
-                                  <svg
-                                    stroke="currentColor"
-                                    fill="currentColor"
-                                    stroke-width="0"
-                                    viewBox="0 0 576 512"
-                                    class="fill-yellow-400 text-yellow-400"
-                                    height="18"
-                                    width="18"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                                  </svg>
-                                  <svg
-                                    stroke="currentColor"
-                                    fill="currentColor"
-                                    stroke-width="0"
-                                    viewBox="0 0 576 512"
-                                    class="fill-yellow-400 text-yellow-400"
-                                    height="18"
-                                    width="18"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                                  </svg>
-                                  <svg
-                                    stroke="currentColor"
-                                    fill="currentColor"
-                                    stroke-width="0"
-                                    viewBox="0 0 640 512"
-                                    class="text-yellow-400"
-                                    height="18"
-                                    width="18"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M320 376.4l.1-.1 26.4 14.1 85.2 45.5-16.5-97.6-4.8-28.7 20.7-20.5 70.1-69.3-96.1-14.2-29.3-4.3-12.9-26.6L320.1 86.9l-.1 .3V376.4zm175.1 98.3c2 12-3 24.2-12.9 31.3s-23 8-33.8 2.3L320.1 439.8 191.8 508.3C181 514 167.9 513.1 158 506s-14.9-19.3-12.9-31.3L169.8 329 65.6 225.9c-8.6-8.5-11.7-21.2-7.9-32.7s13.7-19.9 25.7-21.7L227 150.3 291.4 18c5.4-11 16.5-18 28.8-18s23.4 7 28.8 18l64.3 132.3 143.6 21.2c12 1.8 22 10.2 25.7 21.7s.7 24.2-7.9 32.7L470.5 329l24.6 145.7z"></path>
-                                  </svg>
-                                </div>
-                                <span className="text-xs"> (231)</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-                          $359.69
-                        </td>
-                      </tr>
+                      {/* {listOrder} */}
                     </tbody>
                   </table>
                 </div>
