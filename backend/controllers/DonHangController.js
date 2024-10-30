@@ -73,25 +73,23 @@ class DonHangController
         let obj = await DonHang.getByNguoiBan (req.params.idNguoiBan)
         if (!obj.success) return next (new Exception (obj.res,500))
         if (!obj.res.length) return next (new Exception ({msg: `Not found idNguoiBan = ${req.params.idNguoiBan}`},404))
-        let returnObj = []
-        let currentDonHangId = NaN
+        let returnObj = {}
         for (let row of obj.res)
         {
             let donhang = row [donHang.tableName]
             let monan = row [monAn.tableName]
             let chitiet = row [chiTietDonHang.tableName]
             
-            if (currentDonHangId !== donhang[donHang.id]) 
+            if (!returnObj[donhang[donHang.id]]) 
             {
-                currentDonHangId = donhang[donHang.id]
-                donhang[chiTietDonHang.tableName] = []
-                returnObj.push (donhang)
+                returnObj[donhang[donHang.id]] = {...donhang}
+                returnObj[donhang[donHang.id]][chiTietDonHang.tableName] = []
             }
 
-            returnObj[returnObj.length - 1][chiTietDonHang.tableName].push ({monan,chitiet})
+            returnObj[donhang[donHang.id]][chiTietDonHang.tableName].push ({monan,chitiet})
         }
 
-        return res.json (returnObj)
+        return res.json (Object.values (returnObj))
     }
 }
 
