@@ -10,5 +10,6 @@ router.get ("/:id",DonHangController.getById)
 router.post ("/chitietdonhang/add",DonHangController.addChiTietDonHang)
 router.patch ("/chitietdonhang/update",DonHangController.updateChiTietDonHang)
 router.delete ("/chitietdonhang/delete",DonHangController.deleteChiTietDonHang)
+router.get ("/nguoiban/:idNguoiBan",DonHangController.getByIdNguoiBan)
 
 module.exports = router
