@@ -1,4 +1,6 @@
 const DonHang = require ("../models/DonHang")
+const donHang = require ("../utils/constants/DonHangConstant")
+const monAn = require ("../utils/constants/MonAnConstant")
 const Exception = require ("../models/Exception")
 const ChiTietDonHang = require ("../models/ChiTietDonHang")
 const chiTietDonHang = require ("../utils/constants/ChiTietDonHangConstant")
@@ -64,6 +66,32 @@ class DonHangController
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
+    }
+
+    async getByIdNguoiBan (req,res,next)
+    {
+        let obj = await DonHang.getByNguoiBan (req.params.idNguoiBan)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found idNguoiBan = ${req.params.idNguoiBan}`},404))
+        let returnObj = []
+        let currentDonHangId = NaN
+        for (let row of obj.res)
+        {
+            let donhang = row [donHang.tableName]
+            let monan = row [monAn.tableName]
+            let chitiet = row [chiTietDonHang.tableName]
+            
+            if (currentDonHangId !== donhang[donHang.id]) 
+            {
+                currentDonHangId = donhang[donHang.id]
+                donhang[chiTietDonHang.tableName] = []
+                returnObj.push (donhang)
+            }
+
+            returnObj[returnObj.length - 1][chiTietDonHang.tableName].push ({monan,chitiet})
+        }
+
+        return res.json (returnObj)
     }
 }
 
