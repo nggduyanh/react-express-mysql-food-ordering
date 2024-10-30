@@ -6,6 +6,7 @@ import {
   formatDate,
   GetDetailsOrder,
   GetOrder,
+  GetOrderRestaurant,
   GetUserInfo,
   localStaticFile,
 } from "../../routebackend";
@@ -26,80 +27,75 @@ export default function OrdersList() {
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
-    fetch(GetOrder)
+    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
       .then((response) => response.json())
       .then((data) => {
         setOrders(data);
       });
   }, [userData]);
 
-  //bắt đầu từ đây không sử dụng foreach do không length bị sai, thay vào đó sử dụng thử map hoặc những cái khác
-  const [Order, setOrder] = useState([]); //Chi tiết và món ăn của đơn hàng của nhà hàng
+  // console.log(Orders.length);
+
+  const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công
   useEffect(() => {
-    Orders.forEach((element) => {
-      fetch(`http://localhost:3030/monan/donhang/${element.MaDonHang}`)
-        .then((response) => response.json())
-        .then((data) => {
-          const filterOrder = data.filter((order) => {
-            return order.MonAn.MaNguoiBan === userData.MaNguoiBan;
-          });
-          setOrder(filterOrder);
+    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const filterOrder = data.filter((order) => {
+          return order.TrangThai === 1;
         });
-    });
-  }, [Orders, userData]);
-  
-  console.log("Số lượng đơn hàng:", Orders.length);
-  const [OrderOfRes, setOrderOfRes] = useState([]); // Đơn hàng của nhà hàng
-  useEffect(() => {
-    Order.forEach((element) => {
-      fetch(`http://localhost:3030/donhang/`)
-        .then((response) => response.json())
-        .then((data) => {
-          const filterOrder = data.filter((order) => {
-            return order.MaDonHang === element.ChiTietDonHang.MaDonHang;
-          });
-          setOrderOfRes(filterOrder);
-        });
-    });
-  }, [Order, userData]);
+        setSuccessOrder(filterOrder);
+      });
+  }, [userData]);
 
-  
+  // console.log(SuccessOrder.length);
 
-  // const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công
-  // useEffect(() => {
-  //   const successfulOrders = OrderOfRes.filter(
-  //     (element) => element.TrangThai === 1
-  //   );
-  //   setSuccessOrder((prevSuccessOrder) => [
-  //     ...prevSuccessOrder,
-  //     ...successfulOrders,
-  //   ]);
-  // }, [OrderOfRes]);
-
-  
-  // const listOrder = SuccessOrder.map((item) => {
-  //   if (SuccessOrder.length > 0) {
-  //     return (
-  //       <tr>
-  //         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-  //           {formatDate(SuccessOrder.ThoiGianTao)}
-  //         </td>
-  //         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-  //           {SuccessOrder.MaDonHang}
-  //         </td>
-  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //           {SuccessOrder.MaNguoiMua}
-  //         </td>
-  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //           {SuccessOrder.GiaBan}
-  //         </td>
-  //         <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //           {SuccessOrder.TrangThai}
-  //         </td>
-  //       </tr>
-  //     );
-  //   }
-  // });
+  const listOrder = SuccessOrder.map((item) => {
+    if (SuccessOrder.length > 0) {
+      return (
+        <tr>
+          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+            {formatDate(item.ThoiGianTao)}
+          </td>
+          <td
+            // onClick={() => {
+            //   // GetOrderRestaurant(item.MaDonHang); // Lấy chi tiết đơn hàng
+            //   // GetDetailsOrder(item.MaDonHang); // Lấy chi tiết món ăn trong đơn hàng
+            //   window.location.href = "/order_details"; // Chuyển đến trang chi tiết đơn hàng
+            // }}
+            class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600 hover:cursor-pointer"
+          >
+            {item.MaDonHang}
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+            {item.GiaBan}
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+            {item.TrangThai}
+          </td>
+          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+            <Link to="/order_details" state={item}>
+              <svg
+                stroke="currentColor"
+                fill="none"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="cursor-pointer transition-colors hover:text-primary"
+                height="20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </Link>
+          </td>
+        </tr>
+      );
+    }
+  });
 
   return (
     <div className="h-screen w-screen">
@@ -185,7 +181,7 @@ export default function OrdersList() {
                     </div>
                     <div>
                       <h1>Food Delivered</h1>
-                      {/* <h2>{SuccessOrder.length}</h2> */}
+                      <h2>{SuccessOrder.length}</h2>
                     </div>
                   </div>
                   <div className="p-6 flex items-center border border-[#F58220] rounded-lg gap-4">
@@ -266,18 +262,6 @@ export default function OrdersList() {
                           scope="col"
                           class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
-                          Buyer
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                        >
-                          Address
-                        </th>
-                        <th
-                          scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                        >
                           Total
                         </th>
                         <th
@@ -286,10 +270,16 @@ export default function OrdersList() {
                         >
                           Status
                         </th>
+                        <th
+                          scope="col"
+                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-default-200">
-                      {/* {listOrder} */}
+                      {listOrder}
                     </tbody>
                   </table>
                 </div>
