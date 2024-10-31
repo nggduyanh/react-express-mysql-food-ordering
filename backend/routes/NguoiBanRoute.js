@@ -5,7 +5,7 @@ const addImageFile = require ("../middlewares/FormFile")
 const nguoiBan = require ("../utils/constants/NguoiBanConstant")
 const authorize = require("../middlewares/Authorization")
 
-router.delete ("/delete",nguoiBanController.delete)
+router.delete ("/delete",authorize ("Seller"),nguoiBanController.delete)
 router.patch ("/update",authorize ("Seller") ,addImageFile (nguoiBan.anh,nguoiBan.cccd,nguoiBan.giayPhep),nguoiBanController.update)
 router.post("/add",addImageFile (nguoiBan.anh,nguoiBan.cccd,nguoiBan.giayPhep),nguoiBanController.add)
 router.get ("/",nguoiBanController.index)
