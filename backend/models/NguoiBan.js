@@ -7,14 +7,14 @@ class NguoiBan
         return await query.select ("*",nguoiban.tableName)
     }
 
-    async getById (id)
+    async getById (id,field)
     {
-        return await query.select ("*",nguoiban.tableName,`where ${nguoiban.id} = ?`,[id])
+        return await query.select (field,nguoiban.tableName,`where ${nguoiban.id} = ?`,[id])
     }
 
     async add (obj)
     {
-        return await query.insertWithManualPrimaryKey (nguoiban.tableName,obj,nguoiban.id,[nguoiban.id])
+        return await query.insertWithManualPrimaryKey (nguoiban.tableName,obj,[nguoiban.id])
     }
 
     async update (obj)

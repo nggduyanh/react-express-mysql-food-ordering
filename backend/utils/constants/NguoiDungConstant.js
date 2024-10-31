@@ -5,7 +5,7 @@ const constant = {
     sdt: "SoDienThoai",
     mk: "MatKhau",
     anh: "AnhNguoiDung",
-    mail: "Email",
+    mail: "Email"
 }
 
 module.exports = constant

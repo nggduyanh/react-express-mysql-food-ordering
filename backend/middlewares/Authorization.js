@@ -7,12 +7,11 @@ function authorize (...roles)
         for (let role of roles)
         {
             let id = await RoleService.getRoleId (role)
-            if (!id) return next (new Exception ({msg: `Role is ${id}`}, 500))
+            if (!id) return next (new Exception ({msg: `Role ${role} is ${id}`}, 500))
             roleIds.push (id)
         }
-        let requestIdRoles = req.body.roles
-        if (!requestIdRoles) return next (new Exception ({msg: `roles is ${requestIdRoles}`,},400))
-        
+
+        let requestIdRoles = req.user.roles
         if (!isPermit (roleIds,requestIdRoles)) return next (new Exception ({msg: "Permission deniend"}, 403))
         
         next ()

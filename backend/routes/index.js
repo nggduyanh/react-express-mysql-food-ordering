@@ -10,11 +10,13 @@ const donHangRouter = require ("./DonHangRouter")
 const taiXeRouter = require ("./TaiXeRouter")
 const vaiTroRouter = require ("./VaiTroRoute")
 const nguoiMuaRouter = require ("./NguoiMuaRouter")
-// const authRouter = require ("./AuthRouter")
-// const authorize = require("../middlewares/Authorization")
+const verifyToken = require ("../middlewares/VerifyToken")
+const authRouter = require ("./AuthRouter")
 
 function route (app)
 {
+    app.use ("/auth",authRouter)
+    app.use (verifyToken)
     // app.use ("/nguoiban",authorize ("Seller"),nguoiBanRouter)
     app.use ("/nguoiban",nguoiBanRouter)
     app.use ("/nguoidung",nguoiDungRouter)
@@ -31,7 +33,6 @@ function route (app)
     // app.use ("/nguoimua",authorize ("Buyer"),nguoiMuaRouter)
     app.use ("/nguoimua",nguoiMuaRouter)
 
-    // app.use ("/auth",authRouter)
 }
 
 module.exports = route
