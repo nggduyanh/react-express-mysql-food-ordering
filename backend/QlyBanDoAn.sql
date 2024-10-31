@@ -420,9 +420,3 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
         (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
-
-select * from nguoiban join nguoidung on nguoiban.MaNguoiBan = nguoidung.MaNguoiDung;
-select * from nguoiban
-select * from vaitro_nguoidung
-delete from nguoiban where manguoiban = 107 and mavaitro = 3
-select * from vaitro
