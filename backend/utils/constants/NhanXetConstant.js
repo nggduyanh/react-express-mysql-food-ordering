@@ -4,7 +4,8 @@ const constant = {
     maMonAn: "MaMonAn",
     hienThi: "HienThi",
     noiDung: "NoiDung",
-    diem: "Diem"
+    diem: "Diem",
+    thoiGianTao: "ThoiGianTao"
 }
 
 module.exports = constant

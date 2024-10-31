@@ -9,7 +9,12 @@ const constant = {
     giayPhep: "GiayPhep",
     diem: "Diem",
     luotDanhGia: "luotDanhGia",
-    anh: "AnhNguoiBan"
+    anh: "AnhNguoiBan",
+    tenChuSoHuu: "TenChuSoHuu",
+    queQuanChuSoHuu: "QueQuanChuSoHuu",
+    ngaySinhChuSoHuu: "NgaySinhChuSoHuu",
+    email: "Email",
+    hotline: "Hotline"
 }
 
 module.exports = constant

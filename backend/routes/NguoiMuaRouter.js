@@ -8,5 +8,5 @@ router.patch ("/nhanxet/update",NguoiMuaController.updateNhanXet)
 router.post ("/khuyenmai/add",NguoiMuaController.addKhuyenMai)
 router.delete ("/khuyenmai/delete",NguoiMuaController.deleteKhuyenMai)
 router.post ("/nguoibanyeuthich/add", NguoiMuaController.addNguoiBanYeuThich)
-router.delete ("/nguoibanyeuthich/delete", NguoiMuaController.deleteNguoiBanYeuThich )
+router.delete ("/nguoibanyeuthich/delete", NguoiMuaController.deleteNguoiBanYeuThich)
 module.exports = router

@@ -17,12 +17,14 @@ class NguoiDungController
         if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.id}`},404))
         return res.json (obj.res)
     }
-    
-    async add (req,res,next)
+
+    async getCurrentUser (req,res,next)
     {
-        let obj = await NguoiDung.add (req.body)
-        if (!obj.success) return next (new Exception (obj.res,400))
-        return res.status(201).json (obj.res)
+        let {id} = req.user
+        let obj = await NguoiDung.getById (id)
+        if (!obj.success) return next (new Exception (obj.res,500))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${id}`},404))
+        return res.json (obj.res)
     }
 
     async update (req,res,next)
@@ -36,21 +38,6 @@ class NguoiDungController
     async delete (req,res,next)
     {
         let obj = await NguoiDung.remove (req.body)
-        if (!obj.success) return next (new Exception (obj.res,400))
-        if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
-        return res.sendStatus (204)
-    }
-
-    async addRole (req,res,next)
-    {
-        let obj = await VaiTroNguoiDung.add (req.body)
-        if (!obj.success) return next (new Exception (obj.res,400))
-        return res.status(201).json (obj.res)
-    }
-
-    async deleteRole (req,res,next)
-    {
-        let obj = await VaiTroNguoiDung.remove (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)

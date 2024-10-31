@@ -1,33 +1,38 @@
 const query = require ("../services/QueryService")
-const nguoimua = require ("../utils/constants/NguoiDungConstant")
+const nguoidung = require ("../utils/constants/NguoiDungConstant")
 
-class NguoiMua 
+class NguoiDung 
 {
     async get ()
     {
-        return await query.select ("*",nguoimua.tableName)
+        return await query.select ("*",nguoidung.tableName)
     }
 
     async getById (id)
     {
-        return await query.select ("*",nguoimua.tableName,`where ${nguoimua.id} = ?`,[id])
+        return await query.select ("*",nguoidung.tableName,`where ${nguoidung.id} = ?`,[id])
+    }
+    
+    async getByPassAndPhone (sdt,pass)
+    {
+        return await query.select ("*",nguoidung.tableName,`where ${nguoidung.mk} = ? and ${nguoidung.sdt} = ?`,[pass,sdt])
     }
 
     async add (obj)
     {
-        return await query.insert (nguoimua.tableName,obj,nguoimua.id)
+        return await query.insert (nguoidung.tableName,obj,nguoidung.id)
     }
 
     async update (obj)
     {
-        return await query.update (nguoimua.tableName,obj,`where ${nguoimua.id} = ?`, [obj[nguoimua.id]], nguoimua.id)   
+        return await query.update (nguoidung.tableName,obj,`where ${nguoidung.id} = ?`, [obj[nguoidung.id]], nguoidung.id)   
     }
     
     async remove (obj)
     {
-        return await query.remove (nguoimua.tableName,`where ${nguoimua.id} = ?`,[obj[nguoimua.id]])
+        return await query.remove (nguoidung.tableName,`where ${nguoidung.id} = ?`,[obj[nguoidung.id]])
     }
 }
 
 
-module.exports = new NguoiMua
+module.exports = new NguoiDung

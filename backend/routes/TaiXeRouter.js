@@ -9,5 +9,6 @@ router.patch ("/update",addImageFile (taiXe.bangLai,taiXe.canCuoc),TaiXeControll
 router.post("/add", addImageFile (taiXe.bangLai,taiXe.canCuoc),TaiXeController.add)
 router.get ("/", TaiXeController.index)
 router.get ("/:id",TaiXeController.getById)
+router.get ("/current",TaiXeController.getCurrentTaiXe)
 
 module.exports = router
