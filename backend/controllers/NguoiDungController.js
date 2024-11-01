@@ -42,6 +42,14 @@ class NguoiDungController
         if (!obj.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 404))
         return res.sendStatus (204)
     }
+
+    async searchSeller (req,res,next)
+    {
+        let obj = await NguoiDung.search (req.params.keyword)
+        if (!obj.success) return next (new Exception (obj.res,400))
+        if (!obj.res.length) return next (new Exception ({msg: `Not found keyword = ${req.params.keyword} `}, 404)) 
+        return res.json (obj.res)
+    }
 }
 
 module.exports = new NguoiDungController
