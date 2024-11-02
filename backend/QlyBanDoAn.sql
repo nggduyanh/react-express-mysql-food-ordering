@@ -7,6 +7,8 @@ create table NguoiDung (
     SoDienThoai varchar (50)
 );
 
+alter table nguoidung add column OTP int;
+alter table nguoidung add column OTPExpire varchar (20);
 alter table nguoidung modify column SoDienThoai varchar (50) unique;
 
 create table NguoiBan (

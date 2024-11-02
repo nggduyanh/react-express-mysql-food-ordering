@@ -13,9 +13,14 @@ class NguoiDung
         return await query.select ("*",nguoidung.tableName,`where ${nguoidung.id} = ?`,[id])
     }
     
-    async getByPassAndPhone (sdt,pass)
+    async getByPassAndName (name,pass)
     {
-        return await query.select ("*",nguoidung.tableName,`where ${nguoidung.mk} = ? and ${nguoidung.sdt} = ?`,[pass,sdt])
+        return await query.select ("*",nguoidung.tableName,`where ${nguoidung.mk} = ? and ${nguoidung.ten} = ?`,[pass,name])
+    }
+
+    async getByName (ten)
+    {
+        return await query.select ("*",nguoidung.tableName,`where ${nguoidung.ten} = ?`,[ten])
     }
 
     async add (obj)
