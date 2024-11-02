@@ -12,7 +12,7 @@ import {
   PaymentMethod,
 } from "../../Route";
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -45,7 +45,7 @@ const OrderAction = (state, action) => {
   }
 };
 export default function OrderDetails(props) {
-  const { userData } = useContext(UserAccount);
+  const { tokenValue, userData } = useOutletContext();
   const [detailsOrder, dispatch] = useReducer(OrderAction, OrderReducer);
   const [totalMoney, settotalMoney] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState([]);
@@ -58,7 +58,11 @@ export default function OrderDetails(props) {
   };
   const handlePromotionChange = async (e) => {
     const { name, value } = e.target;
-    const response = await axios.get(GetPromotion + `/${value}`);
+    const response = await axios.get(GetPromotion + `/${value}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    });
     const data = await response.data;
     dispatch({ type: "PROMOTION", payload: data[0] });
   };
@@ -66,10 +70,25 @@ export default function OrderDetails(props) {
     dispatch({ type: "LIST_ORDER", payload: props.orderList });
   }, [props.orderList]);
   useEffect(() => {
-    fetch(PaymentMethod)
-      .then((res) => res.json())
-      .then((data) => setPaymentMethod(data));
-  }, []);
+    fetch(PaymentMethod, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Not found PaymendMethod");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setPaymentMethod(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setPaymentMethod([]);
+      });
+  }, [tokenValue]);
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {
@@ -123,7 +142,11 @@ export default function OrderDetails(props) {
             MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenValue}`,
+            },
+
             withCredentials: true,
           }
         ),
@@ -159,7 +182,10 @@ export default function OrderDetails(props) {
             arr: addOrderDetaisl,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenValue}`,
+            },
             withCredentials: true,
           }
         ),
@@ -176,7 +202,9 @@ export default function OrderDetails(props) {
           // success: () => {
           //   return "Order details created successfully!"
           // },
-          error: (err) => `Error creating order details: ${err.message}`,
+          error: (err) => {
+            return `Error creating order details: ${err.message}`;
+          },
         }
       );
     } catch (err) {
@@ -184,7 +212,6 @@ export default function OrderDetails(props) {
       console.log(err);
     }
   };
-
   return (
     <div className="sticky-div">
       <div className="pr-16 -ml-6 ">
@@ -199,6 +226,7 @@ export default function OrderDetails(props) {
                 className="w-10 h-10 rounded-full"
               />
             )}
+
             <p>{props.name}</p>
           </div>
           <div className=" max-h-52 overflow-y-auto row-span-2 p-1 border border-gray-300 rounded-lg order list">

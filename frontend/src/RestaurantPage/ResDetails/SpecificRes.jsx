@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import ResInfo from "../InfoRes/ResInfo";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useState } from "react";
 import { useMemo } from "react";
 import FoodDetails from "../Food/FoodDetails";
 import MarginJustifi from "../../Function/MarginJustifi";
@@ -18,8 +18,10 @@ import {
 } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+import { UserContext } from "../../Layout/LayoutHeader.jsx";
 
 export default function SpecificRes() {
+  const { tokenValue } = useContext(UserContext);
   const [close, setClose] = useState(true);
   const [showFood, setShowFood] = useState(false);
   const [Food, setFood] = useState([]);
@@ -29,7 +31,11 @@ export default function SpecificRes() {
   const [amountOrder, setAmountOrder] = useState([]);
   const ResInfor = useLocation();
   useEffect(() => {
-    fetch(GetFoodRestaurant)
+    fetch(GetFoodRestaurant + `/nguoiban/${ResInfor.state.MaNguoiBan}`, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("No list was found");
@@ -37,12 +43,7 @@ export default function SpecificRes() {
         return res.json();
       })
       .then((listFood) => {
-        const filterFood = listFood.filter((food) => {
-          return (
-            parseInt(food.MaNguoiBan) === parseInt(ResInfor.state.MaNguoiBan)
-          );
-        });
-        const assignTypeFood = filterFood.map((food) => {
+        const assignTypeFood = listFood.map((food) => {
           const getType = ResInfor.state.loaiMonAn.find((type) => {
             return type.MaLoaiMonAn === food.MaLoaiMonAn;
           });
@@ -59,18 +60,28 @@ export default function SpecificRes() {
           setFood([]);
         } else console.log(err.message);
       });
-  }, []);
+  }, [tokenValue]);
   useEffect(() => {
-    fetch(GetPromotion)
-      .then((res) => res.json())
+    fetch(GetPromotion, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("No promotion found");
+        }
+        return res.json();
+      })
       .then((data) => {
-        const getIdRestaurant = ResInfor.state.MaNguoiBan;
-        const filterPromotion = data.filter((promotion) => {
-          return promotion.MaNguoiBan === getIdRestaurant;
-        });
-        setPromotions(filterPromotion);
+        setPromotions(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setPromotions([]);
       });
-  }, []);
+  }, [tokenValue]);
+
   const categoryFood = useMemo(() => {
     const array = Food.reduce((accumulate, currentVal) => {
       if (!accumulate.includes(currentVal.loaiMonAn)) {
@@ -142,7 +153,9 @@ export default function SpecificRes() {
             <p className="font-bold capitalize text-4xl tracking-widest">
               {ResInfor.state.TenNguoiBan}
             </p>
-            <p className="my-2">Address: {ResInfor.state.ThanhPho}</p>
+            <p className="my-2">
+              Address: {ResInfor.state.DiaChi},{ResInfor.state.ThanhPho}
+            </p>
             <i className="my-2 block">
               Restaurant Type:{" "}
               {ResInfor.state.loaiMonAn.map((type) => {

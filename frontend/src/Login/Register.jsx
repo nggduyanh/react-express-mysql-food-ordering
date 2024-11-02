@@ -1,7 +1,6 @@
 import { useReducer } from "react";
 import videoRegister from "../assets/food_register.mp4";
 import { Link, useNavigate } from "react-router-dom";
-import { AddUserInfo } from "../Route";
 import axios from "axios";
 import toast from "react-hot-toast";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -10,7 +9,7 @@ const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX =
   /^(0[3|5|7|8|9][0-9]{8}|(01[2|6|8|9]|09[0-9]|[3|5|7|8|9][0-9])[0-9]{8})$/;
 const RegisterAction = {
-  inputError: "",
+  inputError: false,
   form: {
     TenNguoiDung: "",
     Email: "",
@@ -24,7 +23,7 @@ const RegisterReducer = (state, action) => {
     case "inputValue": {
       const { name, value } = action.event.target;
       return {
-        inputError: "",
+        inputError: false,
         form: {
           ...state.form,
           [name]: value,
@@ -32,16 +31,14 @@ const RegisterReducer = (state, action) => {
       };
     }
     case "submitValue": {
-      console.log("Submit Value");
-      let errorNotifcation = "";
-      if (!USER_REGEX.test(state.form.TenNguoiDung))
-        errorNotifcation += " TenNguoiDung ";
-      if (!PHONE_REGEX.test(state.form.SoDienThoai))
-        errorNotifcation += " SoDienThoai";
-      if (!EMAIL_REGEX.test(state.form.Email)) errorNotifcation += " Email ";
-      // if (!PWD_REGEX.test(state.form.MatKhau)) errorNotifcation += " MatKhau ";
+      const { TenNguoiDung, Email, MatKhau, SoDienThoai } = state.form;
+      const inputError =
+        !USER_REGEX.test(TenNguoiDung) ||
+        !PHONE_REGEX.test(SoDienThoai) ||
+        !EMAIL_REGEX.test(Email) ||
+        !MatKhau;
       return {
-        inputError: errorNotifcation,
+        inputError,
         form: {
           ...state.form,
         },
@@ -51,7 +48,7 @@ const RegisterReducer = (state, action) => {
       return state;
   }
 };
-export default function Register({ assignAccount }) {
+export default function Register() {
   const [RegisterForm, dispatch] = useReducer(RegisterReducer, RegisterAction);
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -60,43 +57,42 @@ export default function Register({ assignAccount }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     dispatch({ type: "submitValue" });
-    console.log(RegisterForm.inputError);
-    if (RegisterForm.inputError.length > 0) {
+    console.log(RegisterForm);
+    if (!RegisterForm.inputError) {
       console.log("Hello this is error");
-      alert(RegisterForm.inputError.join(" "));
+      toast.error("Please fullfill your registation form");
       return;
+    } else {
+      toast.success("Register succesfull");
+      // toast.promise(
+      //   (async () => {
+      //     await new Promise((resolve) => setTimeout(resolve, 2000));
+      //     const response = await axios.post(
+      //       "http://localhost:3030/auth/signup",
+      //       JSON.stringify(RegisterForm.form),
+      //       {
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //         withCredentials: true,
+      //       }
+      //     );
+      //     const Token = await response.data;
+      //     const now = new Date();
+      //     const epxireToken = {
+      //       token: Token.accessToken,
+      //       expireDate: now.getTime() + 3600000,
+      //     };
+      //     localStorage.setItem("token", JSON.stringify(epxireToken));
+      //     navigate("/home");
+      //   })(),
+      //   {
+      //     loading: "Check credentials",
+      //     success: "Register successful",
+      //     error: (err) => err.message || "An unexpected error occurred",
+      //   }
+      // );
     }
-    toast.promise(
-      (async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const response = await axios.post(
-          AddUserInfo,
-          JSON.stringify(RegisterForm.form),
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          }
-        );
-        const responseRole = await axios.post(
-          "http://localhost:3030/nguoidung/vaitro/add",
-          JSON.stringify({
-            MaNguoiDung: response.data[0].MaNguoiDung,
-            MaVaiTro: 2,
-          }),
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          }
-        );
-        assignAccount(response.data[0]);
-        navigate("/home");
-      })(),
-      {
-        loading: "Check credentials",
-        success: "Register successful",
-        error: (err) => err.message || "An unexpected error occurred",
-      }
-    );
   };
 
   return (

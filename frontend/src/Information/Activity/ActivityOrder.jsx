@@ -1,17 +1,15 @@
 import { TiTick } from "react-icons/ti";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { MdCancel } from "react-icons/md";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useOutletContext } from "react-router-dom";
 import useFetchData from "../../Hook/useFetchData";
 import { Order, OrderStatus } from "../../Route";
-import { useContext, useEffect } from "react";
-import { UserAccount } from "../../App";
 export default function OrderHistory() {
-  const { userData } = useContext(UserAccount);
-  const [Listorder, setOrder] = useFetchData(Order);
-  const [orderStatus, setOrderStatus] = useFetchData(OrderStatus);
-  const order = Listorder.filter((items) => {
-    return items.MaNguoiMua === userData.MaNguoiDung;
+  const { userData, tokenValue } = useOutletContext();
+  const [Listorder, errorOrder] = useFetchData(Order, tokenValue);
+  const [orderStatus, errorStatus] = useFetchData(OrderStatus, tokenValue);
+  const order = Listorder?.data?.filter((items) => {
+    return items.MaNguoiMua === userData?.MaNguoiDung;
   });
   return (
     <div className="bg_homeScreen">
@@ -61,7 +59,14 @@ export default function OrderHistory() {
             </NavLink>
           </div>
           <div className="Order status rounded-md col-span-2 flex-grow ">
-            <Outlet context={{ order, orderStatus }} />
+            <Outlet
+              context={{
+                order,
+                orderStatus: orderStatus?.data,
+                userData,
+                tokenValue,
+              }}
+            />
           </div>
         </div>
         {/* <div className="listOrderHistory">

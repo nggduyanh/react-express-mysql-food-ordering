@@ -1,7 +1,6 @@
 import SpecificComment from "./SpecificComment";
 import Toggle from "../../Function/Toggle/LayoutToggle";
-import { useContext, useEffect, useState } from "react";
-import { UserAccount } from "../../App";
+import { useEffect, useState } from "react";
 import {
   getCommentForSpecificFood,
   localStaticFile,
@@ -11,12 +10,12 @@ import {
 } from "../../Route";
 import { MdCommentsDisabled } from "react-icons/md";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { useOutletContext } from "react-router-dom";
 
 export default function ListComment({ foodDetails }) {
-  const { userData } = useContext(
-    UserAccount !== undefined ? UserAccount : " "
-  );
+  const { userData, tokenValue } = useOutletContext();
+  const [error, setError] = useState("");
   const [isComment, setIsComment] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
   const [Comments, setComments] = useState({
@@ -28,7 +27,11 @@ export default function ListComment({ foodDetails }) {
   });
   const [listComments, setListComments] = useState([]);
   useEffect(() => {
-    fetch(getCommentForSpecificFood + `${foodDetails.MaMonAn}`)
+    fetch(getCommentForSpecificFood + `${foodDetails.MaMonAn}`, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status ${res.status}`);
@@ -44,9 +47,16 @@ export default function ListComment({ foodDetails }) {
       })
       .catch((err) => {
         if (err.message.includes("404")) {
-          console.log(
-            "Not Found (404): Đã không tìm thấy bình luận cho món ăn này."
-          );
+          setError({
+            status: 404,
+            title: "không tìm thấy bình luận cho món ăn này.",
+          });
+          setListComments([]);
+        } else if (err.message.includes("403")) {
+          setError({
+            status: 403,
+            title: "You are forbidden to see comment on this",
+          });
           setListComments([]);
         } else {
           console.log("Another error", err.message);
@@ -65,10 +75,12 @@ export default function ListComment({ foodDetails }) {
   };
   const createComment = async () => {
     try {
-      console.log(`Comment`, Comments);
       const response = await toast.promise(
         axios.post(setCommendForSpecificFood, Comments, {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
           withCredentials: true,
         }),
         {
@@ -92,7 +104,6 @@ export default function ListComment({ foodDetails }) {
     }
   };
   const updateComment = async () => {
-    console.log("Update comment", Comments);
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -100,7 +111,10 @@ export default function ListComment({ foodDetails }) {
           updateCommendForSpecificFood,
           Comments,
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenValue}`,
+            },
             withCredentials: true,
           }
         );
@@ -147,9 +161,11 @@ export default function ListComment({ foodDetails }) {
                 id="comment"
                 onChange={handleComment}
                 placeholder={
-                  isComment ? "You arlready comment this" : "comment"
+                  (isComment && !isUpdated) || error.status === 403
+                    ? "You arlready comment this or you're banned to comment"
+                    : "comment"
                 }
-                disabled={isComment}
+                disabled={(isComment && !isUpdated) || error.status === 403}
                 className="border border-gray-500 w-full resize-none px-2 h-full"
               ></textarea>
 
@@ -163,7 +179,7 @@ export default function ListComment({ foodDetails }) {
                   placeholder="from 1 to 5 "
                   name="diem"
                   id="star"
-                  disabled={isComment}
+                  disabled={(isComment && !isUpdated) || error.status === 403}
                   className="border border-pink-500 px-2 rounded-md "
                 />
               </div>
@@ -171,7 +187,38 @@ export default function ListComment({ foodDetails }) {
           </div>
 
           <div className="commentButton flex items-center justify-end mr-2 mb-3">
-            {isComment ? (
+            {error.status === 403 ? (
+              <button
+                disabled
+                className="bg-gray-300 text-white font-bold p-2 rounded-md cursor-not-allowed"
+              >
+                You are forbidden to comment
+              </button>
+            ) : isComment ? (
+              isUpdated ? (
+                <button
+                  onClick={updateComment}
+                  className="bg-blue-300 text-white font-bold p-2 rounded-md hover:bg-blue-500 transition-all duration-200 ease-in"
+                >
+                  Update
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="bg-blue-300 text-white font-bold p-2 rounded-md"
+                >
+                  You cannot comment
+                </button>
+              )
+            ) : (
+              <button
+                onClick={createComment}
+                className="bg-blue-300 text-white font-bold p-2 rounded-md hover:bg-blue-500 transition-all duration-200 ease-in"
+              >
+                Comment
+              </button>
+            )}
+            {/* {isComment || error.status === 403 ? (
               <button
                 disabled={isComment}
                 onClick={createComment}
@@ -207,7 +254,7 @@ export default function ListComment({ foodDetails }) {
               >
                 Update
               </button>
-            )}
+            )} */}
           </div>
         </div>
         <div className="list">
@@ -218,7 +265,6 @@ export default function ListComment({ foodDetails }) {
                   return (
                     <SpecificComment
                       checkUpdate={(boolValue) => {
-                        setIsComment(boolValue);
                         setIsUpdated(!boolValue);
                       }}
                       key={comment.NguoiDung.MaNguoiDung}
@@ -261,7 +307,7 @@ export default function ListComment({ foodDetails }) {
                 <MdCommentsDisabled className="text-5xl text-gray-500" />
               </div>
               <p className="flex items-center justify-center translate-y-full mt-4 text-gray-500">
-                No comment
+                {error.title}
               </p>
             </div>
           )}

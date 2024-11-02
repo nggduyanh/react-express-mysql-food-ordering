@@ -1,28 +1,35 @@
 import { useContext, useEffect, useState } from "react";
 import ResMini from "../RestaurantPage/InfoRes/ResMini";
-import { UserAccount } from "../App";
 import { getLoveRestaurant, GetTypeRes } from "../Route";
 import useFetchData from "../Hook/useFetchData";
+import { useOutletContext } from "react-router-dom";
 export default function Favourite() {
-  const { userData } = useContext(UserAccount);
+  const { tokenValue, userData } = useOutletContext();
   const [listFavourites, setListFavourites] = useState([]);
+  console.log(userData);
   useEffect(() => {
-    fetch(getLoveRestaurant + `${userData.MaNguoiDung}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("List empty");
-        }
-        return res.json();
+    if (userData) {
+      fetch(getLoveRestaurant + `${userData.MaNguoiDung}`, {
+        headers: {
+          Authorization: "Bearer " + tokenValue,
+        },
       })
-      .then((data) => setListFavourites(data))
-      .catch((err) => {
-        if (err.message.includes("404")) {
-          setListFavourites([]);
-        } else {
-          console.log("Another error:", err.message);
-        }
-      });
-  }, [userData.MaNguoiDung]);
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("List empty");
+          }
+          return res.json();
+        })
+        .then((data) => setListFavourites(data))
+        .catch((err) => {
+          if (err.message.includes("404")) {
+            setListFavourites([]);
+          } else {
+            console.log("Another error:", err.message);
+          }
+        });
+    }
+  }, [userData, tokenValue]);
   const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
 
   const combineListFavourites = listFavourites?.reduce(

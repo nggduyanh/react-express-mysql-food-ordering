@@ -6,16 +6,15 @@ import Toggle from "../../Function/Toggle/LayoutToggle";
 import { useContext, useEffect, useRef, useState } from "react";
 import { UserAccount } from "../../App";
 import toast from "react-hot-toast";
+import { useOutletContext } from "react-router-dom";
 export default function SpecificComment({ checkUpdate, ...comment }) {
-  const { userData } = useContext(UserAccount);
+  const { userData, tokenValue } = useOutletContext();
   const [showFixComment, setshowFixComment] = useState(false);
   const [ReportComment, setReportComment] = useState(false);
-  const [fixComment, setFixComment] = useState({});
   const commentRef = useRef(null);
   const handleSetFixComment = () => {
     checkUpdate(false);
   };
-  console.log("Nhanxet:", comment.NhanXet.ThoiGianTao);
   const handleShowBtn = (event) => {
     event.stopPropagation();
     const getIdUser = comment.NguoiDung.MaNguoiDung;

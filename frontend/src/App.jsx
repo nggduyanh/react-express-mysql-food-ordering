@@ -27,48 +27,37 @@ import Reset from "./Login/ResetPass/Reset";
 import CreateNewPass from "./Login/ResetPass/CreateNewPass";
 import PasswordSuccess from "./Login/ResetPass/PasswordSuccess";
 import ConfirmCode from "./Login/ResetPass/ConfirmCode";
+import PrivateRoute from "./Layout/PrivateRoute";
 const UserAccount = createContext();
 function App() {
-  const [account, setAccount] = useState(() => {
-    const storedAccount = localStorage.getItem("user");
-    if (storedAccount) {
-      const parsedAccount = JSON.parse(storedAccount);
-      const now = new Date().getTime();
-      if (parsedAccount.expire > now) {
-        return parsedAccount.value; // Khởi tạo account từ localStorage nếu còn hạn
-      } else {
-        localStorage.removeItem("user"); // Xóa nếu đã hết hạn
-        return null;
-      }
-    }
-    return null; // Giá trị mặc định nếu không có gì trong localStorage
-  });
-  const [userData, setUserData] = useState({});
-  const OneDaysMilliseconds = 86400000;
-  useEffect(() => {
-    const setLocalStorage = async (key, timeExpire) => {
-      const now = new Date();
-      const expireDate = {
-        value: account,
-        expire: now.getTime() + timeExpire,
-      };
-      localStorage.setItem(key, JSON.stringify(expireDate));
-    };
-    const checklocalStorage = async (key, timeExpire) => {
-      setLocalStorage(key, timeExpire);
-      const getJsonData = localStorage.getItem(key);
-      const data = JSON.parse(getJsonData);
-      const now = new Date().getTime();
-      if (now > data.expire) {
-        localStorage.removeItem(key);
-        return null;
-      }
-      setUserData(data.value);
-    };
-    checklocalStorage("user", OneDaysMilliseconds);
-  }, [account]);
+  const [accessToken, setAccessToken] = useState({});
+  const OneHourMiliseconds = 3600000;
+  ("1 hour");
+  // const [tokenSave, setTokenSave] = useState({});
+  // useEffect(() => {
+  //   const setLocalStorage = async (key, timeExpire) => {
+  //     const now = new Date();
+  //     const expireDate = {
+  //       token: accessToken.accessToken,
+  //       expire: now.getTime() + timeExpire,
+  //     };
+  //     localStorage.setItem(key, JSON.stringify(expireDate));
+  //   };
+  //   const checkToken = async (key, timeExpire) => {
+  //     setLocalStorage(key, timeExpire);
+  //     const getToken = localStorage.getItem(key);
+  //     const JsonToken = JSON.parse(getToken);
+  //     const nowDate = new Date().getTime();
+  //     if (nowDate > JsonToken.expire) {
+  //       localStorage.removeItem(key);
+  //       return null;
+  //     }
+  //     setTokenSave(JsonToken.accessToken);
+  //   };
+  //   checkToken("token", OneHourMiliseconds);
+  // }, [accessToken.accessToken]);
   return (
-    <UserAccount.Provider value={{ userData }}>
+    <UserAccount.Provider value={"Noce"}>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -102,31 +91,13 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Login assignAccount={(value) => setAccount(value)} />}
+            element={<Login assignAccount={(value) => setAccessToken(value)} />}
           />
-          <Route path="home" element={<LayoutHeader />}>
-            <Route index element={<HomePage />} />
-            <Route path="information" element={<UserInfor />}>
-              <Route index element={<ChangeAccount />} />
-              <Route path="payment" element={<PaymentCards />} />
-              <Route path="favourite" element={<Favourite />} />
-              <Route path="address" element={<Address />} />
-              <Route path="change-password" element={<ChangePassword />} />
-            </Route>
-            <Route path="activity" element={<ActivityOrder />}>
-              <Route index element={<Complete />} />
-              <Route path="ongoing" element={<OnGoing />} />
-              <Route path="canceled" element={<Canceled />} />
-              <Route path=":orderID" element={<OrderStatusDetails />} />
-            </Route>
-            <Route path="success" element={<SuccessPayment />} />
-            <Route path="all" element={<ListRes />} />
-            <Route path="typeRes/:type" element={<TypeRes />} />
-            <Route path="restaurant/:resname" element={<SpecificRes />} />
-          </Route>
           <Route
             path="register"
-            element={<Register assignAccount={(value) => setAccount(value)} />}
+            element={
+              <Register assignAccount={(value) => setAccessToken(value)} />
+            }
           />
           <Route path="forgot-password" element={<LayoutResetPass />}>
             <Route index element={<Reset />} />
@@ -135,6 +106,29 @@ function App() {
             <Route path="password-success" element={<PasswordSuccess />} />
           </Route>
           <Route path="*" element={<NoPage />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path="home" element={<LayoutHeader />}>
+              <Route index element={<HomePage />} />
+              <Route path="information" element={<UserInfor />}>
+                <Route index element={<ChangeAccount />} />
+                <Route path="payment" element={<PaymentCards />} />
+                <Route path="favourite" element={<Favourite />} />
+                <Route path="address" element={<Address />} />
+                <Route path="change-password" element={<ChangePassword />} />
+              </Route>
+              <Route path="activity" element={<ActivityOrder />}>
+                <Route index element={<Complete />} />
+                <Route path="ongoing" element={<OnGoing />} />
+                <Route path="canceled" element={<Canceled />} />
+                <Route path=":orderID" element={<OrderStatusDetails />} />
+              </Route>
+              <Route path="success" element={<SuccessPayment />} />
+              <Route path="all" element={<ListRes />} />
+              <Route path="typeRes/:type" element={<TypeRes />} />
+              <Route path="restaurant/:resname" element={<SpecificRes />} />
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </UserAccount.Provider>

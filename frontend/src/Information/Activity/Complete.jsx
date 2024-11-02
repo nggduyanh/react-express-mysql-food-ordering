@@ -3,10 +3,9 @@ import OrderStatus from "./OrderStatus";
 
 export default function Complete() {
   const { order, orderStatus } = useOutletContext();
-  const orderComplete = orderStatus[3];
-  console.log(orderComplete);
+  const orderComplete = orderStatus?.[3];
   const orderList = order
-    .filter((items) => {
+    ?.filter((items) => {
       return items.TrangThai === parseInt(orderComplete?.MaTrangThai);
     })
     .map((items) => {
@@ -14,7 +13,7 @@ export default function Complete() {
     });
   return (
     <div className="overflow-auto max-h-[720px]">
-      {orderList.length > 0 ? (
+      {orderList?.length > 0 ? (
         orderList
       ) : (
         <div className="flex flex-col items-center justify-center">

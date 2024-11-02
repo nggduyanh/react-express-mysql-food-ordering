@@ -2,22 +2,22 @@ import { useMemo } from "react";
 import useFetchData from "./useFetchData";
 import { GetRestaurant, GetTypeRes } from "../Route";
 
-export default function useFilterRes_Type(valueFilter = " ") {
-  const [Restaurant, setRestaurant] = useFetchData(GetRestaurant);
-  const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
-  const listRestaurant = useMemo(
-    () =>
-      Restaurant.map((items) => {
-        const filterType = typeRes.filter((type) => {
-          return type.MaNguoiBan === items.MaNguoiBan;
-        });
-        return {
-          ...items,
-          loaiMonAn: filterType,
-        };
-      }),
-    [Restaurant, typeRes]
-  );
+export default function useFilterRes_Type(valueFilter = " ", tokenValue) {
+  const [Restaurant, restaurantError] = useFetchData(GetRestaurant, tokenValue);
+  const [typeRes, TypeError] = useFetchData(GetTypeRes, tokenValue);
+
+  const listRestaurant = useMemo(() => {
+    if (!Restaurant.data || !typeRes.data) return [];
+    return Restaurant.data.map((items) => {
+      const filterType = typeRes.data.filter((type) => {
+        return type.MaNguoiBan === items.MaNguoiBan;
+      });
+      return {
+        ...items,
+        loaiMonAn: filterType,
+      };
+    });
+  }, [Restaurant, typeRes]);
   const filterRes = useMemo(() => {
     const trimValueFilter = valueFilter.trim();
     return listRestaurant.filter((value) => {
@@ -29,8 +29,8 @@ export default function useFilterRes_Type(valueFilter = " ") {
       return matchesName || matchesTypeFood || matchesPlaces;
     });
   }, [listRestaurant, valueFilter]);
-  if (filterRes.length !== 0) {
-    return filterRes;
+  if (restaurantError || TypeError || !Restaurant || !typeRes) {
+    return [];
   }
-  return listRestaurant;
+  return filterRes.length > 0 ? filterRes : listRestaurant;
 }

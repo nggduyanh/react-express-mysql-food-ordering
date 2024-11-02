@@ -4,8 +4,7 @@ import { UserContext } from "../Layout/LayoutHeader";
 import { useContext } from "react";
 import { localStaticFile } from "../Route";
 export default function UserInfo() {
-  const { userData } = useContext(UserContext);
-  console.log(userData);
+  const { userData, tokenValue } = useContext(UserContext);
   return (
     <div className="w-11/12 mx-auto flex m-14 gap-6">
       <div className="shadow-xl border border-gray-300 w-1/4 h-screen">
@@ -31,7 +30,7 @@ export default function UserInfo() {
         </BtnSelection>
       </div>
       <div className="shadow-xl border border-gray-300 w-3/4 h-screen">
-        <Outlet context={userData} />
+        <Outlet context={{ userData, tokenValue }} />
       </div>
     </div>
   );

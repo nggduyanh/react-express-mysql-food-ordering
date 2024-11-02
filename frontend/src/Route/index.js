@@ -1,4 +1,4 @@
-export const GetUserInfo = "http://localhost:3030/nguoidung";
+export const GetUserInfo = "http://localhost:3030/nguoidung/current";
 export const AddUserInfo = "http://localhost:3030/nguoidung/add";
 export const GetRestaurant = "http://localhost:3030/nguoiban";
 export const GetTypeRes = "http://localhost:3030/loaimonan";
@@ -52,3 +52,5 @@ export const formatDate = (ISO_date) => {
   const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes} ${ampm}`;
   return formattedDate;
 };
+
+export const deleteUserRoute = "http://localhost:3030/nguoidung/delete";

@@ -3,20 +3,31 @@ import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
 import { GetTypeRes } from "../Route";
 import useFetchData from "../Hook/useFetchData";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../Layout/LayoutHeader";
 export default function Slider() {
-  const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
+  const { tokenValue } = useContext(UserContext);
+  const [typeRes, errorTypeRes] = useFetchData(GetTypeRes, tokenValue);
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 8;
-  const listType = typeRes
-    .slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage)
+  const listType = typeRes?.data
+    ?.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage)
     .map((food) => {
       return <ResTypeButton key={food.id} {...food} />;
     });
-
+  // console.log(
+  //   typeRes?.data?.slice(
+  //     currentIndex * itemsPerPage,
+  //     (currentIndex + 1) * itemsPerPage
+  //   )
+  // );
   const handleClickNext = () => {
-    if (currentIndex < Math.ceil(typeRes.length / itemsPerPage) - 1)
-      setCurrentIndex(currentIndex + 1);
+    if (typeRes && typeRes.data) {
+      const totalPages = Math.ceil(typeRes.data.length / itemsPerPage);
+      if (currentIndex < totalPages - 1) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    }
   };
   const handleClickPrev = () => {
     if (currentIndex > 0) {

@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import BtnSelection from "../BtnSelection";
 import axios from "axios";
-import { localStaticFile, UpdateUser } from "../../Route";
+import { deleteUserRoute, localStaticFile, UpdateUser } from "../../Route";
 import { UserContext } from "../../Layout/LayoutHeader";
 import { useContext } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 export default function ChangeAccount() {
-  const { userData } = useContext(UserContext);
+  const { userData, tokenValue } = useContext(UserContext);
+  const [isShow, setIsShow] = useState(false);
   const imgRef = useRef(null);
   const navigate = useNavigate();
   const [updateUser, setUpdateUser] = useState({
-    MaNguoiDung: userData.MaNguoiDung,
+    MaNguoiDung: userData?.MaNguoiDung,
     TenNguoiDung: "",
     Email: "",
     AnhNguoiDung: null,
@@ -27,6 +28,7 @@ export default function ChangeAccount() {
       };
     });
   };
+
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     const formUserData = new FormData();
@@ -42,7 +44,10 @@ export default function ChangeAccount() {
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = axios.patch(UpdateUser, formUserData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + tokenValue,
+          },
           withCredentials: true,
         });
         return response;
@@ -77,7 +82,7 @@ export default function ChangeAccount() {
         AnhNguoiDungShow: localStaticFile + userData?.AnhNguoiDung,
       };
     });
-  }, [userData.MaNguoiDung]);
+  }, [userData]);
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -92,13 +97,44 @@ export default function ChangeAccount() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Giả lập độ trễ
+        const response = await axios.delete(deleteUserRoute, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenValue,
+          },
+          withCredentials: true,
+          data: {
+            MaNguoiDung: userData?.MaNguoiDung,
+          },
+        });
+        localStorage.removeItem("token");
+        return response;
+      })(),
+      {
+        loading: "Deleting your account...",
+        success: (response) => {
+          const successMessage = `Deleted successfully: ${response.status}`; // Thông báo thành công
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
+          return successMessage;
+        },
+        error: (err) => `Error deleting data: ${err.message}`,
+      }
+    );
+  };
+
   const imgResults = updateUser?.AnhNguoiDungShow?.slice(
     updateUser.AnhNguoiDungShow.lastIndexOf("/") + 1
   );
   console.log("imgResults", imgResults);
   // console.log("AnhNguoiDung", updateUser.AnhNguoiDung);
   return (
-    <div className="p-5">
+    <div className="p-5 relative">
       <p className="text-2xl font-bold">My Account</p>
       <div>
         <div className="flex flex-col items-center">
@@ -139,7 +175,7 @@ export default function ChangeAccount() {
           <input
             id="username"
             type="text"
-            placeholder="Username"
+            placeholder={`Username: ${userData?.TenNguoiDung}`}
             className="input_setup"
             onChange={handleUpdate}
             name="TenNguoiDung"
@@ -151,7 +187,7 @@ export default function ChangeAccount() {
           <input
             id="phoneNumber"
             type="text"
-            placeholder="Phone number"
+            placeholder={`SoDienThoai: ${userData?.SoDienThoai}`}
             className="input_setup"
             onChange={handleUpdate}
             name="SoDienThoai"
@@ -162,7 +198,7 @@ export default function ChangeAccount() {
           <input
             id="email"
             type="text"
-            placeholder="email"
+            placeholder={`Email: ${userData?.Email}`}
             className="input_setup"
             onChange={handleUpdate}
             name="Email"
@@ -175,7 +211,33 @@ export default function ChangeAccount() {
       <BtnSelection des="change-password" className="btnSelections mt-3 p-3">
         Change password
       </BtnSelection>
-      <button className="bg-gradient-to-r from-red-400 to-red-600 font-bold text-white p-3 rounded-xl mt-3">
+      {isShow && (
+        <div className="fixed w-1/3 text-black rounded-2xl bg-white border border-pink-500 h-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div>
+            <p className="text-red-500 font-bold flex items-center justify-center mt-10">
+              Are you sure want to delete your Account ?
+            </p>
+          </div>
+          <div className="flex items-center justify-center mt-10 gap-2">
+            <button
+              onClick={handleDeleteAccount}
+              className="bg-red-500 text-white font-bold p-2 min-w-20 hover:bg-red-700 transition-all duration-200 ease-in rounded-xl"
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => setIsShow(false)}
+              className="bg-blue-500 text-white font-bold p-2 min-w-20 hover:bg-blue-700 transition-all duration-200 ease-in rounded-xl"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      <button
+        onClick={() => setIsShow((prevShown) => !prevShown)}
+        className="bg-gradient-to-r from-red-400 to-red-600 font-bold text-white p-3 rounded-xl mt-3"
+      >
         Delete account
       </button>
     </div>

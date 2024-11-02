@@ -2,9 +2,9 @@ import OrderStatus from "./OrderStatus";
 import { useOutletContext } from "react-router-dom";
 export default function Canceled() {
   const { order, orderStatus } = useOutletContext();
-  const orderCanceled = orderStatus[4];
+  const orderCanceled = orderStatus?.[4];
   const orderList = order
-    .filter((items) => {
+    ?.filter((items) => {
       return items.TrangThai === parseInt(orderCanceled?.MaTrangThai);
     })
     .map((items) => {

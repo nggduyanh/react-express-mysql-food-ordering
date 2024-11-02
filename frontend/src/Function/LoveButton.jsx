@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Toggle from "../Function/Toggle/LayoutToggle";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { UserAccount } from "../App";
 import axios from "axios";
 import { addLoveRestaurant, getLoveRestaurant, refreshPage } from "../Route";
 import toast, { Toaster } from "react-hot-toast";
+import { useOutletContext } from "react-router-dom";
 export default function LoveButton({ idSeller }) {
-  const { userData } = useContext(UserAccount);
+  const { userData, tokenValue } = useOutletContext();
   const [listOfLove, setListOfLove] = useState([]);
-
+  const [errorLove, setErrorLove] = useState(null);
   const handleAddLove = async () => {
     toast.promise(
       (async () => {
@@ -20,7 +20,10 @@ export default function LoveButton({ idSeller }) {
             maNguoiBan: idSeller,
           }),
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + tokenValue,
+            },
             withCredentials: true,
           }
         );
@@ -40,18 +43,19 @@ export default function LoveButton({ idSeller }) {
   };
   const handleRemoveLove = async () => {
     try {
-      console.log("Removing", userData.MaNguoiDung);
+      console.log("Removing", idSeller);
       const response = await axios.delete(
         "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
         {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenValue,
+          },
+          withCredentials: true,
           data: {
             MaNguoiMua: userData.MaNguoiDung,
             MaNguoiBan: idSeller,
           },
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
         }
       );
       toast.success("Removed favourite successfully, wait to refresh!!", {
@@ -63,14 +67,18 @@ export default function LoveButton({ idSeller }) {
       });
       setTimeout(() => {
         refreshPage();
-      }, 2000);
+      }, 500);
     } catch (err) {
       alert(err);
     }
   };
 
   useEffect(() => {
-    fetch(getLoveRestaurant + `${userData.MaNguoiDung}`)
+    fetch(getLoveRestaurant + `${userData.MaNguoiDung}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("No list of love restaurant");
@@ -85,12 +93,12 @@ export default function LoveButton({ idSeller }) {
           console.log(err.message);
         }
       });
-  }, []);
-  const results = listOfLove.some((items) => {
+  }, [tokenValue, userData.MaNguoiDung]);
+  const results = listOfLove?.some((items) => {
     return items.MaNguoiBan === idSeller;
   });
   return (
-    <Toggle>
+    <div>
       <div className="absolute top-0 right-0 p-2 m-2 text-lg text-pink-500 z-10 cursor-pointer border rounded-full border-white bg-white">
         {results === true ? (
           <Toggle.Button>
@@ -120,6 +128,6 @@ export default function LoveButton({ idSeller }) {
           </Toggle.Button>
         )}
       </div>
-    </Toggle>
+    </div>
   );
 }

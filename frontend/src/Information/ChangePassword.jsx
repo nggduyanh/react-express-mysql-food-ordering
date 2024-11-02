@@ -17,6 +17,7 @@ export default function ChangePassword() {
           New password
         </label>
         <input
+          placeholder="Enter your new password"
           id="newPassword"
           type="text"
           className="border border-black block w-1/2 p-3 mb-10 rounded-xl"
@@ -28,6 +29,7 @@ export default function ChangePassword() {
           confirm password
         </label>
         <input
+          placeholder="Rewrite your new password"
           id="confirmPassword"
           type="text"
           className="border border-black block w-1/2 p-3 mb-10 rounded-xl"

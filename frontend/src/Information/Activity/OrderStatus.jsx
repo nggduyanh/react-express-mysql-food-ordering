@@ -1,7 +1,6 @@
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { formatCurrency, getDetailsOrder, localStaticFile } from "../../Route";
-import { UserAccount } from "../../App";
 
 const OrderAction = {
   orderDetaiInfo: [],
@@ -29,12 +28,17 @@ const OrderReducer = (state, action) => {
 };
 
 export default function OrderStatus(props) {
-  const { userData } = useContext(UserAccount);
+  const { tokenValue, userData } = useOutletContext();
   const { orderStatus } = useOutletContext();
   const [orderDetails, dispatch] = useReducer(OrderReducer, OrderAction);
   const [seller, setSeller] = useState([]);
+  console.log("MaDonHang", props.MaDonHang);
   useEffect(() => {
-    fetch(getDetailsOrder + `${props.MaDonHang}`)
+    fetch(getDetailsOrder + `${props.MaDonHang}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("No food was found");
@@ -49,7 +53,11 @@ export default function OrderStatus(props) {
       });
   }, [props.MaDonHang]);
   useEffect(() => {
-    fetch("http://localhost:3030/nguoiban")
+    fetch("http://localhost:3030/nguoiban", {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("No seller / restaurant was found");

@@ -3,11 +3,11 @@ import OrderStatus from "./OrderStatus";
 
 export default function OnGoing() {
   const { order, orderStatus } = useOutletContext();
-  const orderReceive = orderStatus[0];
-  const orderPrepare = orderStatus[1];
-  const orderAlreadyGoing = orderStatus[2];
+  const orderReceive = orderStatus?.[0];
+  const orderPrepare = orderStatus?.[1];
+  const orderAlreadyGoing = orderStatus?.[2];
   const orderList = order
-    .filter((items) => {
+    ?.filter((items) => {
       return (
         items.TrangThai === parseInt(orderReceive?.MaTrangThai) ||
         items.TrangThai === parseInt(orderPrepare?.MaTrangThai) ||
@@ -20,7 +20,7 @@ export default function OnGoing() {
   console.log("order", order);
   return (
     <div className="overflow-auto max-h-[720px]">
-      {orderList.length > 0 ? (
+      {orderList?.length > 0 ? (
         orderList
       ) : (
         <div className="flex flex-col items-center justify-center">

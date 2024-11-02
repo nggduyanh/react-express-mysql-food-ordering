@@ -1,24 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { getLoveRestaurant, localStaticFile, refreshPage } from "../../Route";
 import axios from "axios";
 import { useContext } from "react";
 import { UserAccount } from "../../App";
 import toast, { Toaster } from "react-hot-toast";
 export default function ResMini(props) {
-  const { userData } = useContext(UserAccount);
+  const { userData, tokenValue } = useOutletContext();
   const handleRemoveLove = async () => {
     try {
       const response = await axios.delete(
         "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
         {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenValue,
+          },
+          withCredentials: true,
           data: {
             MaNguoiMua: userData.MaNguoiDung,
             MaNguoiBan: props.MaNguoiBan,
           },
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
         }
       );
       toast.success("Removed favourite successfully, wait to refresh!!", {
@@ -30,7 +31,7 @@ export default function ResMini(props) {
       });
       setTimeout(() => {
         refreshPage();
-      }, 2000);
+      }, 500);
     } catch (err) {
       toast.error(`Something went wrong: ${err.message}`);
     }

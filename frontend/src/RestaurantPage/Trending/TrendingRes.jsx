@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import useFilterRes_Type from "../../Hook/useFilterRes_Type";
 import ResInfo from "../InfoRes/ResInfo";
+import { UserContext } from "../../Layout/LayoutHeader";
 
 export default function TrendingRes() {
-  const trendingFood = useFilterRes_Type()
+  const { tokenValue } = useContext(UserContext);
+  const trendingFood = useFilterRes_Type(" ", tokenValue)
     .sort((a, b) => b.Diem - a.Diem)
     .map((res) => {
       return (
