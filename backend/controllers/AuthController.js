@@ -87,6 +87,7 @@ class AuthController
         let timeLimitOTP = 30 //second
         if (Date.now () - expireOTP >= timeLimitOTP * 1000) return next (new Exception ({msg: "OTP is expired"}, 400))
         let userId = user[nguoidung.id]
+        query = await NguoiDung.update ({[nguoidung.id]: userId, [nguoidung.otp]: null, [nguoidung.otpExpire]: null})
         let userRoles = await roleService.getIdRolesByUser (userId)
         let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
         return res.status (200).json ({"NguoiDung": user, accessToken})
