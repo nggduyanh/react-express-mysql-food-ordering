@@ -31,6 +31,15 @@ export default function ChangeAccount() {
 
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
+    if (
+      updateUser.TenNguoiDung === userData.TenNguoiDung &&
+      updateUser.AnhNguoiDung === userData.AnhNguoiDung &&
+      updateUser.SoDienThoai === userData.SoDienThoai &&
+      updateUser.Email === userData.Email
+    ) {
+      toast.error("You haven't change anything");
+      return;
+    }
     const formUserData = new FormData();
     formUserData.append("AnhNguoiDung", updateUser.AnhNguoiDung);
     formUserData.append("MaNguoiDung", updateUser.MaNguoiDung);
@@ -131,8 +140,14 @@ export default function ChangeAccount() {
   const imgResults = updateUser?.AnhNguoiDungShow?.slice(
     updateUser.AnhNguoiDungShow.lastIndexOf("/") + 1
   );
-  console.log("imgResults", imgResults);
-  // console.log("AnhNguoiDung", updateUser.AnhNguoiDung);
+  useEffect(() => {
+    if (userData) {
+      setUpdateUser({
+        ...userData,
+        AnhNguoiDungShow: localStaticFile + userData.AnhNguoiDung,
+      });
+    }
+  }, [userData]);
   return (
     <div className="p-5 relative">
       <p className="text-2xl font-bold">My Account</p>
@@ -175,7 +190,8 @@ export default function ChangeAccount() {
           <input
             id="username"
             type="text"
-            placeholder={`Username: ${userData?.TenNguoiDung}`}
+            value={updateUser?.TenNguoiDung}
+            placeholder="username"
             className="input_setup"
             onChange={handleUpdate}
             name="TenNguoiDung"
@@ -187,7 +203,8 @@ export default function ChangeAccount() {
           <input
             id="phoneNumber"
             type="text"
-            placeholder={`SoDienThoai: ${userData?.SoDienThoai}`}
+            value={updateUser?.SoDienThoai}
+            placeholder="SoDienThoai"
             className="input_setup"
             onChange={handleUpdate}
             name="SoDienThoai"
@@ -198,7 +215,8 @@ export default function ChangeAccount() {
           <input
             id="email"
             type="text"
-            placeholder={`Email: ${userData?.Email}`}
+            value={updateUser?.Email}
+            placeholder="Email"
             className="input_setup"
             onChange={handleUpdate}
             name="Email"

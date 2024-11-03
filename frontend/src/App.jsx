@@ -19,7 +19,7 @@ import OnGoing from "./Information/Activity/OnGoing";
 import Canceled from "./Information/Activity/Canceled";
 import OrderStatusDetails from "./Information/Activity/OrderStatusDetails";
 import SuccessPayment from "./SuccessPayment";
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 import { Toaster } from "react-hot-toast";
 import ChangePassword from "./Information/ChangePassword";
 import LayoutResetPass from "./Login/ResetPass/LayoutResetPass";
@@ -30,32 +30,6 @@ import ConfirmCode from "./Login/ResetPass/ConfirmCode";
 import PrivateRoute from "./Layout/PrivateRoute";
 const UserAccount = createContext();
 function App() {
-  const [accessToken, setAccessToken] = useState({});
-  const OneHourMiliseconds = 3600000;
-  ("1 hour");
-  // const [tokenSave, setTokenSave] = useState({});
-  // useEffect(() => {
-  //   const setLocalStorage = async (key, timeExpire) => {
-  //     const now = new Date();
-  //     const expireDate = {
-  //       token: accessToken.accessToken,
-  //       expire: now.getTime() + timeExpire,
-  //     };
-  //     localStorage.setItem(key, JSON.stringify(expireDate));
-  //   };
-  //   const checkToken = async (key, timeExpire) => {
-  //     setLocalStorage(key, timeExpire);
-  //     const getToken = localStorage.getItem(key);
-  //     const JsonToken = JSON.parse(getToken);
-  //     const nowDate = new Date().getTime();
-  //     if (nowDate > JsonToken.expire) {
-  //       localStorage.removeItem(key);
-  //       return null;
-  //     }
-  //     setTokenSave(JsonToken.accessToken);
-  //   };
-  //   checkToken("token", OneHourMiliseconds);
-  // }, [accessToken.accessToken]);
   return (
     <UserAccount.Provider value={"Noce"}>
       <Toaster
@@ -89,16 +63,8 @@ function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={<Login assignAccount={(value) => setAccessToken(value)} />}
-          />
-          <Route
-            path="register"
-            element={
-              <Register assignAccount={(value) => setAccessToken(value)} />
-            }
-          />
+          <Route path="/" element={<Login />} />
+          <Route path="register" element={<Register />} />
           <Route path="forgot-password" element={<LayoutResetPass />}>
             <Route index element={<Reset />} />
             <Route path="create-new" element={<CreateNewPass />} />

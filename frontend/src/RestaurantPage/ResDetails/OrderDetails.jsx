@@ -1,9 +1,8 @@
 import { FiMessageSquare } from "react-icons/fi";
 import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import axios from "axios";
-import { UserAccount } from "../../App";
 import {
   formatCurrency,
   GetPromotion,
@@ -57,7 +56,11 @@ export default function OrderDetails(props) {
     dispatch({ type: "SUGGESTION", event: e });
   };
   const handlePromotionChange = async (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
+    if (value === "remove") {
+      dispatch({ type: "PROMOTION", payload: "" });
+      return;
+    }
     const response = await axios.get(GetPromotion + `/${value}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
@@ -89,6 +92,7 @@ export default function OrderDetails(props) {
         setPaymentMethod([]);
       });
   }, [tokenValue]);
+  console.log(detailsOrder.listFood.length === 0);
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {
@@ -101,18 +105,21 @@ export default function OrderDetails(props) {
   };
   const applyPromotions = (order) => {
     let totalPrice = handleTotal();
-    if (totalPrice === 0) return totalPrice;
+    let totalTemp = totalPrice;
+    if (totalTemp === 0) return totalTemp;
     if (order.promotions && Object.keys(order.promotions).length > 0) {
       if (order.promotions.PhanTram !== null) {
         console.log("You choose PhanTram");
-        totalPrice =
-          totalPrice - totalPrice * (order.promotions.PhanTram / 100);
+        totalTemp = totalTemp - totalTemp * (order.promotions.PhanTram / 100);
       } else if (order.promotions.GiaTri !== null) {
         console.log("You choose GiaTri");
-        totalPrice -= order.promotions.GiaTri;
+        totalTemp -= order.promotions.GiaTri;
       }
+    } else {
+      totalTemp = totalPrice;
     }
-    return totalPrice;
+    if (totalTemp < 0) return totalPrice;
+    return totalTemp;
   };
   const handlePayOrder = async (event) => {
     event.preventDefault();
@@ -129,84 +136,88 @@ export default function OrderDetails(props) {
       //   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
       // });
 
-      const response = await toast.promise(
-        axios.post(
-          OrderAdd,
-          {
-            DiaChiDen: "De La Thanh",
-            TrangThai: 1,
-            GiaBan: total,
-            MaTaiXe: null,
-            MaNguoiMua: userData.MaNguoiDung,
-            MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
-            MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenValue}`,
+      if (detailsOrder.listFood.length > 0) {
+        const response = await toast.promise(
+          axios.post(
+            OrderAdd,
+            {
+              DiaChiDen: "De La Thanh",
+              TrangThai: 1,
+              GiaBan: total,
+              MaTaiXe: null,
+              MaNguoiMua: userData.MaNguoiDung,
+              MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+              MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
             },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenValue}`,
+              },
 
-            withCredentials: true,
-          }
-        ),
-        {
-          loading: "Creating order...",
-          success: (response) => {
-            const successMessage = `Order created successfully: ${response.data[0].MaDonHang}`; // Lưu thông báo thành công
-            // Hiển thị thông báo
-            setTimeout(() => {
-              navigate("/");
-            }, 2000);
-            return successMessage;
-          },
-          error: (err) => `Error creating order: ${err.message}`,
-        }
-      );
-      // toast.success("Order created successfully!");
-      const addOrderDetaisl = props.orderList.map((order) => {
-        const amountNumber = props.AmountList.find((amount) => {
-          return amount.id === order.MaMonAn;
-        });
-        return {
-          MaMonAn: order.MaMonAn,
-          MaDonHang: response.data[0].MaDonHang,
-          SoLuong: parseInt(amountNumber.amount),
-        };
-      });
-      // toast.success("Order details created successfully!");
-      const reponseDetailsOrder = await toast.promise(
-        axios.post(
-          OrderDetailAdd,
+              withCredentials: true,
+            }
+          ),
           {
-            arr: addOrderDetaisl,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenValue}`,
+            loading: "Creating order...",
+            success: (response) => {
+              const successMessage = `Order created successfully: ${response.data[0].MaDonHang}`; // Lưu thông báo thành công
+              // Hiển thị thông báo
+              setTimeout(() => {
+                navigate("/");
+              }, 2000);
+              return successMessage;
             },
-            withCredentials: true,
+            error: (err) => `Error creating order: ${err.message}`,
           }
-        ),
-        {
-          loading: "Creating order details...",
-          success: (response) => {
-            const successMessage = `Order details created successfully!`; // Lưu thông báo thành công
-            // Hiển thị thông báo
-            setTimeout(() => {
-              navigate("/home/activity/ongoing");
-            }, 2000);
-            return successMessage;
-          },
-          // success: () => {
-          //   return "Order details created successfully!"
-          // },
-          error: (err) => {
-            return `Error creating order details: ${err.message}`;
-          },
-        }
-      );
+        );
+        // toast.success("Order created successfully!");
+        const addOrderDetaisl = props.orderList.map((order) => {
+          const amountNumber = props.AmountList.find((amount) => {
+            return amount.id === order.MaMonAn;
+          });
+          return {
+            MaMonAn: order.MaMonAn,
+            MaDonHang: response.data[0].MaDonHang,
+            SoLuong: parseInt(amountNumber.amount),
+          };
+        });
+        // toast.success("Order details created successfully!");
+        const reponseDetailsOrder = await toast.promise(
+          axios.post(
+            OrderDetailAdd,
+            {
+              arr: addOrderDetaisl,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenValue}`,
+              },
+              withCredentials: true,
+            }
+          ),
+          {
+            loading: "Creating order details...",
+            success: (response) => {
+              const successMessage = `Order details created successfully!`; // Lưu thông báo thành công
+              // Hiển thị thông báo
+              setTimeout(() => {
+                navigate("/home/activity/ongoing");
+              }, 2000);
+              return successMessage;
+            },
+            // success: () => {
+            //   return "Order details created successfully!"
+            // },
+            error: (err) => {
+              return `Error creating order details: ${err.message}`;
+            },
+          }
+        );
+      } else {
+        toast.error("You must add your order");
+      }
     } catch (err) {
       toast.error("An error occurred while processing your order!");
       console.log(err);
@@ -273,7 +284,9 @@ export default function OrderDetails(props) {
               onChange={handlePromotionChange}
               className="w-full border border-gray-200 p-2"
             >
-              <option value="">Choose promotion</option>
+              <option value="" hidden>
+                Choose promotion
+              </option>
               {props.lstPromotions.map((promotion) => {
                 return (
                   <option
@@ -284,6 +297,7 @@ export default function OrderDetails(props) {
                   </option>
                 );
               })}
+              <option value="remove">Remove promotion</option>
             </select>
             <div className="p-2 bg-red-500 font-bold text-white rounded-e-lg">
               %Apply

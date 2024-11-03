@@ -74,6 +74,13 @@ export default function ListComment({ foodDetails }) {
     });
   };
   const createComment = async () => {
+    if (
+      Comments.noiDung.trim().length === 0 &&
+      Comments.diem.trim().length === 0
+    ) {
+      toast.error("Please fullfile your response and star ");
+      return;
+    }
     try {
       const response = await toast.promise(
         axios.post(setCommendForSpecificFood, Comments, {

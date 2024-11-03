@@ -17,7 +17,6 @@ import {
   localStaticFile,
 } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
-import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import { UserContext } from "../../Layout/LayoutHeader.jsx";
 
 export default function SpecificRes() {

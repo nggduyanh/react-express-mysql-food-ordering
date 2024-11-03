@@ -9,7 +9,7 @@ const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX =
   /^(0[3|5|7|8|9][0-9]{8}|(01[2|6|8|9]|09[0-9]|[3|5|7|8|9][0-9])[0-9]{8})$/;
 const RegisterAction = {
-  inputError: false,
+  inputError: true,
   form: {
     TenNguoiDung: "",
     Email: "",
@@ -23,7 +23,7 @@ const RegisterReducer = (state, action) => {
     case "inputValue": {
       const { name, value } = action.event.target;
       return {
-        inputError: false,
+        inputError: true,
         form: {
           ...state.form,
           [name]: value,
@@ -32,17 +32,25 @@ const RegisterReducer = (state, action) => {
     }
     case "submitValue": {
       const { TenNguoiDung, Email, MatKhau, SoDienThoai } = state.form;
-      const inputError =
+      if (
+        TenNguoiDung.trim().length === 0 ||
+        Email.trim().length === 0 ||
+        MatKhau.trim().length === 0 ||
+        SoDienThoai.trim().length === 0 ||
         !USER_REGEX.test(TenNguoiDung) ||
         !PHONE_REGEX.test(SoDienThoai) ||
-        !EMAIL_REGEX.test(Email) ||
-        !MatKhau;
-      return {
-        inputError,
-        form: {
-          ...state.form,
-        },
-      };
+        !EMAIL_REGEX.test(Email)
+      ) {
+        return {
+          ...state,
+          inputError: true,
+        };
+      } else {
+        return {
+          ...state,
+          inputError: false,
+        };
+      }
     }
     default:
       return state;
@@ -56,42 +64,40 @@ export default function Register() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch({ type: "submitValue" });
-    console.log(RegisterForm);
-    if (!RegisterForm.inputError) {
-      console.log("Hello this is error");
+    const newState = RegisterReducer(RegisterForm, { type: "submitValue" });
+    const { inputError } = newState;
+    if (inputError) {
       toast.error("Please fullfill your registation form");
       return;
     } else {
-      toast.success("Register succesfull");
-      // toast.promise(
-      //   (async () => {
-      //     await new Promise((resolve) => setTimeout(resolve, 2000));
-      //     const response = await axios.post(
-      //       "http://localhost:3030/auth/signup",
-      //       JSON.stringify(RegisterForm.form),
-      //       {
-      //         headers: {
-      //           "Content-Type": "application/json",
-      //         },
-      //         withCredentials: true,
-      //       }
-      //     );
-      //     const Token = await response.data;
-      //     const now = new Date();
-      //     const epxireToken = {
-      //       token: Token.accessToken,
-      //       expireDate: now.getTime() + 3600000,
-      //     };
-      //     localStorage.setItem("token", JSON.stringify(epxireToken));
-      //     navigate("/home");
-      //   })(),
-      //   {
-      //     loading: "Check credentials",
-      //     success: "Register successful",
-      //     error: (err) => err.message || "An unexpected error occurred",
-      //   }
-      // );
+      toast.promise(
+        (async () => {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          const response = await axios.post(
+            "http://localhost:3030/auth/signup",
+            JSON.stringify(RegisterForm.form),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+          const Token = await response.data;
+          const now = new Date();
+          const epxireToken = {
+            token: Token.accessToken,
+            expireDate: now.getTime() + 3600000,
+          };
+          localStorage.setItem("token", JSON.stringify(epxireToken));
+          navigate("/home");
+        })(),
+        {
+          loading: "Check credentials",
+          success: "Register successful",
+          error: (err) => err.message || "An unexpected error occurred",
+        }
+      );
     }
   };
 
@@ -122,7 +128,7 @@ export default function Register() {
             type="text"
             placeholder="enter username"
             id="username"
-            value={RegisterForm.form.TenNguoiDung}
+            value={RegisterForm.form?.TenNguoiDung}
             onChange={handleChange}
           />
           <label htmlFor="Email" className="text-xs">
@@ -136,7 +142,7 @@ export default function Register() {
             placeholder="Enter Email"
             id="Email"
             onChange={handleChange}
-            value={RegisterForm.form.Email}
+            value={RegisterForm.form?.Email}
           />
           <br />
           <label htmlFor="Password" className="text-xs">
@@ -150,7 +156,7 @@ export default function Register() {
             placeholder="Enter password"
             id="Password"
             onChange={handleChange}
-            value={RegisterForm.form.MatKhau}
+            value={RegisterForm.form?.MatKhau}
           />
           <br />
           <label htmlFor="phoneNumber" className="text-xs">
@@ -164,7 +170,7 @@ export default function Register() {
             placeholder="Enter Phone Number"
             id="phoneNumber"
             onChange={handleChange}
-            value={RegisterForm.form.SoDienThoai}
+            value={RegisterForm.form?.SoDienThoai}
           />
           <br />
           <button

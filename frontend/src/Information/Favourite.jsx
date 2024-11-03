@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ResMini from "../RestaurantPage/InfoRes/ResMini";
 import { getLoveRestaurant, GetTypeRes } from "../Route";
 import useFetchData from "../Hook/useFetchData";
