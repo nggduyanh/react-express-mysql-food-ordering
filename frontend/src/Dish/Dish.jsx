@@ -1,14 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { DeleteFoodRestaurant, GetFoodRestaurant, handleRefreshPage} from "../routebackend";
+import {
+  DeleteFoodRestaurant,
+  formatCurrency,
+  GetFoodRestaurant,
+  GetFoodTypeRestaurant,
+  handleRefreshPage,
+} from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
+import NavBar from "../Components/NavBar";
 export default function Dish() {
   const { userData } = useContext(UserAccount);
-  console.log("useData", userData);
   const [listDish, setListDish] = useState([]);
-  
+
   useEffect(() => {
     fetch(GetFoodRestaurant)
       .then((response) => response.json())
@@ -16,25 +22,41 @@ export default function Dish() {
         const filterDish = data.filter((dish) => {
           return dish.MaNguoiBan === userData.MaNguoiBan;
         });
-        // console.log("filterDish", filterDish);
         setListDish(filterDish);
       });
   }, [userData]);
 
+  const [listDishT, setlistDishT] = useState([]);
+  useEffect(() => {
+    fetch(GetFoodTypeRestaurant)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        const filterDish = data.filter((dish) => {
+          return dish.MaNguoiBan === userData.MaNguoiBan;
+        });
+        setlistDishT(filterDish);
+      });
+  }, [listDish, userData]);
+  // console.log("listDishT", listDishT);
+
   const handleRemoveFood = async (id) => {
     const findDish = listDish.find((dish) => dish.MaMonAn === id);
-    try{
+    try {
       const deleteId = {
-        MaMonAn: findDish.MaMonAn
-      }
-      const response = await axios.delete("http://localhost:3030/monan/delete", {
-        data: deleteId, // Truyền dữ liệu trong thuộc tính data
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+        MaMonAn: findDish.MaMonAn,
+      };
+      const response = await axios.delete(
+        "http://localhost:3030/monan/delete",
+        {
+          data: deleteId, // Truyền dữ liệu trong thuộc tính data
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
       alert("Success Delete");
       handleRefreshPage();
-    }catch(err) {
+    } catch (err) {
       console.error("Error deleting dish:", err);
     }
   };
@@ -55,23 +77,19 @@ export default function Dish() {
           </div>
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {item.MaLoaiMonAn}
+          {listDishT.find((dish) => dish.MaLoaiMonAn === item.MaLoaiMonAn)
+            ?.TenLoaiMonAn || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          $79
+          {formatCurrency( item.GiaBan)}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          16
+          {item.MoTa}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          Admin
-        </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          Published
-        </td>
+
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600 ">
           <div className="flex gap-4">
-            <Link to="/edit_dish" state={item} >
+            <Link to="/edit_dish" state={item}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -105,8 +123,7 @@ export default function Dish() {
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </Link>
-            
-            <button onClick = {() => handleRemoveFood(item.MaMonAn)}>
+            <button onClick={() => handleRemoveFood(item.MaMonAn)}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -135,55 +152,9 @@ export default function Dish() {
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
-      <SideBar />
+        <SideBar />
         <div class="flex-1 mt-0">
-          <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
-            <div class="flex items-center border border-gray-300 rounded-full p-2">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-default-600"
-                height="20"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
-              <input
-                type="text"
-                class="outline-none w-full ps-2"
-                placeholder="Search"
-              />
-            </div>
-            <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                height="24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-              </svg>
-            </div>
-            <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-              <img
-                src="./images/avatar.png"
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <h3 className="font-medium ml-2">Kaiya Botosh</h3>
-          </nav>
+          <NavBar />
           <section className="p-6">
             <h1>Dishes List</h1>
             <div className="rounded-lg border border-default-200">
@@ -241,19 +212,7 @@ export default function Dish() {
                       scope="col"
                       class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      Quantity
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                    >
-                      Created By
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                    >
-                      Status
+                      Description
                     </th>
                     <th
                       scope="col"

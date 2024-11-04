@@ -113,7 +113,6 @@ export default function Signin({ assignAccount }) {
           link="/signup"
         />
       </div>
-      <Link to="/home">Nhap vao day de chuyen sang trang Homepage</Link>
     </div>
   )
 }

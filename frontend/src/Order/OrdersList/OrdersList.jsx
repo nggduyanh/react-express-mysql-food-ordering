@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
 import { UserAccount } from "../../App";
 import {
+  formatCurrency,
   formatDate,
   GetDetailsOrder,
   GetOrder,
   GetOrderRestaurant,
   GetUserInfo,
   localStaticFile,
+  OrderStatus,
 } from "../../routebackend";
+import NavBar from "../../Components/NavBar";
 
 export default function OrdersList() {
   const { userData } = useContext(UserAccount);
@@ -48,7 +51,14 @@ export default function OrdersList() {
       });
   }, [userData]);
 
-  // console.log(SuccessOrder.length);
+  const [TrangThai, setTrangThai] = useState([]);
+  useEffect(() => {
+    fetch(OrderStatus)
+      .then((response) => response.json())
+      .then((data) => {
+        setTrangThai(data);
+      });
+  }, [userData]);
 
   const listOrder = SuccessOrder.map((item) => {
     if (SuccessOrder.length > 0) {
@@ -57,22 +67,17 @@ export default function OrdersList() {
           <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             {formatDate(item.ThoiGianTao)}
           </td>
-          <td
-            // onClick={() => {
-            //   // GetOrderRestaurant(item.MaDonHang); // Lấy chi tiết đơn hàng
-            //   // GetDetailsOrder(item.MaDonHang); // Lấy chi tiết món ăn trong đơn hàng
-            //   window.location.href = "/order_details"; // Chuyển đến trang chi tiết đơn hàng
-            // }}
-            class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600 hover:cursor-pointer"
-          >
+          <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600 hover:cursor-pointer">
             {item.MaDonHang}
           </td>
           <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-            {item.GiaBan}
+            {formatCurrency(item.GiaBan)}
           </td>
           <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-            {item.TrangThai}
+            {TrangThai.find((order) => order.MaTrangThai === item.TrangThai)
+              ?.TenTrangThai || "N/A"}
           </td>
+
           <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             <Link to="/order_details" state={item}>
               <svg
@@ -102,66 +107,13 @@ export default function OrdersList() {
       <div className="flex h-full">
         <SideBar />
         <div class="flex-1 mt-0">
-          <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
-            <div class="flex items-center border border-gray-300 rounded-full p-2">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-default-600"
-                height="20"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
-              <input
-                type="text"
-                class="outline-none w-full ps-2"
-                placeholder="Search"
-              />
-            </div>
-            <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                height="24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-              </svg>
-            </div>
-            <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-              {/* {userData?.AnhNguoiDung !== null ? (
-                <img
-                  src={localStaticFile + User.AnhNguoiDung}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <img
-                  src="./images/avatar.png"
-                  className="object-cover w-full h-full"
-                />
-              )} */}
-            </div>
-            <h3 className="font-medium ml-2">{userData.TenNguoiBan}</h3>
-          </nav>
+          <NavBar />
           <section className="p-6">
             <h1>Orders List</h1>
             <div className="grid grid-cols-12 gap-6 mt-6">
               <div className="col-span-9">
                 <div className="grid gap-6 grid-cols-3">
-                  <div className="p-6 flex items-center border border-[#F58220] rounded-lg gap-4">
+                  <div className="p-6 flex items-center border border-default-200 rounded-lg gap-4">
                     <div className="bg-[#FDE6D5] h-16 w-16 inline-flex justify-center items-center rounded-full">
                       <svg
                         stroke="#F58220"
@@ -184,10 +136,10 @@ export default function OrdersList() {
                       <h2>{SuccessOrder.length}</h2>
                     </div>
                   </div>
-                  <div className="p-6 flex items-center border border-[#F58220] rounded-lg gap-4">
-                    <div className="bg-[#FDE6D5] h-16 w-16 inline-flex justify-center items-center rounded-full">
+                  <div className="p-6 flex items-center border border-default-200 rounded-lg gap-4">
+                    <div className="bg-[#D6F3DF] h-16 w-16 inline-flex justify-center items-center rounded-full">
                       <svg
-                        stroke="currentColor"
+                        stroke="#23C55E"
                         fill="none"
                         stroke-width="2"
                         viewBox="0 0 24 24"
@@ -207,10 +159,10 @@ export default function OrdersList() {
                       <h2>23,568</h2>
                     </div>
                   </div>
-                  <div className="p-6 flex items-center border border-[#F58220] rounded-lg gap-4">
-                    <div className="bg-[#FDE6D5] h-16 w-16 inline-flex justify-center items-center rounded-full">
+                  <div className="p-6 flex items-center border border-default-200 rounded-lg gap-4">
+                    <div className="bg-[#FBF0D4] h-16 w-16 inline-flex justify-center items-center rounded-full">
                       <svg
-                        stroke="#F58220"
+                        stroke="#EAB309"
                         fill="none"
                         stroke-width="2"
                         viewBox="0 0 24 24"
@@ -231,7 +183,7 @@ export default function OrdersList() {
                     </div>
                   </div>
                 </div>
-                <div className="border border-[#F58220] rounded-lg mt-6">
+                <div className="border border-default-200 rounded-lg mt-6">
                   <div className="p-6 flex flex-wrap gap-4 justify-between items-center">
                     <h2 className="text-xl font-semibold">Recent Orders</h2>
                     <div className="flex flex-wrap gap-2">
@@ -306,6 +258,7 @@ export default function OrdersList() {
                         </div>
                       </div>
                     </div>
+                    <h1>Waiting</h1>
                   </div>
                 </div>
               </div>

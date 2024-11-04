@@ -7,6 +7,7 @@ import { vi } from "date-fns/locale";
 import { AddVoucher, getFormattedDate, handleRefreshPage } from "../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
+import NavBar from "../Components/NavBar";
 
 export default function VoucherEdit() {
     const { userData } = useContext(UserAccount);
@@ -90,53 +91,7 @@ export default function VoucherEdit() {
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
-          <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
-            <div className="flex items-center border border-gray-300 rounded-full p-2">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-default-600"
-                height="20"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
-              <input
-                type="text"
-                class="outline-none w-full ps-2"
-                placeholder="Search"
-              />
-            </div>
-            <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                height="24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-              </svg>
-            </div>
-            <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-              <img
-                src="./images/avatar.png"
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <h3 className="font-medium ml-2">Kaiya Botosh</h3>
-          </nav>
+        <NavBar />
           <section className="p-6">
             <h1>Add Voucher</h1>
             <Link to="/voucher">

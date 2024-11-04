@@ -22,12 +22,6 @@ export default function SideBar() {
           Orders List
         </Link>
         <Link
-          to="/order_details"
-          className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
-        >
-          Order Details
-        </Link>
-        <Link
           to="/dish"
           className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
         >

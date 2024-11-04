@@ -4,6 +4,7 @@ import SideBar from "../../Components/SideBar";
 import {
   formatCurrency,
   formatDate,
+  GetPaymentMethods,
   GetUserInfo,
   GetVoucher,
 } from "../../routebackend";
@@ -12,7 +13,6 @@ export default function OrderDetails() {
   const data = useLocation();
   const detailsOrder = data.state;
   const { userData } = useContext(UserAccount);
-  //   console.log("detailsOrder", detailsOrder.MaKhuyenMai);
 
   const [Buyer, setBuyer] = useState([]);
   useEffect(() => {
@@ -78,6 +78,47 @@ export default function OrderDetails() {
     }
   }
 
+  const [Payment, setPayment] = useState([]);
+  useEffect(() => {
+    fetch(GetPaymentMethods)
+      .then((response) => response.json())
+      .then((data) => {
+        const findPayment = data.find(
+          (item) =>
+            item.MaPhuongThucGiaoDich === detailsOrder.MaPhuongThucGiaoDich
+        );
+        setPayment(findPayment);
+      });
+  });
+
+  const listFoodOrder = detailsOrder.ChiTietDonHang.map((item) => {
+    return (
+      <tr className="border border-gray-300">
+        <td className="p-2 whitespace-nowrap text-sm text-default-600">
+          <div className="flex items-center gap-4">
+            <img
+              src="./images/Dashboard/pizza.png"
+              alt=""
+              className="h-[72px] max-w-[72px]"
+            />
+            <div>
+              <p className="text-sm  font-medium mb-1">{item.monan.TenMonAn}</p>
+            </div>
+          </div>
+        </td>
+        <td className="py-2 px-4 whitespace-nowrap text-sm text-default-600">
+          {item.chitiet.SoLuong}
+        </td>
+        <td className="py-2 px-4 whitespace-nowrap text-sm text-default-600">
+          {formatCurrency(item.monan.GiaBan)}
+        </td>
+        <td className="py-2 px-4 whitespace-nowrap text-sm text-default-600">
+          {formatCurrency(item.monan.GiaBan * item.chitiet.SoLuong)}
+        </td>
+      </tr>
+    );
+  });
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -131,8 +172,10 @@ export default function OrderDetails() {
             <h3 className="font-medium ml-2">Kaiya Botosh</h3>
           </nav>
           <section className="p-6">
-            <h1>Order Details</h1>
-            <h3>Back to list</h3>
+            <div className="flex justify-between mb-4">
+              <h1 className="text-xl font-medium">Order Details</h1>
+              <Link to="/orders_list"><h3 className="text-base">Back to list</h3></Link>
+            </div>
             <div className="border border-[#F58220] rounded-lg">
               <div className="p-6 flex items-center justify-between gap-8 border-b border-[#F58220] text-base">
                 <div className="flex items-center gap-8">
@@ -204,7 +247,9 @@ export default function OrderDetails() {
                     />
                     <h2 className="mb-3">Jay Logistics</h2>
                     <h2 className="mb-3">ID: JLST2023477890</h2>
-                    <p className="mb-3">Payment Mode: Prepaid (Debit Card)</p>
+                    <p className="mb-3">
+                      Payment Mode: {Payment.TenPhuongThucGiaoDich}
+                    </p>
                   </div>
                 </div>
                 <div className="col-span-3">
@@ -253,13 +298,13 @@ export default function OrderDetails() {
                           scope="col"
                           class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
-                          Price
+                          Quantity
                         </th>
                         <th
                           scope="col"
                           class="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
-                          Quantity
+                          Price
                         </th>
                         <th
                           scope="col"
@@ -270,52 +315,55 @@ export default function OrderDetails() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-default-200">
-                      <tr className="border border-gray-300">
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-                          <div className="flex items-center gap-4">
-                            <img
-                              src="./images/Dashboard/pizza.png"
-                              alt=""
-                              className="h-[72px] max-w-[72px]"
-                            />
-                            <div>
-                              <p className="text-sm mb-1">Italian Pizza</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-                          #C0E4F7
-                        </td>
-
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-                          $359.69
-                        </td>
-                      </tr>
+                      {listFoodOrder}
                     </tbody>
                   </table>
                 </div>
+
                 <div className="">
                   <h1 className="border border-[#F58220] p-4 rounded-t-lg">
                     Logistics Details
                   </h1>
-                  <div className="px-4 border-x border-b border-[#F58220] rounded-b-lg">
-                    <div className="py-4 flex justify-between border-b border-[#F58220]">
-                      <p>Transaction ID :</p>
-                      <span>#20234567213</span>
+                  {Payment.MaPhuongThucGiaoDich === 1 && (
+                    <div className="px-4 border-x border-b border-[#F58220] rounded-b-lg">
+                      <div className="py-4 flex justify-between">
+                        <p>Payment Method :</p>
+                        <span>{Payment.TenPhuongThucGiaoDich}</span>
+                      </div>
                     </div>
-                    <div className="py-4 flex justify-between border-b border-[#F58220]">
-                      <p>Payment Method :</p>
-                      <span>#20234567213</span>
+                  )}
+                  {Payment.MaPhuongThucGiaoDich === 2 && (
+                    <div className="px-4 border-x border-b border-[#F58220] rounded-b-lg">
+                      <div className="py-4 flex justify-between border-b border-[#F58220]">
+                        <p>Transaction ID :</p>
+                        <span>#20234567213</span>
+                      </div>
+                      <div className="py-4 flex justify-between border-b border-[#F58220]">
+                        <p>Payment Method :</p>
+                        <span>{Payment.TenPhuongThucGiaoDich}</span>
+                      </div>
+                      <div className="py-4 flex justify-between">
+                        <p>Card Holder Name :</p>
+                        <span>Jaylon Calzoni</span>
+                      </div>
                     </div>
-                    <div className="py-4 flex justify-between border-b border-[#F58220]">
-                      <p>Card Holder Name :</p>
-                      <span>Jaylon Calzoni</span>
+                  )}
+                  {Payment.MaPhuongThucGiaoDich === 3 && (
+                    <div className="px-4 border-x border-b border-[#F58220] rounded-b-lg">
+                      <div className="py-4 flex justify-between border-b border-[#F58220]">
+                        <p>Transaction ID :</p>
+                        <span>#20234567213</span>
+                      </div>
+                      <div className="py-4 flex justify-between border-b border-[#F58220]">
+                        <p>Payment Method :</p>
+                        <span>{Payment.TenPhuongThucGiaoDich}</span>
+                      </div>
+                      <div className="py-4 flex justify-between">
+                        <p>Card Holder Name :</p>
+                        <span>Jaylon Calzoni</span>
+                      </div>
                     </div>
-                    <div className="py-4 flex justify-between">
-                      <p>Card Number :</p>
-                      <span>1234 4354 4564</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

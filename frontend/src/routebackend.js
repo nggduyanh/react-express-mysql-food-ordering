@@ -23,6 +23,7 @@ export const GetDetailsOrder = "http://localhost:3030/monan/donhang/";
 export const GetOrder = "http://localhost:3030/donhang";
 export const GetOrderStatus = "http://localhost:3030/trangthaidonhang";
 export const GetOrderRestaurant = "http://localhost:3030/donhang/nguoiban/:idNguoiBan";
+export const GetPaymentMethods = "http://localhost:3030/phuongthucgiaodich";
 
 export const handleRefreshPage = () => {
     window.location.reload();
