@@ -46,7 +46,7 @@ class NguoiBanController
         if (!queryVaiTroNguoiDung.success) return next (new Exception (queryVaiTroNguoiDung.res,500))
         let userId = req.user.id
         let userRoles = await roleService.getIdRolesByUser (userId)
-        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
+        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.status(201).json ({"res": obj.res, accessToken})
     }
 
@@ -69,7 +69,7 @@ class NguoiBanController
         if (!deleteRoleOfNguoiBan.res.affectedRows) return next (new Exception ({msg: "Not found resource"}, 500))
         let userId = req.user.id
         let userRoles = await roleService.getIdRolesByUser (userId)
-        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
+        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.json ({accessToken})
     }
 

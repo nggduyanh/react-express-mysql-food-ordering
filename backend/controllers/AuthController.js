@@ -20,38 +20,38 @@ class AuthController
         let queryVaiTroNguoiDung = await roleService.addRoleToUser (idRoleNguoiMua,newUser[nguoidung.id])
         if (!queryVaiTroNguoiDung.success) return next (new Exception (queryVaiTroNguoiDung.res,500))
         let userRoles = [idRoleNguoiMua]
-        let accessToken = jwt.sign ({"userId": newUser[nguoidung.id], userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
+        let accessToken = jwt.sign ({"userId": newUser[nguoidung.id], userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.status(201).json ({"NguoiDung": newUser, accessToken})
     }
 
     async login (req,res,next)
     {
-        const {MatKhau, TenNguoiDung} = req.body
-        if (!MatKhau || !TenNguoiDung) 
+        const {MatKhau, SoDienThoai} = req.body
+        if (!MatKhau || !SoDienThoai) 
         {
             const message = {
-                msg : `Not found ${ !MatKhau? "MatKhau" : "TenNguoiDung" }`
+                msg : `Not found ${ !MatKhau? "MatKhau" : "SoDienThoai" }`
             }
             return next (new Exception (message,400))
         }
         
-        let obj = await NguoiDung.getByPassAndName (TenNguoiDung,MatKhau)
-        if (!obj.res.length) return next (new Exception ({msg: `Not found user with MatKhau = ${MatKhau} and TenNguoiDung = ${TenNguoiDung}`},404))
+        let obj = await NguoiDung.getByPassAndPhone (SoDienThoai,MatKhau)
+        if (!obj.res.length) return next (new Exception ({msg: `Not found user with MatKhau = ${MatKhau} and SoDienThoai = ${SoDienThoai}`},404))
         
         let [user] = obj.res
         let userId = user[nguoidung.id]
         let userRoles = await roleService.getIdRolesByUser (userId)
-        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
+        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.status (200).json ({"NguoiDung": user, accessToken})
     }
 
     async resetPasswordByMail (req,res,next)
     {
-        const {Email,TenNguoiDung} = req.body
+        const {Email,SoDienThoai} = req.body
         if (!Email) return next (new Exception ({msg: `Email is ${Email}`},400))
-        if (!TenNguoiDung) return next (new Exception ({msg: `TenNguoiDung is ${TenNguoiDung}`},400))
-        let query = await NguoiDung.getByName (TenNguoiDung)
-        if (!query.res.length) return next (new Exception ({msg: `NguoiDung not found with TenNguoiDung = ${TenNguoiDung}`},404))
+        if (!SoDienThoai) return next (new Exception ({msg: `SoDienThoai is ${SoDienThoai}`},400))
+        let query = await NguoiDung.getByPhone (SoDienThoai)
+        if (!query.res.length) return next (new Exception ({msg: `NguoiDung not found with SoDienThoai = ${SoDienThoai}`},404))
         let [user] = query.res
         let otp = OTPGenerator (6)
         console.log (otp)
@@ -74,11 +74,11 @@ class AuthController
 
     async verifyOTP (req,res,next)
     {
-        const {TenNguoiDung,OTP} = req.body
+        const {SoDienThoai,OTP} = req.body
         if (!OTP) return next (new Exception ({msg: `OTP is ${OTP}`},400))
-        if (!TenNguoiDung) return next (new Exception ({msg: `TenNguoiDung is ${TenNguoiDung}`}, 400))
+        if (!SoDienThoai) return next (new Exception ({msg: `SoDienThoai is ${SoDienThoai}`}, 400))
         
-        let query = await NguoiDung.getByName (TenNguoiDung)
+        let query = await NguoiDung.getByPhone (SoDienThoai)
         if (!query.success) return next (new Exception (query.res,500))
         let [user] = query.res
         let userOTP = user[nguoidung.otp]
@@ -89,7 +89,7 @@ class AuthController
         let userId = user[nguoidung.id]
         NguoiDung.update ({[nguoidung.id]: userId, [nguoidung.otp]: null, [nguoidung.otpExpire]: null})
         let userRoles = await roleService.getIdRolesByUser (userId)
-        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "1h"})
+        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.status (200).json ({"NguoiDung": user, accessToken})
     }
 } 
