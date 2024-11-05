@@ -1,4 +1,4 @@
-export const GetUserInfo = "http://localhost:3030/nguoidung";
+export const GetUserInfo = "http://localhost:3030/nguoidung/current";
 export const GetSellerInfo = "http://localhost:3030/nguoiban";
 export const AddUserInfo = "http://localhost:3030/nguoiban/add";
 export const GetTypeRes = "http://localhost:3030/loaimonan";

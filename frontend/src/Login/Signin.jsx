@@ -9,7 +9,7 @@ import { GetSellerInfo, GetUserInfo } from "../routebackend";
 
 export default function Signin({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
-    SoDienThoai: "",
+    TenNguoiDung: "",
     MatKhau: "",
   });
   const navigate = useNavigate();
@@ -22,43 +22,30 @@ export default function Signin({ assignAccount }) {
       };
     });
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get(GetUserInfo);
-      const getUserInfoArray = response.data;
-      const filterResult = getUserInfoArray.some((user) => {
-        return (
-          user.SoDienThoai === loginForm.SoDienThoai &&
-          user.MatKhau === loginForm.MatKhau
-        );
-      });
-      if (filterResult === false) {
-        alert("User not found");
-      } else {
-        const userResult = getUserInfoArray.find((user) => {
-          return (
-            user.SoDienThoai === loginForm.SoDienThoai &&
-            user.MatKhau === loginForm.MatKhau
-          );
-        });
-        const responseRole = await axios.get(
-          `http://localhost:3030/vaitro/nguoidung/${userResult.MaNguoiDung}`
-        );
-        const getRole = responseRole.data[0].TenVaiTro;
-        const getSellerInfor = await axios.get(GetSellerInfo);
-        const filterSeller = getSellerInfor.data.find(seller => {
-          return seller.MaNguoiBan === userResult.MaNguoiDung;
-        })
-        filterSeller.TenVaiTro = responseRole.data[0].TenVaiTro;
-        console.log(filterSeller);
-        if (getRole === "Seller") {
-          assignAccount(filterSeller);
-          navigate("/home");
-        } else {
-          alert("User not found");
+      const response = await axios.post(
+        "http://localhost:3030/auth/login",
+        loginForm,
+        {
+          headers: {
+            secretTokenKey:
+              "QItRBJaulyIp75/23ZVeqNh5JPgnP4uTF2Cem88Qjwk33zdOXyq8oC352DQKEPXxyE3+fnXQAq7zTxFcu2Vbfv48ncysKJGrcVRCBEFnIKQQ9O/4DPX0hrsY5j2WQPwP6uILHhyWHFENHQORlXvtIAThOORNNyjLo8RfyA4+cJwjQ5iKFLVaKpKjkEdLijAH/+y65Vy2xge4mAL62ZnsTKyLqJU4jSrZMJ5pBAfF12u2IDO7fZxEASEf2WsLfBYesSoqQwBeXnSc6kF6yCfHJlOBzv8C24XoEVyY9GW8uEVAFU4lzeVdNIXIKlUZtMqMDHeejVC0ieBkuJ627TpDig==",
+          },
         }
-      }
+      );
+
+      const getUserInfoArray = response.data;
+      const now = new Date();
+      const epxireToken = {
+        token: getUserInfoArray.accessToken,
+        expireDate: now.getTime() + 3600000,
+      };
+      localStorage.setItem("token", JSON.stringify(epxireToken));
+      console.log( getUserInfoArray)
+      navigate("/home",{state: localStorage.getItem("token")})
     } catch (err) {
       alert("Something went wrong between sending data");
       console.log(err.message);
@@ -75,15 +62,15 @@ export default function Signin({ assignAccount }) {
       </div>
       <div className="absolute flex flex-col h-auto w-[512px] top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
         <Logo />
-        <Heading
-          title="Sign In"
-        />
+        <Heading title="Sign In" />
         <form action="" onSubmit={handleSubmit}>
           <div className="flex flex-col w-full mb-4">
-            <label htmlFor="SoDienThoai" className="pb-2 font-medium">Phone Number</label>
+            <label htmlFor="SoDienThoai" className="pb-2 font-medium">
+              Phone Number
+            </label>
             <input
               type="text"
-              name="SoDienThoai"
+              name="TenNguoiDung"
               id="phoneNumber"
               className="w-full py-2.5 px-3 rounded p"
               placeholder="Phone Number"
@@ -92,7 +79,9 @@ export default function Signin({ assignAccount }) {
             />
           </div>
           <div className="flex flex-col w-full mb-4">
-            <label htmlFor="MatKhau" className="pb-2 font-medium">Password</label>
+            <label htmlFor="MatKhau" className="pb-2 font-medium">
+              Password
+            </label>
             <input
               type="password"
               name="MatKhau"
@@ -104,7 +93,9 @@ export default function Signin({ assignAccount }) {
             />
           </div>
           <Link className="underline ml-auto">Forgot Password?</Link>
-          <button className="w-full mt-4 py-3 px-6 bg-[#F58220] rounded font-medium text-white">Sign In</button>
+          <button className="w-full mt-4 py-3 px-6 bg-[#F58220] rounded font-medium text-white">
+            Sign In
+          </button>
         </form>
         {/* <Account /> */}
         <CreateAccount
@@ -114,6 +105,5 @@ export default function Signin({ assignAccount }) {
         />
       </div>
     </div>
-  )
+  );
 }
-

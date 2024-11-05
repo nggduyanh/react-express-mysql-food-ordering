@@ -2,21 +2,25 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GetUserInfo } from "../routebackend";
 import { UserAccount } from "../App";
+import useFetchData from "./useFetchData";
 
 export default function NavBar() {
-  const { userData } = useContext(UserAccount);
-  const [User, setUser] = useState([]);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+  const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(GetUserInfo)
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        const findUser = data.find(
-          (item) => item.MaNguoiDung === userData.MaNguoiBan
-        );
-        setUser(findUser);
+        getSeller(data);
       });
   }, [userData]);
-
   return (
     <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
       <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
@@ -36,9 +40,9 @@ export default function NavBar() {
         </svg>
       </div>
       {/* <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-              {userData?.AnhNguoiDung !== null ? (
+              {userInfo?.AnhNguoiDung !== null ? (
                 <img
-                  src={localStaticFile + User.AnhNguoiDung}
+                  src={localStaticFile + userInfo.AnhNguoiDung}
                   className="object-cover w-full h-full"
                 />
               ) : (
@@ -48,7 +52,7 @@ export default function NavBar() {
                 />
               )}
             </div> */}
-      <h3 className="font-medium ml-2">{userData.TenNguoiBan}</h3>
+      <h3 className="font-medium ml-2">{Seller?.[0]?.TenNguoiBan}</h3>
     </nav>
   );
 }

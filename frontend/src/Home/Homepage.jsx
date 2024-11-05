@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   formatCurrency,
   formatTime,
   GetFoodRestaurant,
+  GetUserInfo,
   localStaticFile,
 } from "../routebackend";
 import { useActionData } from "react-router-dom";
@@ -12,26 +13,54 @@ import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import LineChart from "./LineChart";
+import useFetchData from "../Components/useFetchData";
 
 export default function Homepage() {
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
 
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userData]);
+console.log("Seller", userInfo)
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setOrders(data);
       });
-  }, [userData]);
-  const TotalRevenue = Orders.reduce((total, order) => {
-    return total + order.GiaBan;
-  }, 0);
+  }, [Seller]);
+  // console.log("Orders", Orders)
+
+  // const TotalRevenue = Orders?.reduce((total, order) => {
+  //   return total + order.GiaBan;
+  // }, 0);
+  // console.log("TotalRevenue", TotalRevenue)
 
   const [OrdersThisMonth, setOrdersThisMonth] = useState([]);
   useEffect(() => {
     const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -41,12 +70,17 @@ export default function Homepage() {
         });
         setOrdersThisMonth(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
+  // console.log("OrdersThisMonth", OrdersThisMonth)
 
   const [OrdersLastMonth, setOrdersLastMonth] = useState([]);
   useEffect(() => {
     const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -56,27 +90,33 @@ export default function Homepage() {
         });
         setOrdersLastMonth(filterOrder);
       });
-  }, [userData]);
-  let OrdersMonthPercent;
-  if (OrdersLastMonth.length === 0 && OrdersThisMonth.length === 0) {
-    OrdersMonthPercent = 0;
-  } else if (OrdersLastMonth.length === 0) {
-    OrdersMonthPercent = 100;
-  } else {
-    OrdersMonthPercent =
-      ((OrdersThisMonth.length - OrdersLastMonth.length) /
-        OrdersLastMonth.length) *
-      100;
-  }
-  const OrdersTMI =
-    OrdersMonthPercent >= 0
-      ? OrdersMonthPercent + "% increase"
-      : -OrdersMonthPercent + "% decrease";
+  }, [Seller]);
+  // console.log("OrdersLastMonth", OrdersLastMonth)
+
+  // let OrdersMonthPercent;
+  // if (OrdersLastMonth.length === 0 && OrdersThisMonth.length === 0) {
+  //   OrdersMonthPercent = 0;
+  // } else if (OrdersLastMonth.length === 0) {
+  //   OrdersMonthPercent = 100;
+  // } else {
+  //   OrdersMonthPercent =
+  //     ((OrdersThisMonth.length - OrdersLastMonth.length) /
+  //       OrdersLastMonth.length) *
+  //     100;
+  // }
+  // const OrdersTMI =
+  //   OrdersMonthPercent >= 0
+  //     ? OrdersMonthPercent + "% increase"
+  //     : -OrdersMonthPercent + "% decrease";
 
   const [CanceledOrderThisMonth, setCanceledOrderThisMonth] = useState([]);
   useEffect(() => {
     const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -87,12 +127,16 @@ export default function Homepage() {
         });
         setCanceledOrderThisMonth(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
   const [CanceledOrderLastMonth, setCanceledOrderLastMonth] = useState([]);
   useEffect(() => {
     const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -103,31 +147,35 @@ export default function Homepage() {
         });
         setCanceledOrderLastMonth(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
-  let CanceledOrdersMonthPercent;
-  if (
-    CanceledOrderLastMonth.length === 0 &&
-    CanceledOrderThisMonth.length === 0
-  ) {
-    CanceledOrdersMonthPercent = 0;
-  } else if (CanceledOrderLastMonth.length === 0) {
-    CanceledOrdersMonthPercent = 100;
-  } else {
-    CanceledOrdersMonthPercent =
-      ((CanceledOrderThisMonth.length - CanceledOrderLastMonth.length) /
-        CanceledOrderLastMonth.length) *
-      100;
-  }
-  const CanceledOrdersTMI =
-    CanceledOrdersMonthPercent >= 0
-      ? CanceledOrdersMonthPercent + "% increase"
-      : -CanceledOrdersMonthPercent + "% decrease";
+  // let CanceledOrdersMonthPercent;
+  // if (
+  //   CanceledOrderLastMonth.length === 0 &&
+  //   CanceledOrderThisMonth.length === 0
+  // ) {
+  //   CanceledOrdersMonthPercent = 0;
+  // } else if (CanceledOrderLastMonth.length === 0) {
+  //   CanceledOrdersMonthPercent = 100;
+  // } else {
+  //   CanceledOrdersMonthPercent =
+  //     ((CanceledOrderThisMonth.length - CanceledOrderLastMonth.length) /
+  //       CanceledOrderLastMonth.length) *
+  //     100;
+  // }
+  // const CanceledOrdersTMI =
+  //   CanceledOrdersMonthPercent >= 0
+  //     ? CanceledOrdersMonthPercent + "% increase"
+  //     : -CanceledOrdersMonthPercent + "% decrease";
 
   const [SuccessOrderThisMonth, setSuccessOrderThisMonth] = useState([]);
   useEffect(() => {
     const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -138,12 +186,16 @@ export default function Homepage() {
         });
         setSuccessOrderThisMonth(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
   const [SuccessOrderLastMonth, setSuccessOrderLastMonth] = useState([]);
   useEffect(() => {
     const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -154,31 +206,35 @@ export default function Homepage() {
         });
         setSuccessOrderLastMonth(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
-  let SuccessOrdersMonthPercent;
-  if (
-    SuccessOrderLastMonth.length === 0 &&
-    SuccessOrderThisMonth.length === 0
-  ) {
-    SuccessOrdersMonthPercent = 0;
-  } else if (CanceledOrderLastMonth.length === 0) {
-    SuccessOrdersMonthPercent = 100;
-  } else {
-    SuccessOrdersMonthPercent =
-      ((SuccessOrderThisMonth.length - SuccessOrderLastMonth.length) /
-      SuccessOrderLastMonth.length) *
-      100;
-  }
-  const SuccessOrdersTMI =
-  SuccessOrdersMonthPercent >= 0
-      ? SuccessOrdersMonthPercent + "% increase"
-      : -SuccessOrdersMonthPercent + "% decrease";
+  // let SuccessOrdersMonthPercent;
+  // if (
+  //   SuccessOrderLastMonth.length === 0 &&
+  //   SuccessOrderThisMonth.length === 0
+  // ) {
+  //   SuccessOrdersMonthPercent = 0;
+  // } else if (CanceledOrderLastMonth.length === 0) {
+  //   SuccessOrdersMonthPercent = 100;
+  // } else {
+  //   SuccessOrdersMonthPercent =
+  //     ((SuccessOrderThisMonth.length - SuccessOrderLastMonth.length) /
+  //     SuccessOrderLastMonth.length) *
+  //     100;
+  // }
+  // const SuccessOrdersTMI =
+  // SuccessOrdersMonthPercent >= 0
+  //     ? SuccessOrdersMonthPercent + "% increase"
+  //     : -SuccessOrdersMonthPercent + "% decrease";
 
   const [RecentOrders, setRecentOrders] = useState([]);
   useEffect(() => {
     const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -191,28 +247,29 @@ export default function Homepage() {
         });
         setRecentOrders(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
-  const listRecentOrder = RecentOrders.map((item) => {
-    return (
-      <tr>
-        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-          {item.MaDonHang}
-        </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatDate(item.ThoiGianTao)}
-        </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatTime(item.ThoiGianTao)}
-        </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatCurrency(item.GiaBan)}
-        </td>
-      </tr>
-    );
-  });
+  // const listRecentOrder = RecentOrders.map((item) => {
+  //   return (
+  //     <tr>
+  //       <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
+  //         {item.MaDonHang}
+  //       </td>
+  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //         {formatDate(item.ThoiGianTao)}
+  //       </td>
+  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //         {formatTime(item.ThoiGianTao)}
+  //       </td>
+  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+  //         {formatCurrency(item.GiaBan)}
+  //       </td>
+  //     </tr>
+  //   );
+  // });
 
   return (
+    // <h1>Hello World</h1>
     <div className="h-screen w-screen">
       <div className="relative flex h-full">
         <SideBar />
@@ -223,16 +280,16 @@ export default function Homepage() {
             <div className="mt-6 grid grid-cols-4 gap-6">
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-center w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {formatCurrency(TotalRevenue)}
+                  {/* {formatCurrency(TotalRevenue)} */}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Total Revenue</h6>
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {OrdersThisMonth.length}
+                  {/* {OrdersThisMonth.length} */}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Receive Orders</h6>
-                {OrdersMonthPercent >= 0 && (
+                {/* {OrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {OrdersTMI}
                   </p>
@@ -241,14 +298,14 @@ export default function Homepage() {
                   <p className="text-[#EF4444] text-sm font-medium">
                     {OrdersTMI}
                   </p>
-                )}
+                )} */}
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {CanceledOrderThisMonth.length}
+                  {/* {CanceledOrderThisMonth.length} */}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Canceled Orders</h6>
-                {CanceledOrdersMonthPercent >= 0 && (
+                {/* {CanceledOrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {CanceledOrdersTMI}
                   </p>
@@ -257,14 +314,14 @@ export default function Homepage() {
                   <p className="text-[#EF4444] text-sm font-medium">
                     {CanceledOrdersTMI}
                   </p>
-                )}
+                )} */}
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {SuccessOrderThisMonth.length}
+                  {/* {SuccessOrderThisMonth.length} */}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Successful Orders</h6>
-                {SuccessOrdersMonthPercent >= 0 && (
+                {/* {SuccessOrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {SuccessOrdersTMI}
                   </p>
@@ -273,14 +330,14 @@ export default function Homepage() {
                   <p className="text-[#EF4444] text-sm font-medium">
                     {SuccessOrdersTMI}
                   </p>
-                )}
+                )} */}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-6 mt-6">
               <div>
                 <h1 className="text-xl font-medium mb-6">Revenue</h1>
                 <div className="bg-gray-100 flex items-center justify-center w-full">
-                  <LineChart />
+                  {/* <LineChart /> */}
                 </div>
                 <h1 className="text-xl font-medium mt-6">
                   Best Selling Products
@@ -357,7 +414,7 @@ export default function Homepage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-default-200">
-                    {listRecentOrder}
+                    {/* {listRecentOrder} */}
                   </tbody>
                 </table>
               </div>

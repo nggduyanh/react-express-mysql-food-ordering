@@ -38,7 +38,6 @@ export default function Dish() {
         setlistDishT(filterDish);
       });
   }, [listDish, userData]);
-  // console.log("listDishT", listDishT);
 
   const handleRemoveFood = async (id) => {
     const findDish = listDish.find((dish) => dish.MaMonAn === id);
