@@ -112,6 +112,7 @@ create table DonHang (
     MaKhuyenMai int,
     MaNguoiMua int,
     MaPhuongThucGiaoDich int,
+    TrangThaiThanhToan bool,
     foreign key (TrangThai) references TrangThaiDonHang (MaTrangThai) on delete set null,
     foreign key (MaTaiXe) references TaiXe (MaTaiXe) on delete set null,
     foreign key (MaKhuyenMai) references KhuyenMai (MaKhuyenMai) on delete set null,
