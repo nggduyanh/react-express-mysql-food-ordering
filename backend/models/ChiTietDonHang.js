@@ -20,7 +20,7 @@ class ChiTietDonHang
     
     async remove (obj)
     {
-        return await query.remove (chiTietDonHang.tableName,`where ${chiTietDonHang.maDonHang} = ? and ${chiTietDonHang.maMonAn} = ?`,[obj[chiTietDonHang.maDonHang],obj[chiTietDonHang.maMonAn]])
+        return await query.remove (chiTietDonHang.tableName,`where ${chiTietDonHang.maDonHang}`,[obj[chiTietDonHang.maDonHang]])
     }
 
     async getMonAnByDonHang (id)

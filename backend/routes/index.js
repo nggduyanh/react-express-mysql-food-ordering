@@ -12,6 +12,8 @@ const vaiTroRouter = require ("./VaiTroRoute")
 const nguoiMuaRouter = require ("./NguoiMuaRouter")
 const verifyToken = require ("../middlewares/VerifyToken")
 const authRouter = require ("./AuthRouter")
+const paymentRouter = require("./PaymentRoute")
+
 
 function route (app)
 {
@@ -29,6 +31,8 @@ function route (app)
     app.use ("/taixe",taiXeRouter)
     app.use ("/vaitro",vaiTroRouter)
     app.use ("/nguoimua",nguoiMuaRouter)
+    app.use("/payment",paymentRouter)
+
 }
 
 module.exports = route
