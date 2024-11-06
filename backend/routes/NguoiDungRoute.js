@@ -9,5 +9,5 @@ router.patch ("/update",addImageFile (nguoiDung.anh),nguoiDungController.update)
 router.get ("/", nguoiDungController.index)
 router.get("/current",nguoiDungController.getCurrentUser)
 // router.get ("/:id",nguoiDungController.getById)
-
+router.get ("/search/:keyword",nguoiDungController.searchSeller)
 module.exports = router

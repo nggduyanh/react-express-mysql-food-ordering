@@ -12,12 +12,13 @@ const vaiTroRouter = require ("./VaiTroRoute")
 const nguoiMuaRouter = require ("./NguoiMuaRouter")
 const verifyToken = require ("../middlewares/VerifyToken")
 const authRouter = require ("./AuthRouter")
+const paymentRouter = require("./PaymentRoute")
+
 
 function route (app)
 {
     app.use ("/auth",authRouter)
     app.use (verifyToken)
-    // app.use ("/nguoiban",authorize ("Seller"),nguoiBanRouter)
     app.use ("/nguoiban",nguoiBanRouter)
     app.use ("/nguoidung",nguoiDungRouter)
     app.use ("/loainguoiban",loaiNguoiBanRouter)
@@ -27,11 +28,10 @@ function route (app)
     app.use ("/trangthaidonhang",trangThaiDonHangRouter)
     app.use ("/phuongthucgiaodich",phuongThucGiaoDichRouter)
     app.use ("/donhang",donHangRouter)
-    // app.use ("/taixe",authorize ("Driver"),taiXeRouter)
     app.use ("/taixe",taiXeRouter)
     app.use ("/vaitro",vaiTroRouter)
-    // app.use ("/nguoimua",authorize ("Buyer"),nguoiMuaRouter)
     app.use ("/nguoimua",nguoiMuaRouter)
+    app.use("/payment",paymentRouter)
 
 }
 

@@ -22,7 +22,7 @@ function getUploadFile (fieldNames)
     })
 
     let upload = multer ({storage: store})
-    return upload.fields (fieldNames.map (elem => { return {name: elem, maxCount: 1}}))
+    return upload.fields (fieldNames.map (elem => { return {name: elem, maxCount: 3}}))
 }
 
 function uploadFileMiddleware (...fieldNames)

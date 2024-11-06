@@ -1,7 +1,9 @@
 const query = require ("../services/QueryService")
 const nhanxet = require ("../utils/constants/NhanXetConstant")
 const nguoimua = require ("../utils/constants/NguoiDungConstant")
+const nguoiban = require ("../utils/constants/NguoiBanConstant")
 const monan = require ("../utils/constants/MonAnConstant")
+const anhnhanxet = require ("../utils/constants/AnhNhanXetConstant")
 class NhanXet 
 {
     async get ()
@@ -26,17 +28,17 @@ class NhanXet
 
     async getByMonAn(id) 
     {
-        return await query.selectWithJoin ("*",nhanxet.tableName, `join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua}`,`where ${nhanxet.maMonAn} = ?`, [id])    
+        return await query.selectWithJoin ("*",nhanxet.tableName, `left join ${anhnhanxet.tableName} on ${anhnhanxet.tableName}.${anhnhanxet.maNguoiMua} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} and ${anhnhanxet.tableName}.${anhnhanxet.maMonAn} = ${nhanxet.tableName}.${nhanxet.maMonAn} join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua}`,`where ${nhanxet.tableName}.${nhanxet.maMonAn} = ?`, [id])    
     }
 
     async getByNguoiMua (id)
     {
-        return await query.selectWithJoin ("*",nhanxet.tableName,`join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}` , `where ${nhanxet.maNguoiMua} = ?`, [id])   
+        return await query.selectWithJoin ("*",nhanxet.tableName,`left join ${anhnhanxet.tableName} on ${anhnhanxet.tableName}.${anhnhanxet.maNguoiMua} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} and ${anhnhanxet.tableName}.${anhnhanxet.maMonAn} = ${nhanxet.tableName}.${nhanxet.maMonAn} join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}` , `where ${nhanxet.tableName}.${nhanxet.maNguoiMua} = ?`, [id])   
     }
 
     async getByNguoiBan (id)
     {
-        return await query.selectWithJoin ("*",nhanxet.tableName, `join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}`,`where ${monan.maNguoiBan} = ?`, [id])    
+        return await query.selectWithJoin ("*",nhanxet.tableName, `left join ${anhnhanxet.tableName} on ${anhnhanxet.tableName}.${anhnhanxet.maNguoiMua} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} and ${anhnhanxet.tableName}.${anhnhanxet.maMonAn} = ${nhanxet.tableName}.${nhanxet.maMonAn} join ${nguoimua.tableName} on ${nguoimua.tableName}.${nguoimua.id} = ${nhanxet.tableName}.${nhanxet.maNguoiMua} join ${monan.tableName} on ${monan.tableName}.${monan.id} = ${nhanxet.tableName}.${nhanxet.maMonAn}`,`where ${monan.tableName}.${monan.maNguoiBan} = ?`, [id])    
     }
 }
 

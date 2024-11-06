@@ -10,11 +10,11 @@ router.patch ("/update",authorize ("Seller") ,addImageFile (nguoiBan.anh,nguoiBa
 router.post("/add",addImageFile (nguoiBan.anh,nguoiBan.cccd,nguoiBan.giayPhep),nguoiBanController.add)
 router.get ("/",nguoiBanController.index)
 router.get ("/current",authorize ("Seller"),nguoiBanController.getCurrentNguoiBan)
-router.get ("/:id",authorize ("Seller"),nguoiBanController.getById)
+router.get ("/:id",nguoiBanController.getById)
 router.post ("/loainguoiban/add", authorize ("Seller"),nguoiBanController.addLoaiNguoiBan)
 router.delete ("/loainguoiban/delete", authorize ("Seller"),nguoiBanController.deleteLoaiNguoiBan)
 router.patch ("/nhanxet/update",authorize ("Seller") ,nguoiBanController.replyNhanXet)
 router.get ("/nguoibanyeuthich/:idNguoiMua",nguoiBanController.getByNguoiBanYeuThich)
-router.get ("/nhanxet/:idNguoiBan",authorize ("Seller") ,nguoiBanController.getNhanXetByNguoiBan)
+router.get ("/nhanxet/:idNguoiBan", authorize ("Seller"), nguoiBanController.getNhanXetByNguoiBan)
 
 module.exports = router

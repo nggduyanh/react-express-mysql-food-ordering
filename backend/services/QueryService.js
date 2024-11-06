@@ -157,12 +157,19 @@ async function insertArrayWithManualPrimaryKey(tableName,fields,objs)
     try
     {
         let sqlFields = fields.join (",") 
+        let args = []
         let sqlObjects = objs.map (elem => {
-            let sqlObject = fields.map (field => elem[field])
+
+            let sqlObject = fields.map (field => { 
+                args.push (elem[field])
+                return "?"
+            })
             return `(${sqlObject.join (",")})`
         })
 
-        let sqlString = pool.format (`insert into ${tableName} (${sqlFields}) values ${sqlObjects.join (",")} `)
+
+        let sqlString = pool.format (`insert into ${tableName} (${sqlFields}) values ${sqlObjects.join (",")}`,args)
+        console.log (sqlString)
         await pool.query (sqlString)
         
         response.res = objs
