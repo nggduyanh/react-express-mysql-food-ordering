@@ -164,6 +164,16 @@ create table VaiTro_NguoiDung (
     foreign key (MaNguoiDung) references nguoidung (MaNguoiDung) on delete cascade
 );
 
+create table AnhNhanXet (
+	MaNguoiMua int not null,
+    MaMonAn int not null,
+    MaAnh int primary key auto_increment,
+    foreign key (MaNguoiMua) references nhanxet (MaNguoiMua) on delete cascade,
+    foreign key (MaMonAn) references nhanxet (MaMonAn) on delete cascade
+);
+
+alter table AnhNhanXet add column AnhDinhKem varchar (255);
+
 # Trigger
 
 create trigger tinhDiemNguoiBanInsert after insert on NhanXet
@@ -200,6 +210,7 @@ update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
 
 
 # Drop Table 
+drop table anhnhanxet;
 drop table NhanXet;
 drop table NguoiMua_KhuyenMai;
 drop table LoaiNguoiBan_NguoiBan;

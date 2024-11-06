@@ -8,8 +8,9 @@ const NguoiBanYeuThich = require ("../models/NguoiBanYeuThich")
 const nguoiBan = require ("../utils/constants/NguoiBanConstant")
 const roleService = require ("../services/RoleService")
 const jwt = require ("jsonwebtoken")
-
-
+const anhNhanXet = require ("../utils/constants/AnhNhanXetConstant")
+const nhanxet = require ("../utils/constants/NhanXetConstant")
+const nguoidung = require ("../utils/constants/NguoiDungConstant")
 class NguoiBanController 
 {
     async index (req,res,next)
@@ -107,10 +108,42 @@ class NguoiBanController
 
     async getNhanXetByNguoiBan (req,res,next)
     {
-        let obj = await NhanXet.getByNguoiMua (req.params.idNguoiBan)
+        let obj = await NhanXet.getByNguoiBan (req.params.idNguoiBan)
         if (!obj.success) return next (new Exception (obj.res,500))
-        if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.idNguoiMua}`},404))
-        return res.status (200).json (obj.res)
+        if (!obj.res.length) return next (new Exception ({msg: `Not found id = ${req.params.idNguoiBan}`},404))
+        let newObj = {}
+        obj.res.forEach (elem => {
+            let {AnhDinhKem} = elem[anhNhanXet.tableName]
+            let comment = elem[nhanxet.tableName]
+            let {TenNguoiDung,AnhNguoiDung} = elem[nguoidung.tableName]
+
+            if (!newObj[comment[nhanxet.maMonAn]])
+            {
+                newObj[comment[nhanxet.maMonAn]] = {}   
+                newObj[comment[nhanxet.maMonAn]][nhanxet.tableName] = {} 
+            }
+
+            if (!newObj[comment[nhanxet.maMonAn]][nhanxet.tableName][comment[nhanxet.maNguoiMua]])
+            {
+                newObj[comment[nhanxet.maMonAn]][nhanxet.tableName][comment[nhanxet.maNguoiMua]] = {
+                    ...comment,
+                    TenNguoiDung,
+                    AnhNguoiDung
+                }
+                newObj[comment[nhanxet.maMonAn]][nhanxet.tableName][comment[nhanxet.maNguoiMua]][anhNhanXet.tableName] = []
+            }
+
+            if (AnhDinhKem) newObj[comment[nhanxet.maMonAn]][nhanxet.tableName][comment[nhanxet.maNguoiMua]][anhNhanXet.tableName].push (AnhDinhKem)
+
+        })
+
+        return res.status (200).json (Object.values (newObj).map (elem => {
+            let comment = Object.values (elem[nhanxet.tableName])
+            return {
+                ...elem,
+                NhanXet: comment
+            }
+        }))
     }
 }
 

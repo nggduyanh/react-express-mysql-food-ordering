@@ -15,6 +15,6 @@ router.post ("/loainguoiban/add", authorize ("Seller"),nguoiBanController.addLoa
 router.delete ("/loainguoiban/delete", authorize ("Seller"),nguoiBanController.deleteLoaiNguoiBan)
 router.patch ("/nhanxet/update",authorize ("Seller") ,nguoiBanController.replyNhanXet)
 router.get ("/nguoibanyeuthich/:idNguoiMua",nguoiBanController.getByNguoiBanYeuThich)
-router.get ("/nhanxet/:idNguoiBan",authorize ("Seller") ,nguoiBanController.getNhanXetByNguoiBan)
+router.get ("/nhanxet/:idNguoiBan", authorize ("Seller"), nguoiBanController.getNhanXetByNguoiBan)
 
 module.exports = router
