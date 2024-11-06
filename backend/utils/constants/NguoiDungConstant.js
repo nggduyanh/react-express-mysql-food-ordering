@@ -6,6 +6,8 @@ const constant = {
     mk: "MatKhau",
     anh: "AnhNguoiDung",
     mail: "Email",
+    otp: "OTP",
+    otpExpire: "OTPExpire"
 }
 
 module.exports = constant

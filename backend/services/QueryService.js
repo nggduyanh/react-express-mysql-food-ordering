@@ -151,4 +151,39 @@ async function selectWithJoin(field,tableName,joinClause,whereClause,args)
     }
 }
 
-module.exports = {select,insert,update,remove,insertWithManualPrimaryKey, selectWithJoin}
+async function insertArrayWithManualPrimaryKey(tableName,fields,objs) 
+{
+    let response = {}
+    try
+    {
+        let sqlFields = fields.join (",") 
+        let args = []
+        let sqlObjects = objs.map (elem => {
+
+            let sqlObject = fields.map (field => { 
+                args.push (elem[field])
+                return "?"
+            })
+            return `(${sqlObject.join (",")})`
+        })
+
+
+        let sqlString = pool.format (`insert into ${tableName} (${sqlFields}) values ${sqlObjects.join (",")}`,args)
+        console.log (sqlString)
+        await pool.query (sqlString)
+        
+        response.res = objs
+        response.success = true
+    }
+    catch (error)
+    {
+        response.res = error
+        response.success = false
+    }
+    finally 
+    {
+        return response
+    }       
+}
+
+module.exports = {select,insert,update,remove,insertWithManualPrimaryKey, selectWithJoin, insertArrayWithManualPrimaryKey}

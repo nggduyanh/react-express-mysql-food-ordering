@@ -1,6 +1,7 @@
 const query = require ("../services/QueryService")
 const donHang = require ("../utils/constants/DonHangConstant")
-
+const chiTietDonHang = require ("../utils/constants/ChiTietDonHangConstant")
+const monAn = require ("../utils/constants/MonAnConstant")
 class DonHang 
 {
     async get ()
@@ -26,6 +27,12 @@ class DonHang
     async remove (obj)
     {
         return await query.remove (donHang.tableName,`where ${donHang.id} = ?`,[obj[donHang.id]])
+    }
+
+    async getByNguoiBan (id)
+    {
+        return await query.selectWithJoin ("*",donHang.tableName,`join ${chiTietDonHang.tableName} on ${donHang.tableName}.${donHang.id} = ${chiTietDonHang.tableName}.${chiTietDonHang.maDonHang} join ${monAn.tableName} on ${chiTietDonHang.tableName}.${chiTietDonHang.maMonAn} = ${monAn.tableName}.${monAn.id}`,`where ${monAn.maNguoiBan} = ?`,[id])
+        
     }
 }
 

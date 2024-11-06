@@ -7,6 +7,10 @@ create table NguoiDung (
     SoDienThoai varchar (50)
 );
 
+alter table nguoidung add column OTP int;
+alter table nguoidung add column OTPExpire varchar (20);
+alter table nguoidung modify column SoDienThoai varchar (50) unique;
+
 create table NguoiBan (
 	MaNguoiBan int primary key,
     TenNguoiBan varchar (50),
@@ -21,6 +25,12 @@ create table NguoiBan (
     LuotDanhGia int default 0,
     foreign key (MaNguoiBan) references NguoiDung (MaNguoiDung) on delete cascade
 );
+
+alter table NguoiBan add column TenChuSoHuu varchar (50);
+alter table NguoiBan add column QueQuanChuSoHuu varchar (50);
+alter table NguoiBan add column NgaySinhChuSoHuu datetime;
+alter table NguoiBan add column Email varchar (255);
+alter table NguoiBan add column Hotline varchar (255);
 
 create table LoaiNguoiBan (
 	MaLoaiNguoiBan int primary key auto_increment,
@@ -57,6 +67,8 @@ create table NhanXet (
     TraLoi varchar (255),
     Diem double
 );
+
+alter table nhanxet add column ThoiGianTao datetime default now();
 
 create table LoaiNguoiBan_NguoiBan (
 	MaNguoiBan int,
@@ -120,6 +132,9 @@ create table DonHang (
     foreign key (MaPhuongThucGiaoDich) references PhuongThucGiaoDich (MaPhuongThucGiaoDich) on delete set null
 );
 
+alter table donhang add column ThoiGianTao datetime default now();
+alter table donhang add column LoiNhan varchar (255);
+
 create table ChiTietDonHang (
 	MaMonAn int,
     MaDonHang int,
@@ -149,6 +164,16 @@ create table VaiTro_NguoiDung (
     foreign key (MaVaiTro) references VaiTro (MaVaiTro) on delete cascade,
     foreign key (MaNguoiDung) references nguoidung (MaNguoiDung) on delete cascade
 );
+
+create table AnhNhanXet (
+	MaNguoiMua int not null,
+    MaMonAn int not null,
+    MaAnh int primary key auto_increment,
+    foreign key (MaNguoiMua) references nhanxet (MaNguoiMua) on delete cascade,
+    foreign key (MaMonAn) references nhanxet (MaMonAn) on delete cascade
+);
+
+alter table AnhNhanXet add column AnhDinhKem varchar (255);
 
 # Trigger
 
@@ -186,6 +211,7 @@ update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
 
 
 # Drop Table 
+drop table anhnhanxet;
 drop table NhanXet;
 drop table NguoiMua_KhuyenMai;
 drop table LoaiNguoiBan_NguoiBan;
@@ -407,4 +433,4 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (20,24,"CHUBUNE SASHIMI",1089000,"Thuyền sashimi cỡ trung"),
         (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
-        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên")  
+        (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
