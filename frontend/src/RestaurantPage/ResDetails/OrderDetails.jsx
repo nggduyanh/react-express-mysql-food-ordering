@@ -3,7 +3,15 @@ import { MdOutlinePayment } from "react-icons/md";
 import ResOrderDetailAdd from "./ResOrderAdd";
 import { useEffect, useReducer, useState } from "react";
 import axios from "axios";
-import { GetPromotion } from "../../Route";
+import {
+  formatCurrency,
+  GetPromotion,
+  OrderAdd,
+  OrderDetailAdd,
+  PaymentMethod,
+} from "../../Route";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate, useOutletContext } from "react-router-dom";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -22,9 +30,6 @@ const OrderAction = (state, action) => {
         ...state,
         promotions: action.payload,
       };
-    case "SET_PROMOTION": {
-      break;
-    }
     case "SUGGESTION":
     case "PAYMENT": {
       const { name, value } = action.event.target;
@@ -33,37 +38,61 @@ const OrderAction = (state, action) => {
         [name]: value,
       };
     }
+
     default:
       return state;
   }
 };
 export default function OrderDetails(props) {
+  const { tokenValue, userData } = useOutletContext();
   const [detailsOrder, dispatch] = useReducer(OrderAction, OrderReducer);
-  const handlePayment = (e) => {
+  const [totalMoney, settotalMoney] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState([]);
+  const navigate = useNavigate();
+  const handlePayment = async (e) => {
     dispatch({ type: "PAYMENT", event: e });
   };
   const handleSuggestionChange = (e) => {
     dispatch({ type: "SUGGESTION", event: e });
   };
   const handlePromotionChange = async (e) => {
-    const { name, value } = e.target;
-    const response = await axios.get(GetPromotion + `/${value}`);
+    const { value } = e.target;
+    if (value === "remove") {
+      dispatch({ type: "PROMOTION", payload: "" });
+      return;
+    }
+    const response = await axios.get(GetPromotion + `/${value}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    });
     const data = await response.data;
     dispatch({ type: "PROMOTION", payload: data[0] });
   };
   useEffect(() => {
     dispatch({ type: "LIST_ORDER", payload: props.orderList });
   }, [props.orderList]);
-  const handlePayOrder = (event) => {
-    event.preventDefault();
-    console.log("Order Reducer", detailsOrder);
-  };
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
+  useEffect(() => {
+    fetch(PaymentMethod, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Not found PaymendMethod");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setPaymentMethod(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setPaymentMethod([]);
+      });
+  }, [tokenValue]);
+  console.log(detailsOrder.listFood.length === 0);
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {
@@ -75,21 +104,123 @@ export default function OrderDetails(props) {
     return totalPrice;
   };
   const applyPromotions = (order) => {
-    console.log(order);
     let totalPrice = handleTotal();
-    if (totalPrice === 0) return totalPrice;
+    let totalTemp = totalPrice;
+    if (totalTemp === 0) return totalTemp;
     if (order.promotions && Object.keys(order.promotions).length > 0) {
       if (order.promotions.PhanTram !== null) {
         console.log("You choose PhanTram");
-        return (totalPrice =
-          totalPrice - totalPrice * (order.promotions.PhanTram / 100));
-      }
-      if (order.promotions.GiaTri !== null) {
+        totalTemp = totalTemp - totalTemp * (order.promotions.PhanTram / 100);
+      } else if (order.promotions.GiaTri !== null) {
         console.log("You choose GiaTri");
-        return (totalPrice -= order.promotions.GiaTri);
+        totalTemp -= order.promotions.GiaTri;
       }
     } else {
-      return totalPrice;
+      totalTemp = totalPrice;
+    }
+    if (totalTemp < 0) return totalPrice;
+    return totalTemp;
+  };
+  const handlePayOrder = async (event) => {
+    event.preventDefault();
+    const total = applyPromotions(detailsOrder);
+    settotalMoney(total);
+    try {
+      // console.log({
+      //   DiaChiDen: "De La Thanh",
+      //   TrangThai: 1,
+      //   GiaBan: total,
+      //   MaTaiXe: null,
+      //   MaNguoiMua: userData.MaNguoiDung,
+      //   MaKhuyenMai: detailsOrder.promotions.MaKhuyenMai,
+      //   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+      // });
+
+      if (detailsOrder.listFood.length > 0) {
+        const response = await toast.promise(
+          axios.post(
+            OrderAdd,
+            {
+              DiaChiDen: "De La Thanh",
+              TrangThai: 1,
+              GiaBan: total,
+              MaTaiXe: null,
+              MaNguoiMua: userData.MaNguoiDung,
+              MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+              MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenValue}`,
+              },
+
+              withCredentials: true,
+            }
+          ),
+          {
+            loading: "Creating order...",
+            success: (response) => {
+              const successMessage = `Order created successfully: ${response.data[0].MaDonHang}`; // Lưu thông báo thành công
+              // Hiển thị thông báo
+              setTimeout(() => {
+                navigate("/");
+              }, 2000);
+              return successMessage;
+            },
+            error: (err) => `Error creating order: ${err.message}`,
+          }
+        );
+        // toast.success("Order created successfully!");
+        const addOrderDetaisl = props.orderList.map((order) => {
+          const amountNumber = props.AmountList.find((amount) => {
+            return amount.id === order.MaMonAn;
+          });
+          return {
+            MaMonAn: order.MaMonAn,
+            MaDonHang: response.data[0].MaDonHang,
+            SoLuong: parseInt(amountNumber.amount),
+          };
+        });
+        // toast.success("Order details created successfully!");
+        const reponseDetailsOrder = await toast.promise(
+          axios.post(
+            OrderDetailAdd,
+            {
+              arr: addOrderDetaisl,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenValue}`,
+              },
+              withCredentials: true,
+            }
+          ),
+          {
+            loading: "Creating order details...",
+            success: (response) => {
+              const successMessage = `Order details created successfully!`; // Lưu thông báo thành công
+              // Hiển thị thông báo
+              setTimeout(() => {
+                navigate("/home/activity/ongoing");
+              }, 2000);
+              return successMessage;
+            },
+            // success: () => {
+            //   return "Order details created successfully!"
+            // },
+            error: (err) => {
+              return `Error creating order details: ${err.message}`;
+            },
+          }
+        );
+      } else {
+        toast.error("You must add your order");
+      }
+    } catch (err) {
+      toast.error("An error occurred while processing your order!");
+      console.log(err);
     }
   };
   return (
@@ -106,6 +237,7 @@ export default function OrderDetails(props) {
                 className="w-10 h-10 rounded-full"
               />
             )}
+
             <p>{props.name}</p>
           </div>
           <div className=" max-h-52 overflow-y-auto row-span-2 p-1 border border-gray-300 rounded-lg order list">
@@ -152,7 +284,9 @@ export default function OrderDetails(props) {
               onChange={handlePromotionChange}
               className="w-full border border-gray-200 p-2"
             >
-              <option value="">Choose promotion</option>
+              <option value="" hidden>
+                Choose promotion
+              </option>
               {props.lstPromotions.map((promotion) => {
                 return (
                   <option
@@ -163,6 +297,7 @@ export default function OrderDetails(props) {
                   </option>
                 );
               })}
+              <option value="remove">Remove promotion</option>
             </select>
             <div className="p-2 bg-red-500 font-bold text-white rounded-e-lg">
               %Apply
@@ -187,9 +322,16 @@ export default function OrderDetails(props) {
               onChange={handlePayment}
             >
               <option value="">Choose Payment method</option>
-              <option value="cash">Cash</option>
-              <option value="card">Card</option>
-              <option value="e-wallet">E-wallet</option>
+              {paymentMethod.map((payment) => {
+                return (
+                  <option
+                    key={payment.MaPhuongThucGiaoDich}
+                    value={payment.MaPhuongThucGiaoDich}
+                  >
+                    {payment.TenPhuongThucGiaoDich}
+                  </option>
+                );
+              })}
             </select>
             <div className="py-3 px-4 bg-green-500 font-bold text-white rounded-e-lg">
               <MdOutlinePayment />
@@ -231,6 +373,38 @@ export default function OrderDetails(props) {
           </div>
         </div>
       </div>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            zIndex: 9999,
+          },
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

@@ -7,24 +7,29 @@ import {
   FaSortNumericUp,
   FaSortNumericDownAlt,
 } from "react-icons/fa";
+import { useContext } from "react";
+import { UserContext } from "../Layout/LayoutHeader";
 export default function TypeRes() {
   const typeValue = useParams();
+  const { tokenValue } = useContext(UserContext);
   const getDataFromParams = typeValue.type.slice(1, typeValue.type.length + 1);
-  const listFood = useFilterRes_Type(getDataFromParams).map((res) => {
-    return (
-      <ResInfo {...res} key={res.id}>
-        <p className="text-xl font-bold">{res.TenNguoiBan} </p>
-        <i className="text-gray-500">
-          {res.loaiMonAn.map((loaiMonAn) => {
-            return loaiMonAn.TenLoaiMonAn + " ";
-          })}
-        </i>
-        <p className="text-md text-gray-500">
-          Time: {res.ThoiGianMoCua} - {res.ThoiGianDongCua}
-        </p>
-      </ResInfo>
-    );
-  });
+  const listFood = useFilterRes_Type(getDataFromParams, tokenValue).map(
+    (res) => {
+      return (
+        <ResInfo {...res} key={res.id}>
+          <p className="text-xl font-bold">{res.TenNguoiBan} </p>
+          <i className="text-gray-500">
+            {res.loaiMonAn.map((loaiMonAn) => {
+              return loaiMonAn.TenLoaiMonAn + " ";
+            })}
+          </i>
+          <p className="text-md text-gray-500">
+            Time: {res.ThoiGianMoCua} - {res.ThoiGianDongCua}
+          </p>
+        </ResInfo>
+      );
+    }
+  );
   const compareAToZ = (a, b) => {
     return a.TenNguoiBan - b.TenNguoiBan;
   };

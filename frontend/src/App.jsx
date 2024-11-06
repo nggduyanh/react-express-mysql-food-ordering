@@ -19,79 +19,82 @@ import OnGoing from "./Information/Activity/OnGoing";
 import Canceled from "./Information/Activity/Canceled";
 import OrderStatusDetails from "./Information/Activity/OrderStatusDetails";
 import SuccessPayment from "./SuccessPayment";
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
+import { Toaster } from "react-hot-toast";
+import ChangePassword from "./Information/ChangePassword";
+import LayoutResetPass from "./Login/ResetPass/LayoutResetPass";
+import Reset from "./Login/ResetPass/Reset";
+import CreateNewPass from "./Login/ResetPass/CreateNewPass";
+import PasswordSuccess from "./Login/ResetPass/PasswordSuccess";
+import ConfirmCode from "./Login/ResetPass/ConfirmCode";
+import PrivateRoute from "./Layout/PrivateRoute";
 const UserAccount = createContext();
 function App() {
-  const [account, setAccount] = useState(() => {
-    const storedAccount = localStorage.getItem("user");
-    if (storedAccount) {
-      const parsedAccount = JSON.parse(storedAccount);
-      const now = new Date().getTime();
-      if (parsedAccount.expire > now) {
-        return parsedAccount.value; // Khởi tạo account từ localStorage nếu còn hạn
-      } else {
-        localStorage.removeItem("user"); // Xóa nếu đã hết hạn
-        return null;
-      }
-    }
-    return null; // Giá trị mặc định nếu không có gì trong localStorage
-  });
-  const [userData, setUserData] = useState({});
-  const OneDaysMilliseconds = 86400000;
-  useEffect(() => {
-    const setLocalStorage = async (key, timeExpire) => {
-      const now = new Date();
-      const expireDate = {
-        value: account,
-        expire: now.getTime() + timeExpire,
-      };
-      localStorage.setItem(key, JSON.stringify(expireDate));
-    };
-    const checklocalStorage = async (key, timeExpire) => {
-      setLocalStorage(key, timeExpire);
-      const getJsonData = localStorage.getItem(key);
-      const data = JSON.parse(getJsonData);
-      const now = new Date().getTime();
-      if (now > data.expire) {
-        localStorage.removeItem(key);
-        return null;
-      }
-      setUserData(data.value);
-    };
-    checklocalStorage("user", OneDaysMilliseconds);
-  }, [account]);
   return (
-    <UserAccount.Provider value={{ userData }}>
+    <UserAccount.Provider value={"Noce"}>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={<Login assignAccount={(value) => setAccount(value)} />}
-          />
-          <Route path="home" element={<LayoutHeader />}>
-            <Route index element={<HomePage />} />
-            <Route path="information" element={<UserInfor />}>
-              <Route index element={<ChangeAccount />} />
-              <Route path="payment" element={<PaymentCards />} />
-              <Route path="favourite" element={<Favourite />} />
-              <Route path="address" element={<Address />} />
-            </Route>
-            <Route path="activity" element={<ActivityOrder />}>
-              <Route index element={<Complete />} />
-              <Route path="ongoing" element={<OnGoing />} />
-              <Route path="canceled" element={<Canceled />} />
-              <Route path=":orderID" element={<OrderStatusDetails />} />
-            </Route>
-            <Route path="success" element={<SuccessPayment />} />
-            <Route path="all" element={<ListRes />} />
-            <Route path="typeRes/:type" element={<TypeRes />} />
-            <Route path="restaurant/:resname" element={<SpecificRes />} />
+          <Route path="/" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<LayoutResetPass />}>
+            <Route index element={<Reset />} />
+            <Route path="create-new" element={<CreateNewPass />} />
+            <Route path="confirmCode" element={<ConfirmCode />} />
+            <Route path="password-success" element={<PasswordSuccess />} />
           </Route>
-          <Route
-            path="register"
-            element={<Register assignAccount={(value) => setAccount(value)} />}
-          />
           <Route path="*" element={<NoPage />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path="home" element={<LayoutHeader />}>
+              <Route index element={<HomePage />} />
+              <Route path="information" element={<UserInfor />}>
+                <Route index element={<ChangeAccount />} />
+                <Route path="payment" element={<PaymentCards />} />
+                <Route path="favourite" element={<Favourite />} />
+                <Route path="address" element={<Address />} />
+                <Route path="change-password" element={<ChangePassword />} />
+              </Route>
+              <Route path="activity" element={<ActivityOrder />}>
+                <Route index element={<Complete />} />
+                <Route path="ongoing" element={<OnGoing />} />
+                <Route path="canceled" element={<Canceled />} />
+                <Route path=":orderID" element={<OrderStatusDetails />} />
+              </Route>
+              <Route path="success" element={<SuccessPayment />} />
+              <Route path="all" element={<ListRes />} />
+              <Route path="typeRes/:type" element={<TypeRes />} />
+              <Route path="restaurant/:resname" element={<SpecificRes />} />
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </UserAccount.Provider>

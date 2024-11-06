@@ -1,12 +1,13 @@
 import ResInfo from "./InfoRes/ResInfo";
 import GridDiv from "../Function/GridDiv";
-import { FaSearch } from "react-icons/fa";
 import useFilterRes_Type from "../Hook/useFilterRes_Type";
 import Search from "../Function/Search";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../Layout/LayoutHeader";
 export default function ListRes() {
   const [search, setSearch] = useState("");
-  const listFood = useFilterRes_Type(search).map((res) => {
+  const { tokenValue } = useContext(UserContext);
+  const listFood = useFilterRes_Type(search, tokenValue).map((res) => {
     return (
       <ResInfo {...res} key={res.id}>
         <p className="text-xl font-bold">{res.TenNguoiBan} </p>
