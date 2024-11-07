@@ -9,6 +9,7 @@ import {
   OrderAdd,
   OrderDetailAdd,
   PaymentMethod,
+  urlPayment,
 } from "../../Route";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -92,7 +93,6 @@ export default function OrderDetails(props) {
         setPaymentMethod([]);
       });
   }, [tokenValue]);
-  console.log(detailsOrder.listFood.length === 0);
   const handleTotal = () => {
     const totalPrice = props.orderList.reduce((accummulate, currentValue) => {
       const getAmountNumber = props.AmountList.find((amount) => {
@@ -103,6 +103,7 @@ export default function OrderDetails(props) {
     }, 0);
     return totalPrice;
   };
+  console.log("detailsOrder", detailsOrder);
   const applyPromotions = (order) => {
     let totalPrice = handleTotal();
     let totalTemp = totalPrice;
@@ -135,7 +136,8 @@ export default function OrderDetails(props) {
       //   MaKhuyenMai: detailsOrder.promotions.MaKhuyenMai,
       //   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
       // });
-
+      let TrangThaiThanhToan =
+        parseInt(detailsOrder.paymentMethod) !== 1 ? false : true;
       if (detailsOrder.listFood.length > 0) {
         const response = await toast.promise(
           axios.post(
@@ -147,6 +149,7 @@ export default function OrderDetails(props) {
               MaTaiXe: null,
               MaNguoiMua: userData.MaNguoiDung,
               MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+              TrangThaiThanhToan: TrangThaiThanhToan,
               MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
             },
             {
@@ -163,14 +166,15 @@ export default function OrderDetails(props) {
             success: (response) => {
               const successMessage = `Order created successfully: ${response.data[0].MaDonHang}`; // Lưu thông báo thành công
               // Hiển thị thông báo
-              setTimeout(() => {
-                navigate("/");
-              }, 2000);
+              // setTimeout(() => {
+              //   navigate("/");
+              // }, 2000);
               return successMessage;
             },
             error: (err) => `Error creating order: ${err.message}`,
           }
         );
+
         // toast.success("Order created successfully!");
         const addOrderDetaisl = props.orderList.map((order) => {
           const amountNumber = props.AmountList.find((amount) => {
@@ -202,9 +206,9 @@ export default function OrderDetails(props) {
             success: (response) => {
               const successMessage = `Order details created successfully!`; // Lưu thông báo thành công
               // Hiển thị thông báo
-              setTimeout(() => {
-                navigate("/home/activity/ongoing");
-              }, 2000);
+              // setTimeout(() => {
+              //   navigate("/home/activity/ongoing");
+              // }, 2000);
               return successMessage;
             },
             // success: () => {
@@ -215,6 +219,58 @@ export default function OrderDetails(props) {
             },
           }
         );
+
+        if (TrangThaiThanhToan === false) {
+          toast.promise(
+            (async () => {
+              const responseOrder = await axios.post(
+                urlPayment,
+                {
+                  MaDonHang: response.data[0].MaDonHang,
+                  DiaChiDen: "De La Thanh",
+                  TrangThai: 1,
+                  GiaBan: total,
+                  MaTaiXe: null,
+                  MaNguoiMua: userData.MaNguoiDung,
+                  MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
+                  TrangThaiThanhToan: false,
+                  MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+                  ListItems: reponseDetailsOrder?.data,
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${tokenValue}`,
+                  },
+
+                  withCredentials: true,
+                }
+              );
+              return responseOrder;
+            })(),
+            {
+              loading: "Wait for our payment...",
+              success: (response) => {
+                // console.log("Response: " + response);
+                const successMessage = response.data.return_message;
+                console.log("response", response);
+                if (response.data.return_code !== 1) {
+                  const failedMessage = "Something went wrong";
+                  return failedMessage;
+                }
+                window.location.href = response.data.order_url;
+                // navigate("/" + response.data.order_url);
+                return successMessage;
+              },
+              error: (err) => {
+                return `Error creating order details: ${err.message}`;
+              },
+            }
+          );
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/home/activity/ongoing");
+        }
       } else {
         toast.error("You must add your order");
       }

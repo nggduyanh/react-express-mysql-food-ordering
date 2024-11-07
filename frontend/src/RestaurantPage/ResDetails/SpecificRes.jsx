@@ -14,6 +14,7 @@ import {
   formatCurrency,
   GetFoodRestaurant,
   GetPromotion,
+  GetRestaurant,
   localStaticFile,
 } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
@@ -60,6 +61,16 @@ export default function SpecificRes() {
         } else console.log(err.message);
       });
   }, [tokenValue]);
+  const [Seller, setSeller] = useState([]);
+  useEffect(() => {
+    fetch(GetRestaurant, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setSeller(data));
+  }, []);
   useEffect(() => {
     fetch(GetPromotion, {
       headers: {

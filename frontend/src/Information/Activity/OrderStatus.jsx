@@ -77,6 +77,7 @@ export default function OrderStatus(props) {
         console.log(err);
       });
   }, [orderDetails.orderDetaiInfo]);
+  console.log(orderDetails);
   let colorStatus = " ";
   let nameStatus = " ";
   if (props.TrangThai === orderStatus[4].MaTrangThai) {
@@ -130,30 +131,23 @@ export default function OrderStatus(props) {
       <hr />
       <div className="detailsOrders flex items-center justify-between text-xs ">
         <div className="listOrder py-4">
-          {orderDetails.orderDetaiInfo.length === 0 ? (
-            <p className="text-red-500 font-bold">
-              Sorry something went wrong with your order We will delete this
-              order soon
-            </p>
-          ) : (
-            <div>
-              {orderDetails.orderDetaiInfo.map((order) => {
-                return (
-                  <div
-                    key={order.ChiTietDonHang.MaMonAn}
-                    className="flex items-center"
-                  >
-                    <p className="mr-2">{order.MonAn.TenMonAn}</p> x
-                    <p className="ml-2">{order.ChiTietDonHang.SoLuong}</p>
-                    <p className="ml-2">
-                      ({formatCurrency(order.MonAn.GiaBan)}{" "}
-                      <span className="font-bold">each</span>)
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <div>
+            {orderDetails.orderDetaiInfo.map((order) => {
+              return (
+                <div
+                  key={order.ChiTietDonHang.MaMonAn}
+                  className="flex items-center"
+                >
+                  <p className="mr-2">{order.MonAn.TenMonAn}</p> x
+                  <p className="ml-2">{order.ChiTietDonHang.SoLuong}</p>
+                  <p className="ml-2">
+                    ({formatCurrency(order.MonAn.GiaBan)}{" "}
+                    <span className="font-bold">each</span>)
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
         <div className="pay flex place-items-center gap-2">
           <div>
