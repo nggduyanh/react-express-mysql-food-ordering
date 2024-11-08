@@ -19,8 +19,9 @@ router(app)
 app.use (errorHandler)
 
 
+const socketConfig = require ("./configs/SocketConfig")
 const server = http.createServer (app)
-const io = new socket.Server (server)
+const io = new socket.Server (server,socketConfig)
 const socketEvent = require ("./services/Socket")
 
 socketEvent (io)
