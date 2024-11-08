@@ -6,7 +6,6 @@ import { useOutletContext } from "react-router-dom";
 export default function Favourite() {
   const { tokenValue, userData } = useOutletContext();
   const [listFavourites, setListFavourites] = useState([]);
-  console.log(userData);
   useEffect(() => {
     if (userData) {
       fetch(getLoveRestaurant + `${userData.MaNguoiDung}`, {

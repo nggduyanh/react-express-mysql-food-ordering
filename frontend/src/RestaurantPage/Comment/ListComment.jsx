@@ -1,6 +1,6 @@
 import SpecificComment from "./SpecificComment";
 import Toggle from "../../Function/Toggle/LayoutToggle";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   getCommentForSpecificFood,
   localStaticFile,
@@ -8,22 +8,29 @@ import {
   setCommendForSpecificFood,
   updateCommendForSpecificFood,
 } from "../../Route";
+import { Filter } from "bad-words";
+import { FaImages } from "react-icons/fa";
 import { MdCommentsDisabled } from "react-icons/md";
 import axios from "axios";
 import toast from "react-hot-toast";
+import StarRatings from "react-star-ratings";
 import { useOutletContext } from "react-router-dom";
-
-export default function ListComment({ foodDetails }) {
+import { IoCloseCircleSharp } from "react-icons/io5";
+export default function ListComment({ sellerInfor, foodDetails }) {
   const { userData, tokenValue } = useOutletContext();
   const [error, setError] = useState("");
   const [isComment, setIsComment] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [rating, setRating] = useState(0);
+  const imgRef = useRef(null);
   const [Comments, setComments] = useState({
     MaNguoiMua: userData.MaNguoiDung,
     MaMonAn: foodDetails.MaMonAn,
     noiDung: "",
     diem: "",
     HienThi: 1,
+    AnhDinhKem: [],
+    AnhDinhKemTemp: [],
   });
   const [listComments, setListComments] = useState([]);
   useEffect(() => {
@@ -39,7 +46,8 @@ export default function ListComment({ foodDetails }) {
         return res.json();
       })
       .then((data) => {
-        setListComments(data);
+        console.log("Comment data[0]", data[0].NhanXet);
+        setListComments(data[0].NhanXet);
         // const checkListComment = listComments.find((comment) => {
         //   return comment.NhanXet.MaNguoiMua === userData.MaNguoiDung;
         // });
@@ -82,10 +90,27 @@ export default function ListComment({ foodDetails }) {
       return;
     }
     try {
+      const dataToSend = {
+        ...Comments,
+        AnhDinhKemTemp: Comments.AnhDinhKemTemp.map((image) => image.url),
+        AnhDinhKem: Comments.AnhDinhKem.map((image) => image.file),
+      };
+      const formCommentData = new FormData();
+      dataToSend.AnhDinhKem.forEach((file) => {
+        formCommentData.append(`AnhDinhKem`, file);
+      });
+      formCommentData.append("MaNguoiMua", userData.MaNguoiDung);
+      formCommentData.append("MaMonAn", foodDetails.MaMonAn);
+      formCommentData.append("noiDung", dataToSend.noiDung);
+      formCommentData.append("HienThi", dataToSend.HienThi);
+      formCommentData.append("diem", dataToSend.diem);
+      // for (let pair of formCommentData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
       const response = await toast.promise(
-        axios.post(setCommendForSpecificFood, Comments, {
+        axios.post(setCommendForSpecificFood, formCommentData, {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${tokenValue}`,
           },
           withCredentials: true,
@@ -113,13 +138,27 @@ export default function ListComment({ foodDetails }) {
   const updateComment = async () => {
     toast.promise(
       (async () => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        const dataToSend = {
+          ...Comments,
+          AnhDinhKemTemp: Comments.AnhDinhKemTemp.map((image) => image.url),
+          AnhDinhKem: Comments.AnhDinhKem.map((image) => image.file),
+        };
+        const formCommentData = new FormData();
+        dataToSend.AnhDinhKem.forEach((file) => {
+          formCommentData.append(`AnhDinhKem`, file);
+        });
+        formCommentData.append("MaNguoiMua", userData.MaNguoiDung);
+        formCommentData.append("MaMonAn", foodDetails.MaMonAn);
+        formCommentData.append("noiDung", dataToSend.noiDung);
+        formCommentData.append("HienThi", dataToSend.HienThi);
+        formCommentData.append("diem", 0);
         const response = await axios.patch(
           updateCommendForSpecificFood,
-          Comments,
+          formCommentData,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${tokenValue}`,
             },
             withCredentials: true,
@@ -140,18 +179,77 @@ export default function ListComment({ foodDetails }) {
   };
   useEffect(() => {
     const checkList = listComments?.some((comment) => {
-      return comment.NhanXet.MaNguoiMua === userData.MaNguoiDung;
+      return comment.MaNguoiMua === userData.MaNguoiDung;
     });
     if (checkList) {
       setIsComment(true);
     } else setIsComment(false);
   }, [listComments]);
+  const changeRating = (newRating) => {
+    setComments((prevComments) => {
+      return {
+        ...prevComments,
+        diem: newRating,
+      };
+    });
+    setRating(newRating);
+  };
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const imageUrl = URL.createObjectURL(file);
+    const imageId = `${file.name}-${Date.now()}`;
+    setComments((prevComments) => {
+      return {
+        ...prevComments,
+        AnhDinhKemTemp: [
+          ...prevComments.AnhDinhKemTemp,
+          {
+            id: imageId,
+            url: imageUrl,
+          },
+        ],
+        AnhDinhKem: [
+          ...prevComments.AnhDinhKem,
+          {
+            id: imageId,
+            file: file,
+          },
+        ],
+      };
+    });
+  };
+  const handleRemoveImage = (id) => {
+    setComments((prevComments) => {
+      const updatedImages = prevComments.AnhDinhKemTemp.filter(
+        (image) => image.id !== id
+      );
+
+      // Tìm và thu hồi URL của ảnh đã xóa
+      const removedImage = prevComments.AnhDinhKemTemp.find(
+        (image) => image.id === id
+      );
+      if (removedImage) {
+        URL.revokeObjectURL(removedImage.url);
+      }
+
+      const updatedAnhDinhKem = prevComments.AnhDinhKem.filter(
+        (image) => image.id !== id
+      );
+
+      return {
+        ...prevComments,
+        AnhDinhKemTemp: updatedImages,
+        AnhDinhKem: updatedAnhDinhKem,
+      };
+    });
+  };
   return (
     <div>
       <div className="border bg-white border-pink-300 p-3 rounded-lg mt-2">
-        <div className="EnterComment border rounded-xl border-gray-500 mb-4">
-          <div className="placeToComment flex justify-between p-3">
-            <div className="avatar ">
+        <div className="EnterComment  border rounded-xl border-gray-500 mb-4">
+          <div className=" flex relative justify-between p-3">
+            <div className="avatar">
               {userData.AnhNguoiDung !== null ? (
                 <img
                   src={localStaticFile + userData.AnhNguoiDung}
@@ -159,10 +257,32 @@ export default function ListComment({ foodDetails }) {
                   className="w-full h-14"
                 />
               ) : (
-                <img src="/avatar.png" alt="" className="w-16 h-full" />
+                <img src="/avatar.png" alt="" className="w-16 h16 " />
               )}
             </div>
             <div className="comment w-11/12 ">
+              {Comments.AnhDinhKemTemp.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {Comments.AnhDinhKemTemp.map((image) => {
+                    return (
+                      <div key={image.id} className="relative">
+                        <img
+                          key={image}
+                          src={image.url}
+                          alt=""
+                          className="h-20 w-20 rounded-lg"
+                        />
+                        <div className="absolute -top-2 right-0">
+                          <IoCloseCircleSharp
+                            onClick={() => handleRemoveImage(image.id)}
+                            className="text-red-500 bg-white rounded-full text-xl cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               <textarea
                 name="noiDung"
                 id="comment"
@@ -173,27 +293,48 @@ export default function ListComment({ foodDetails }) {
                     : "comment"
                 }
                 disabled={(isComment && !isUpdated) || error.status === 403}
-                className="border border-gray-500 w-full resize-none px-2 h-full"
+                className=" rounded-lg mt-2 border border-gray-400 w-full resize-none px-2 h-20 block"
               ></textarea>
-
               <div className="flex items-center gap-3">
                 <label htmlFor="star" className="font-bold">
                   Star:{" "}
                 </label>
-                <input
-                  type="text"
-                  onChange={handleComment}
-                  placeholder="from 1 to 5 "
-                  name="diem"
-                  id="star"
-                  disabled={(isComment && !isUpdated) || error.status === 403}
-                  className="border border-pink-500 px-2 rounded-md "
+                <StarRatings
+                  rating={rating}
+                  starRatedColor="gold"
+                  starHoverColor="gold"
+                  changeRating={
+                    isComment || isUpdated || error.status === 403
+                      ? null
+                      : changeRating
+                  }
+                  numberOfStars={5}
+                  starDimension="20px" // Kích thước sao
+                  starSpacing="5px"
+                  name="rating"
                 />
+                <div className="mt-1 flex items-center">
+                  <input
+                    type="file"
+                    name="AnhNguoiDungShow"
+                    id="fileInput"
+                    accept="image/*"
+                    className="hidden"
+                    ref={imgRef}
+                    onChange={handleImageChange}
+                  />
+                  <button
+                    className=" text-lg "
+                    onClick={() => imgRef.current.click()}
+                  >
+                    <FaImages />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="commentButton flex items-center justify-end mr-2 mb-3">
+          <div className="commentButton flex items-center justify-end mr-2 mb-3 ">
             {error.status === 403 ? (
               <button
                 disabled
@@ -225,43 +366,6 @@ export default function ListComment({ foodDetails }) {
                 Comment
               </button>
             )}
-            {/* {isComment || error.status === 403 ? (
-              <button
-                disabled={isComment}
-                onClick={createComment}
-                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
-                  isComment
-                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
-                    : ""
-                } `}
-              >
-                You cannot comment
-              </button>
-            ) : (
-              <button
-                disabled={isComment}
-                onClick={createComment}
-                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
-                  !isComment
-                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
-                    : ""
-                } `}
-              >
-                comment
-              </button>
-            )}
-            {isUpdated && (
-              <button
-                onClick={updateComment}
-                className={`bg-blue-300 text-white font-bold p-2 rounded-md ${
-                  isComment
-                    ? "hover:bg-blue-500 transition-all duration-200 ease-in"
-                    : ""
-                } `}
-              >
-                Update
-              </button>
-            )} */}
           </div>
         </div>
         <div className="list">
@@ -274,7 +378,8 @@ export default function ListComment({ foodDetails }) {
                       checkUpdate={(boolValue) => {
                         setIsUpdated(!boolValue);
                       }}
-                      key={comment.NguoiDung.MaNguoiDung}
+                      seller={sellerInfor}
+                      key={comment?.MaNguoiDung}
                       {...comment}
                     />
                   );
@@ -293,7 +398,7 @@ export default function ListComment({ foodDetails }) {
                                 setIsComment(boolValue);
                                 setIsUpdated(!boolValue);
                               }}
-                              key={comment.NguoiDung.MaNguoiDung}
+                              key={comment?.MaNguoiDung}
                               {...comment}
                             />
                           );

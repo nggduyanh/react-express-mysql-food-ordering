@@ -103,7 +103,6 @@ export default function OrderDetails(props) {
     }, 0);
     return totalPrice;
   };
-  console.log("detailsOrder", detailsOrder);
   const applyPromotions = (order) => {
     let totalPrice = handleTotal();
     let totalTemp = totalPrice;

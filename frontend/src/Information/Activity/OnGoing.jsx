@@ -11,7 +11,8 @@ export default function OnGoing() {
       return (
         items.TrangThai === parseInt(orderReceive?.MaTrangThai) ||
         items.TrangThai === parseInt(orderPrepare?.MaTrangThai) ||
-        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai)
+        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai) ||
+        items.TrangThaiThanhToan === 1
       );
     })
     .map((items) => {

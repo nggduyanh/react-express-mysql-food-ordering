@@ -3,21 +3,21 @@ import avatar from "../../assets/avatar.png";
 import { formatDate, localStaticFile, refreshPage } from "../../Route";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Toggle from "../../Function/Toggle/LayoutToggle";
-import { useContext, useEffect, useRef, useState } from "react";
-import { UserAccount } from "../../App";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useOutletContext } from "react-router-dom";
-export default function SpecificComment({ checkUpdate, ...comment }) {
+import { useOutletContext, useParams } from "react-router-dom";
+export default function SpecificComment({ seller, checkUpdate, ...comment }) {
   const { userData, tokenValue } = useOutletContext();
   const [showFixComment, setshowFixComment] = useState(false);
   const [ReportComment, setReportComment] = useState(false);
   const commentRef = useRef(null);
+  const nameRestaurant = useParams();
   const handleSetFixComment = () => {
     checkUpdate(false);
   };
   const handleShowBtn = (event) => {
     event.stopPropagation();
-    const getIdUser = comment.NguoiDung.MaNguoiDung;
+    const getIdUser = comment.MaNguoiMua;
     if (userData.MaNguoiDung === getIdUser) {
       setshowFixComment((prevShow) => !prevShow);
     } else {
@@ -50,13 +50,13 @@ export default function SpecificComment({ checkUpdate, ...comment }) {
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [comment.NguoiDung.MaNguoiDung]);
+  }, [comment.MaNguoiDung]);
   return (
     <div ref={commentRef}>
-      <div className="User_Reply flex gap-3 border p-3 rounded-xl border-gray-400 mb-5 relative">
-        {comment.NguoiDung.AnhNguoiDung !== null ? (
+      <div className="User_Reply flex gap-3 border p-3 rounded-xl border-gray-400 my-3 relative">
+        {comment.AnhNguoiDung !== null ? (
           <img
-            src={localStaticFile + comment.NguoiDung.AnhNguoiDung}
+            src={localStaticFile + comment.AnhNguoiDung}
             alt=""
             className="h-10 w-10 border border-pink-500 rounded-full"
           />
@@ -68,11 +68,24 @@ export default function SpecificComment({ checkUpdate, ...comment }) {
           />
         )}
         <div className="userInfo w-full ">
+          {comment.AnhNhanXet.length > 0 && (
+            <div className="flex items-center gap-3">
+              {comment.AnhNhanXet.map((image) => {
+                return (
+                  <img
+                    key={image}
+                    src={localStaticFile + image}
+                    alt=""
+                    className="h-20 w-20 rounded-lg border border-pink-500"
+                  />
+                );
+              })}
+            </div>
+          )}
           <div className="flex w-full justify-between items-center">
-            <p>{comment.NguoiDung.TenNguoiDung}</p>
+            <p>{comment.TenNguoiDung}</p>
             <p className="flex items-center">
-              {comment.NhanXet.Diem}{" "}
-              <TiStarFullOutline className="text-yellow-500" />
+              {comment.Diem} <TiStarFullOutline className="text-yellow-500" />
               <BsThreeDotsVertical
                 className="cursor-pointer"
                 onClick={handleShowBtn}
@@ -80,9 +93,9 @@ export default function SpecificComment({ checkUpdate, ...comment }) {
             </p>
           </div>
           <i className="text-xs">
-            Created: {formatDate(String(comment.NhanXet.ThoiGianTao))}
+            Created: {formatDate(String(comment.ThoiGianTao))}
           </i>
-          <p>{comment.NhanXet.NoiDung}</p>
+          <p>{comment.NoiDung}</p>
         </div>
         {showFixComment && (
           <div
@@ -101,13 +114,14 @@ export default function SpecificComment({ checkUpdate, ...comment }) {
           </div>
         )}
       </div>
-      {comment.NhannXet && comment.NhannXet.TraLoi !== null && (
+      {comment.TraLoi && comment.TraLoi.length > 0 && (
         <Toggle>
           <Toggle.On>
             <div className="seller_reply ml-10 flex gap-3 border p-3 rounded-xl border-gray-400 mb-4">
-              {comment.NguoiDung.AnhNguoiDung !== null ? (
+              {seller.AnhNguoiBan !== null &&
+              seller.AnhNguoiBan !== undefined ? (
                 <img
-                  src={localStaticFile + comment.NguoiDung.AnhNguoiDung}
+                  src={localStaticFile + seller.AnhNguoiBan}
                   alt=""
                   className="h-10 w-10"
                 />
@@ -116,10 +130,12 @@ export default function SpecificComment({ checkUpdate, ...comment }) {
               )}
               <div className="userInfo w-full">
                 <div className="flex w-full justify-between items-center">
-                  <p>Seller</p>
+                  <p className="text-pink-500 font-bold">
+                    {nameRestaurant.resname.slice(1)}
+                  </p>
                 </div>
                 <i className="text-xs">11-12-2002</i>
-                <p>You are Welcome</p>
+                <p>{comment.TraLoi}</p>
               </div>
             </div>
           </Toggle.On>

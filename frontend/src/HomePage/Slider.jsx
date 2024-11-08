@@ -63,7 +63,7 @@ export default function Slider() {
             className="advertiseBanner"
           />
           <img
-            src="/advertise/safeDriver.jpg"
+            src="/advertise/banner4.jpg"
             alt="Designed by Freepik"
             className="advertiseBanner"
           />

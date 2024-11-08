@@ -155,26 +155,5 @@ export const District = {
   ],
 };
 export const urlPayment = "http://localhost:3030/payment/create";
-
-// {
-//   "MaDonHang": 21,
-//   "DiaChiDen": "so 3 hang giay",
-//   "TrangThai": 1,
-//   "GiaBan": 60000,
-//   "MaTaiXe": 101,
-//   "MaKhuyenMai": 1,
-//   "MaNguoiMua": 1,
-//   "MaPhuongThucGiaoDich": 2,
-//   "TrangThaiThanhToan": false,
-//   "ListItems":
-//   [
-//       {
-//         "MaMonAn": 1,
-//           "SoLuong": 2
-//       },
-//       {
-//         "MaMonAn": 2,
-//           "SoLuong": 1
-//       }
-//   ]
-// }
+export const searchUrl = "http://localhost:3030/search/";
+export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/:";

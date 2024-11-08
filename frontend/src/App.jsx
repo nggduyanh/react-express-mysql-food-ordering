@@ -5,7 +5,7 @@ import Login from "./Login/Login";
 import Register from "./Login/Register";
 import LayoutHeader from "./Layout/LayoutHeader";
 import UserInfor from "./Information/UserInfor";
-import PaymentCards from "./Information/InfoSelection/PaymentCards";
+import History from "./Information/HistoryComment/History";
 import ChangeAccount from "./Information/InfoSelection/ChangeAccount";
 import ListRes from "./RestaurantPage/ListRes";
 import NoPage from "./NoPage";
@@ -78,7 +78,7 @@ function App() {
               <Route index element={<HomePage />} />
               <Route path="information" element={<UserInfor />}>
                 <Route index element={<ChangeAccount />} />
-                <Route path="payment" element={<PaymentCards />} />
+                <Route path="history" element={<History />} />
                 <Route path="favourite" element={<Favourite />} />
                 <Route path="address" element={<Address />} />
                 <Route path="change-password" element={<ChangePassword />} />

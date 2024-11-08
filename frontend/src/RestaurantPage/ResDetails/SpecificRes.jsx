@@ -63,13 +63,21 @@ export default function SpecificRes() {
   }, [tokenValue]);
   const [Seller, setSeller] = useState([]);
   useEffect(() => {
-    fetch(GetRestaurant, {
+    fetch(GetRestaurant + `/${ResInfor.state.MaNguoiBan}`, {
       headers: {
         Authorization: "Bearer " + tokenValue,
       },
     })
-      .then((res) => res.json())
-      .then((data) => setSeller(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Not found seller");
+        }
+        return res.json();
+      })
+      .then((data) => setSeller(data))
+      .catch((err) => {
+        setSeller([]);
+      });
   }, []);
   useEffect(() => {
     fetch(GetPromotion, {
@@ -280,7 +288,10 @@ export default function SpecificRes() {
                         <Rating />
                       </Suspense>
                       <Suspense fallback={<p>Loading...</p>}>
-                        <ListComment foodDetails={detailsFood} />
+                        <ListComment
+                          sellerInfor={Seller}
+                          foodDetails={detailsFood}
+                        />
                       </Suspense>
                     </div>
                   </div>
