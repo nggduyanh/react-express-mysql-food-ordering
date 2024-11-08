@@ -4,6 +4,8 @@ const app = express ()
 const router = require ("./routes/index")
 const errorHandler = require ("./middlewares/ExceptionHandler")
 const cors = require ("cors")
+const socket = require ("socket.io")
+const http = require ("http")
 const corsOption = require ("./configs/CorsConfig")
 
 // middlewares
@@ -16,6 +18,14 @@ router(app)
 
 app.use (errorHandler)
 
-app.listen (process.env.port, () => {
+
+const server = http.createServer (app)
+const io = new socket.Server (server)
+const socketEvent = require ("./services/Socket")
+
+socketEvent (io)
+
+
+server.listen (process.env.port, () => {
     console.log (`Đang chạy trên cổng ${process.env.port}`)
 })
