@@ -3,8 +3,8 @@ function socketEvent (io)
 {
     io.on ("connection", socket => {
         order (socket)
-        
+
     })
 }
 
-module.exports = initSocket
+module.exports = socketEvent
