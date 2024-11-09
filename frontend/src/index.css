@@ -90,3 +90,8 @@
     right: 10px;
 }
 
+.imageDetails{
+    top: -400px;
+    left: 50%;
+    transform: translateX(-50%);
+}

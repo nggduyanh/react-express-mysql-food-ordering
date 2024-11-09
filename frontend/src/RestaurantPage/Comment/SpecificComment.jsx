@@ -6,11 +6,14 @@ import Toggle from "../../Function/Toggle/LayoutToggle";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useOutletContext, useParams } from "react-router-dom";
+import { IoCloseCircleSharp } from "react-icons/io5";
 export default function SpecificComment({ seller, checkUpdate, ...comment }) {
   const { userData, tokenValue } = useOutletContext();
   const [showFixComment, setshowFixComment] = useState(false);
   const [ReportComment, setReportComment] = useState(false);
   const commentRef = useRef(null);
+  const [showImg, setShowImg] = useState(false);
+  const [imgData, setImageData] = useState("");
   const nameRestaurant = useParams();
   const handleSetFixComment = () => {
     checkUpdate(false);
@@ -54,6 +57,24 @@ export default function SpecificComment({ seller, checkUpdate, ...comment }) {
   return (
     <div ref={commentRef}>
       <div className="User_Reply flex gap-3 border p-3 rounded-xl border-gray-400 my-3 relative">
+        {showImg && (
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-3/4 rounded-lg  bg-black text-white w-1/3 h-1/2">
+            <img
+              src={localStaticFile + imgData}
+              alt=""
+              className="w-full h-full border border-pink-500 object-fill"
+            />
+            <div className="">
+              <IoCloseCircleSharp
+                onClick={() => {
+                  setImageData("");
+                  setShowImg(false);
+                }}
+                className="fixed top-0 right-0 text-3xl cursor-pointer bg-white rounded-full text-red-500"
+              />
+            </div>
+          </div>
+        )}
         {comment.AnhNguoiDung !== null ? (
           <img
             src={localStaticFile + comment.AnhNguoiDung}
@@ -67,21 +88,27 @@ export default function SpecificComment({ seller, checkUpdate, ...comment }) {
             className="h-10 w-10 border border-pink-500 rounded-full"
           />
         )}
+
         <div className="userInfo w-full ">
           {comment.AnhNhanXet.length > 0 && (
             <div className="flex items-center gap-3">
-              {comment.AnhNhanXet.map((image) => {
+              {comment.AnhNhanXet.map((image, index) => {
                 return (
                   <img
                     key={image}
                     src={localStaticFile + image}
                     alt=""
-                    className="h-20 w-20 rounded-lg border border-pink-500"
+                    onClick={() => {
+                      setShowImg(true);
+                      setImageData(image);
+                    }}
+                    className="h-20 w-20 rounded-lg border border-pink-500 cursor-pointer"
                   />
                 );
               })}
             </div>
           )}
+
           <div className="flex w-full justify-between items-center">
             <p>{comment.TenNguoiDung}</p>
             <p className="flex items-center">

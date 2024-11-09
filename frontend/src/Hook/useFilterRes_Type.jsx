@@ -18,6 +18,16 @@ export default function useFilterRes_Type(valueFilter = " ", tokenValue) {
       };
     });
   }, [Restaurant, typeRes]);
+  // useEffect(() => {
+  //   const getValueSearch = async () => {
+  //     const response = await axios.get(searchUrl + `${valueFilter}`, {
+  //       headers: { Authorization: `Bearer ${tokenValue}` },
+  //     });
+  //     const data = response.data;
+  //     console.log("Search: ", data);
+  //   };
+  //   getValueSearch();
+  // }, [valueFilter]);
   const filterRes = useMemo(() => {
     const trimValueFilter = valueFilter.trim();
     return listRestaurant.filter((value) => {

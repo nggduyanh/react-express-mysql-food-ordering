@@ -1,7 +1,25 @@
+import { useState } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 export default function Reset() {
+  const [resetForm, setResetForm] = useState({
+    Email: "",
+    SoDienThoai: "",
+  });
+  const handleResetChange = (e) => {
+    const { name, value } = e.target;
+    setResetForm((prevForm) => {
+      return {
+        ...prevForm,
+        [name]: value,
+      };
+    });
+  };
+  const handleResetForm = (event) => {
+    event.preventDefault();
+    console.log(resetForm);
+  };
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center">
@@ -10,12 +28,23 @@ export default function Reset() {
         </div>
         <p className="text-4xl font-bold">Reset your password</p>
       </div>
-      <div className="text-center mt-4">
-        <p>Forgot your password?, Please enter your email</p>
+      <form onSubmit={handleResetForm} className="text-center mt-4">
+        <p>Forgot your password?, Please enter your email and phone number</p>
         <p className="">And we will send you a 4-digit code</p>
         <input
+          name="Email"
+          onChange={handleResetChange}
           type="text"
+          value={resetForm.Email}
           placeholder="Enter your email"
+          className="w-full border border-black mt-3 p-3 rounded-lg"
+        />
+        <input
+          name="SoDienThoai"
+          onChange={handleResetChange}
+          type="text"
+          value={resetForm.SoDienThoai}
+          placeholder="Enter your phone number"
           className="w-full border border-black mt-3 p-3 rounded-lg"
         />
         <button
@@ -24,7 +53,7 @@ export default function Reset() {
         >
           Get 4-digit code
         </button>
-      </div>
+      </form>
       ;
     </div>
   );
