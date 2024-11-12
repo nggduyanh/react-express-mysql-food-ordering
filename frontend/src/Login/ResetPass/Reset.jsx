@@ -1,12 +1,15 @@
+import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { Link, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Reset() {
   const [resetForm, setResetForm] = useState({
     Email: "",
     SoDienThoai: "",
   });
+  const navigate = useNavigate();
   const handleResetChange = (e) => {
     const { name, value } = e.target;
     setResetForm((prevForm) => {
@@ -16,9 +19,31 @@ export default function Reset() {
       };
     });
   };
-  const handleResetForm = (event) => {
+  const handleResetForm = async (event) => {
     event.preventDefault();
-    console.log(resetForm);
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.post(
+          "http://localhost:3030/auth/recoverpassword/mail",
+          resetForm,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (response.status === 201) {
+          navigate("/forgot-password/confirmCode", {
+            state: { resetForm },
+            replace: true,
+          });
+        }
+      })(),
+      {
+        loading: "Waiting to next page...",
+        success: "Success",
+        error: "Something went wrong",
+      }
+    );
   };
   return (
     <div className="flex flex-col items-center">
@@ -51,7 +76,7 @@ export default function Reset() {
           to="/"
           className="mt-3 inline-block w-full bg-pink-500 p-3 rounded-lg text-white font-bold hover:bg-pink-700 transition-all duration-200 ease-in"
         >
-          Get 4-digit code
+          Get 6-digit code
         </button>
       </form>
       ;

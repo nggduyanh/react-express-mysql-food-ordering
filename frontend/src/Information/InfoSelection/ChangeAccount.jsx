@@ -28,7 +28,6 @@ export default function ChangeAccount() {
       };
     });
   };
-
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     if (

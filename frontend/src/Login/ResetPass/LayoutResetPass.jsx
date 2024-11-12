@@ -1,5 +1,5 @@
 import { MdDone } from "react-icons/md";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaLock } from "react-icons/fa";
 import { useState } from "react";

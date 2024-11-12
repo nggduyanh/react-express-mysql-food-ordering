@@ -2,6 +2,7 @@ export const GetUserInfo = "http://localhost:3030/nguoidung/current";
 export const AddUserInfo = "http://localhost:3030/nguoidung/add";
 export const GetRestaurant = "http://localhost:3030/nguoiban";
 export const GetTypeRes = "http://localhost:3030/loaimonan";
+export const getTypeRestaurant = "http://localhost:3030/loainguoiban";
 export const UpdateUser = "http://localhost:3030/nguoidung/update";
 export const GetFoodRestaurant = "http://localhost:3030/monan";
 export const localStaticFile = "http://localhost:3030/";

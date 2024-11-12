@@ -1,7 +1,14 @@
+import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdOutlinePassword } from "react-icons/md";
+import { useLocation, useNavigate } from "react-router-dom";
+import { UpdateUser } from "../../Route";
 
 export default function CreateNewPass() {
+  const userData = useLocation();
+  const accessToken = userData.state.data.accessToken;
+  const navigate = useNavigate();
   const [newPass, setNewPass] = useState({
     setupNewPassword: "",
     confirmNewPassword: "",
@@ -18,7 +25,42 @@ export default function CreateNewPass() {
   };
   const handleUpdatePassForm = (event) => {
     event.preventDefault();
-    console.log(newPass);
+    if (newPass.setupNewPassword === "" || newPass.confirmNewPassword === "") {
+      toast.error("Please fullfiled the password");
+    } else {
+      if (newPass.confirmNewPassword !== newPass.setupNewPassword) {
+        toast.error("Password is not matched");
+      } else {
+        toast.promise(
+          (async () => {
+            const response = await axios.patch(
+              UpdateUser,
+              {
+                MaNguoiDung: userData.state.data.NguoiDung.MaNguoiDung,
+                MatKhau: newPass.setupNewPassword,
+              },
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: "Bearer " + accessToken,
+                },
+                withCredentials: true,
+              }
+            );
+            if (response.status === 201) {
+              navigate("/forgot-password/password-success", {
+                replace: true,
+              });
+            }
+          })(),
+          {
+            loading: "Waiting to update password...",
+            success: "Update success",
+            error: "Something went wrong, please try again",
+          }
+        );
+      }
+    }
   };
 
   return (
