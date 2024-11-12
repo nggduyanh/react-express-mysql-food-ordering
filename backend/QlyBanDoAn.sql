@@ -10,6 +10,7 @@ create table NguoiDung (
 alter table nguoidung add column OTP int;
 alter table nguoidung add column OTPExpire varchar (20);
 alter table nguoidung modify column SoDienThoai varchar (50) unique;
+alter table nguoidung add column diachi varchar (50);
 
 create table NguoiBan (
 	MaNguoiBan int primary key,
@@ -434,3 +435,33 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (22,24,"SAKE AVOCADO MAKI",129000,"Cơm Cuộn Cá Hồi & Bơ "),
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
         (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
+
+insert into loainguoiban values 
+		(1,"Gà rán"),
+        (2,"Pizza"),
+        (3,"Burger"),
+        (4,"Pasta"),
+        (5,"Bún"),
+        (6,"Phở"),
+        (7,"Mỳ"),
+        (8,"Gỏi"),
+        (9,"Hủ tiếu"),
+        (10,"Cơm hộp"),
+        (11,"Đồ ăn"),
+        (12,"Đồ uống"),
+        (13,"Đồ chay"),
+        (14,"Đồ ngọt"),
+        (15,"Sushi");
+                
+insert into loainguoiban_nguoiban (loainguoiban_nguoiban.MaLoaiNguoiBan,loainguoiban_nguoiban.MaNguoiBan) values 
+		(11,8),
+        (11,24),
+        (11,100),
+        (11,58),
+        (11,72),
+        (11,67),
+        (15,58),
+        (15,24),
+        (12,75),
+        (12,11),
+        (14,75);
