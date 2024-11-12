@@ -3,7 +3,7 @@ const constants =
     tableName: "MonAn",
     id: "MaMonAn",
     ten: "TenMonAn",
-    anh: "Anh",
+    anh: "AnhMonAn",
     gia: "GiaBan",
     moTa: "MoTa",
     maLoaiMonAn: "MaLoaiMonAn",
