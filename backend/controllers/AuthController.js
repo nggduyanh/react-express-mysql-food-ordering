@@ -54,10 +54,9 @@ class AuthController
         if (!query.res.length) return next (new Exception ({msg: `NguoiDung not found with SoDienThoai = ${SoDienThoai}`},404))
         let [user] = query.res
         let otp = OTPGenerator (6)
-        console.log (otp)
         let currentTime = Date.now ()
         let updateOTP = await NguoiDung.update ({[nguoidung.id]: user[nguoidung.id], [nguoidung.otp]: `${otp}`, [nguoidung.otpExpire]: `${currentTime}`})
-        if (!updateOTP.success) return (new Exception (updateOTP.res,500))
+        if (!updateOTP.success) return next(new Exception (updateOTP.res,500))
         
         let content = {
             to: Email,
