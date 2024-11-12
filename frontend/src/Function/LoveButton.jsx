@@ -16,7 +16,7 @@ export default function LoveButton({ idSeller }) {
         const response = await axios.post(
           addLoveRestaurant,
           JSON.stringify({
-            maNguoiMua: userData.MaNguoiDung,
+            maNguoiMua: userData?.MaNguoiDung,
             maNguoiBan: idSeller,
           }),
           {
@@ -53,7 +53,7 @@ export default function LoveButton({ idSeller }) {
           },
           withCredentials: true,
           data: {
-            MaNguoiMua: userData.MaNguoiDung,
+            MaNguoiMua: userData?.MaNguoiDung,
             MaNguoiBan: idSeller,
           },
         }
@@ -74,7 +74,7 @@ export default function LoveButton({ idSeller }) {
   };
 
   useEffect(() => {
-    fetch(getLoveRestaurant + `${userData.MaNguoiDung}`, {
+    fetch(getLoveRestaurant + `${userData?.MaNguoiDung}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -93,7 +93,7 @@ export default function LoveButton({ idSeller }) {
           console.log(err.message);
         }
       });
-  }, [tokenValue, userData.MaNguoiDung]);
+  }, [tokenValue, userData?.MaNguoiDung]);
   const results = listOfLove?.some((items) => {
     return items.MaNguoiBan === idSeller;
   });

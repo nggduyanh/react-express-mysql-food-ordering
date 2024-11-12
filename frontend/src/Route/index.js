@@ -155,5 +155,5 @@ export const District = {
   ],
 };
 export const urlPayment = "http://localhost:3030/payment/create";
-export const searchUrl = "http://localhost:3030/search/";
+export const searchUrl = "http://localhost:3030/nguoidung/search/";
 export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/:";

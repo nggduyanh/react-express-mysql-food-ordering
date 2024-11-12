@@ -28,6 +28,7 @@ import CreateNewPass from "./Login/ResetPass/CreateNewPass";
 import PasswordSuccess from "./Login/ResetPass/PasswordSuccess";
 import ConfirmCode from "./Login/ResetPass/ConfirmCode";
 import PrivateRoute from "./Layout/PrivateRoute";
+import RegisterRes from "./Login/RegisterRes";
 const UserAccount = createContext();
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="register_restaurant" element={<RegisterRes />} />
           <Route path="forgot-password" element={<LayoutResetPass />}>
             <Route index element={<Reset />} />
             <Route path="create-new" element={<CreateNewPass />} />
