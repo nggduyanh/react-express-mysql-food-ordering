@@ -5,6 +5,7 @@ import { UserAccount } from "../../App";
 import {
   formatCurrency,
   formatDate,
+  formatTime,
   GetDetailsOrder,
   GetOrder,
   GetOrderRestaurant,
@@ -13,35 +14,47 @@ import {
   OrderStatus,
 } from "../../routebackend";
 import NavBar from "../../Components/NavBar";
+import useFetchData from "../../Components/useFetchData";
 
 export default function OrdersList() {
-  const { userData } = useContext(UserAccount);
-  const [User, setUser] = useState([]);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(GetUserInfo)
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        const findUser = data.find(
-          (item) => item.MaNguoiDung === userData.MaNguoiBan
-        );
-        setUser(findUser);
+        getSeller(data);
       });
-  }, [userData]);
+  }, [userInfo]);
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setOrders(data);
       });
-  }, [userData]);
+  }, [Seller]);
 
-  // console.log(Orders.length);
-
-  const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công
+  const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công Trang thai === 4
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
@@ -49,18 +62,22 @@ export default function OrdersList() {
         });
         setSuccessOrder(filterOrder);
       });
-  }, [userData]);
+  }, [Seller]);
 
   const [TrangThai, setTrangThai] = useState([]);
   useEffect(() => {
-    fetch(OrderStatus)
+    fetch(OrderStatus, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setTrangThai(data);
       });
   }, [userData]);
 
-  const listOrder = SuccessOrder.map((item) => {
+  const listOrder = SuccessOrder?.map((item) => {
     if (SuccessOrder.length > 0) {
       return (
         <tr>
@@ -102,6 +119,28 @@ export default function OrdersList() {
     }
   });
 
+  const list = SuccessOrder?.map((item) => {
+    if (SuccessOrder.length > 0) {
+      return (
+        <div className="flex flex-col gap-4 bg-[#FFF2E9] p-2 rounded-lg mt-4">
+          <div className="flex items-center gap-2">
+            <img
+              src="./images/Dashboard/pizza.png"
+              alt=""
+              className="h-16 max-w-16"
+            />
+            <div className="flex flex-col w-full">
+              <div className="flex justify-between">
+                <p className="text-sm mb-1">{item.MaDonHang}</p>
+                <p className="text-sm mb-1">{formatTime(item.ThoiGianTao)}</p>
+              </div>
+              <span>#C0E4F7</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -179,7 +218,7 @@ export default function OrdersList() {
                     </div>
                     <div>
                       <h1>Satisfaction Rating</h1>
-                      <h2>{userData.Diem}</h2>
+                      <h2>{Seller?.[0]?.Diem}</h2>
                     </div>
                   </div>
                 </div>
@@ -239,26 +278,9 @@ export default function OrdersList() {
               <div className="col-span-3">
                 <div className="flex flex-col border border-[#F58220] rounded-lg w-auto p-6">
                   <h1>Ongoing Order</h1>
-                  <h2>Date</h2>
                   <div>
                     <h1>Waiting</h1>
-                    <div className="flex flex-col gap-4 bg-[#FFF2E9] p-2 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src="./images/Dashboard/pizza.png"
-                          alt=""
-                          className="h-16 max-w-16"
-                        />
-                        <div className="flex flex-col w-full">
-                          <div className="flex justify-between">
-                            <p className="text-sm mb-1">Italian Pizza</p>
-                            <p className="text-sm mb-1">6.25pm</p>
-                          </div>
-                          <span>#C0E4F7</span>
-                        </div>
-                      </div>
-                    </div>
-                    <h1>Waiting</h1>
+                    {list}
                   </div>
                 </div>
               </div>

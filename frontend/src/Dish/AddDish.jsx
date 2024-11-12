@@ -5,17 +5,40 @@ import { UserAccount } from "../App";
 import {
   AddFoodRestaurant,
   GetFoodTypeRestaurant,
+  GetUserInfo,
   handleRefreshPage,
 } from "../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function AddDish() {
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
+
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
-    fetch(GetFoodTypeRestaurant)
+    fetch(GetFoodTypeRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("List empty");
@@ -24,9 +47,8 @@ export default function AddDish() {
       })
       .then((data) => {
         const filterTypeFood = data.filter((type) => {
-          return type.MaNguoiBan === userData.MaNguoiBan;
+          return type.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
-        console.log("FilterTypeFood", filterTypeFood);
         setTypeFood(filterTypeFood);
       })
       .catch((err) => {
@@ -34,40 +56,56 @@ export default function AddDish() {
           setTypeFood([]);
         } else console.log("Another error", err.message);
       });
-  }, [userData]);
+  }, [Seller]);
+
   const [dish, setDish] = useState({
     TenMonAn: "",
-    AnhMonAn: null,
+    Anh: null,
     GiaBan: "",
     MoTa: "",
     MaLoaiMonAn: "",
-    MaNguoiBan: userData.MaNguoiBan,
+    MaNguoiBan: 8,
   });
+
+  // console.log("dish", dish);
+
+  const [srcimg, setSrcImg] = useState(null);
+
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setDish((prevForm) => {
-      return {
+    const { name, value, type, files } = event.target;
+    if (type === "file" && files[0]) {
+      const file = files[0];
+      setSrcImg(URL.createObjectURL(file));
+      setDish((prevForm) => ({
+        ...prevForm,
+        [name]: file, // Lưu tệp ảnh vào trạng thái của dish
+      }));
+    } else {
+      setDish((prevForm) => ({
         ...prevForm,
         [name]: name === "gia" ? parseInt(value) : value,
-      };
-    });
+      }));
+    }
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formUserData = new FormData();
     formUserData.append("TenMonAn", dish.TenMonAn);
-    formUserData.append("AnhMonAn", anoimg);
+    formUserData.append("Anh", dish.Anh);
     formUserData.append("GiaBan", dish.GiaBan);
     formUserData.append("MoTa", dish.MoTa);
     formUserData.append("MaLoaiMonAn", dish.MaLoaiMonAn);
     formUserData.append("MaNguoiBan", dish.MaNguoiBan);
-    //  for (let pair of formUserData.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
-
+    for (let pair of formUserData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
     try {
       const response = await axios.post(AddFoodRestaurant, formUserData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokenValue}`,
+        },
         withCredentials: true,
       });
       alert("Add sucesss");
@@ -76,21 +114,13 @@ export default function AddDish() {
       console.error("Error adding dish:", err);
     }
   };
-  const [srcimg, setSrcImg] = useState(null);
-  const [anoimg, setAnoImg] = useState(null);
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSrcImg(URL.createObjectURL(file));
-      setAnoImg(file);
-    }
-  };
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
         <div class="flex-1 mt-0">
-        <NavBar />
+          <NavBar />
           <section className="p-6">
             <h1>Add Dish</h1>
             <Link to="/dish">
@@ -99,16 +129,13 @@ export default function AddDish() {
             <div className="grid grid-cols-3 gap-6">
               <div className="border border-default-200 p-6 rounded-lg">
                 <div className="border border-default-200 p-6 rounded-lg mb-4 flex justify-center items-center">
-                  <div
-                    aria-hidden="true"
-                    className="relative h-[300px] flex flex-col items-center justify-center"
-                  >
+                  <div className="relative h-[300px] flex flex-col items-center justify-center">
                     <input
                       type="file"
                       accept=".jpeg,.jpg,.png,.gif,.svg"
-                      name="bgfile"
-                      id="bgfile"
-                      onChange={handleFileChange}
+                      name="Anh"
+                      // onChange={handleFileChange}
+                      onChange={handleChange}
                       className="relative z-10 opacity-0 w-full h-full"
                     />
                     <div className="absolute h-full w-full border-[#F97316] border-dashed border-2 rounded-lg flex items-center justify-center bg-[#FFF0E9]">

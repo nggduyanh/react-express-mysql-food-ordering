@@ -6,38 +6,64 @@ import {
   formatCurrency,
   GetFoodRestaurant,
   GetFoodTypeRestaurant,
+  GetUserInfo,
   handleRefreshPage,
 } from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 export default function Dish() {
-  const { userData } = useContext(UserAccount);
-  const [listDish, setListDish] = useState([]);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
 
+  const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(GetFoodRestaurant)
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
+
+  const [listDish, setListDish] = useState([]);
+  useEffect(() => {
+    fetch(GetFoodRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const filterDish = data.filter((dish) => {
-          return dish.MaNguoiBan === userData.MaNguoiBan;
+          return dish.MaNguoiBan === Seller?.[0].MaNguoiBan;
         });
         setListDish(filterDish);
       });
-  }, [userData]);
+  }, [Seller]);
 
   const [listDishT, setlistDishT] = useState([]);
   useEffect(() => {
-    fetch(GetFoodTypeRestaurant)
+    fetch(GetFoodTypeRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
         const filterDish = data.filter((dish) => {
-          return dish.MaNguoiBan === userData.MaNguoiBan;
+          return dish.MaNguoiBan === Seller?.[0].MaNguoiBan;
         });
         setlistDishT(filterDish);
       });
-  }, [listDish, userData]);
+  }, [listDish, Seller]);
 
   const handleRemoveFood = async (id) => {
     const findDish = listDish.find((dish) => dish.MaMonAn === id);
@@ -49,7 +75,10 @@ export default function Dish() {
         "http://localhost:3030/monan/delete",
         {
           data: deleteId, // Truyền dữ liệu trong thuộc tính data
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
           withCredentials: true,
         }
       );
@@ -80,7 +109,7 @@ export default function Dish() {
             ?.TenLoaiMonAn || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatCurrency( item.GiaBan)}
+          {formatCurrency(item.GiaBan)}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
           {item.MoTa}
@@ -147,7 +176,6 @@ export default function Dish() {
       </tr>
     );
   });
-  // console.log(listFood);
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">

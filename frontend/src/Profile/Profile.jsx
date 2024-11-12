@@ -10,9 +10,26 @@ import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import axios from "axios";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function Profile() {
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
 
   const navigate = useNavigate();
   const [User, setUser] = useState([]);
@@ -37,19 +54,19 @@ export default function Profile() {
       });
   }, [userData]);
 
-  const [Seller, setSeller] = useState({
-    MaNguoiBan: userData.MaNguoiBan,
-    TenNguoiBan: "",
-    ThanhPho: "",
-    ThoiGianMoCua: userData.ThoiGianMoCua,
-    ThoiGianDongCua: userData.ThoiGianDongCua,
-    DiaChi: "",
-    AnhNguoiBan: null,
-    CanCuoc: null,
-    GiayPhep: null,
-    Diem: userData.Diem,
-    LuotDanhGia: userData.LuotDanhGia,
-  });
+  // const [Seller, setSeller] = useState({
+  //   MaNguoiBan: userData.MaNguoiBan,
+  //   TenNguoiBan: "",
+  //   ThanhPho: "",
+  //   ThoiGianMoCua: userData.ThoiGianMoCua,
+  //   ThoiGianDongCua: userData.ThoiGianDongCua,
+  //   DiaChi: "",
+  //   AnhNguoiBan: null,
+  //   CanCuoc: null,
+  //   GiayPhep: null,
+  //   Diem: userData.Diem,
+  //   LuotDanhGia: userData.LuotDanhGia,
+  // });
 
   const handleChange = (event) => {
     const { name, value } = event.target;

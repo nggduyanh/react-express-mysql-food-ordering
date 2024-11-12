@@ -7,9 +7,18 @@ import SideBar from "../Components/SideBar";
 export default function DishDetails() {
   const data = useLocation();
   const detailsFood = data.state;
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
-    fetch(GetFoodTypeRestaurant)
+    fetch(GetFoodTypeRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("List empty");

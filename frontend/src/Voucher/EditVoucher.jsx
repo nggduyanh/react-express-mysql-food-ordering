@@ -10,7 +10,23 @@ import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 
 export default function VoucherEdit() {
-    const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
     const [selectedOption, setSelectedOption] = useState("");
     const data = useLocation();
     const detailsVoucher = data.state;
@@ -46,7 +62,7 @@ export default function VoucherEdit() {
       TenKhuyenMai: "",
       PhanTram: null,
       GiaTri: null,
-      MaNguoiBan: userData.MaNguoiBan,
+      MaNguoiBan: Seller?.[0]?.MaNguoiBan,
       SoLuong: "",
       NgayTao: null,
       NgayHetHan: null,

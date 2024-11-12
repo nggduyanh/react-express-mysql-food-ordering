@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import { UserAccount } from "../App";
+import useFetchData from "../Components/useFetchData";
+import { GetUserInfo } from "../routebackend";
 
 ChartJS.register(
   LineElement,
@@ -21,32 +23,45 @@ ChartJS.register(
 );
 
 export default function LineChart() {
-  const { userData } = useContext(UserAccount);
-  const [Orders, setOrders] = useState([]);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${userData.MaNguoiBan}`)
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userData]);
+
+  const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
+  useEffect(() => {
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setOrders(data);
       });
-  });
+  }, [Seller]);
   const superdata = [];
-  //   const spdata = Orders.map((item) => {
-  //     return {
-  //       data: item.GiaBan,
-  //     };
-  //   })
-  // for(let i = 0; i < Orders.length; i++) {
-  //     superdata.push( Orders[i].GiaBan)
-  // }
 
-  const obj = Orders.map((item) => {
-    return {
+  const obj = Array.isArray(Orders)
+  ? Orders.map((item) => ({
       month: new Date(item.ThoiGianTao).getMonth() + 1,
       count: 0,
       data: item.GiaBan,
-    };
-  });
+    }))
+  : [];
   let flag = 0;
   const spobj = [
     {

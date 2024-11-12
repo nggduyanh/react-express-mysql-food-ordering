@@ -32,8 +32,8 @@ export default function Homepage() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userData]);
-console.log("Seller", userInfo)
+  }, [userInfo]);
+
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
     fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
@@ -46,12 +46,8 @@ console.log("Seller", userInfo)
         setOrders(data);
       });
   }, [Seller]);
-  // console.log("Orders", Orders)
 
-  // const TotalRevenue = Orders?.reduce((total, order) => {
-  //   return total + order.GiaBan;
-  // }, 0);
-  // console.log("TotalRevenue", TotalRevenue)
+  const TotalRevenue = Array.isArray(Orders) ? Orders.reduce((total, order) => total + order.GiaBan, 0) : 0;
 
   const [OrdersThisMonth, setOrdersThisMonth] = useState([]);
   useEffect(() => {
@@ -63,15 +59,14 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            new Date(order.ThoiGianTao).getMonth() + 1 === today.getMonth() + 1
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
           );
         });
         setOrdersThisMonth(filterOrder);
       });
   }, [Seller]);
-  // console.log("OrdersThisMonth", OrdersThisMonth)
 
   const [OrdersLastMonth, setOrdersLastMonth] = useState([]);
   useEffect(() => {
@@ -83,31 +78,30 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            new Date(order.ThoiGianTao).getMonth() + 1 === lastmonth.getMonth()
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
           );
         });
         setOrdersLastMonth(filterOrder);
       });
   }, [Seller]);
-  // console.log("OrdersLastMonth", OrdersLastMonth)
 
-  // let OrdersMonthPercent;
-  // if (OrdersLastMonth.length === 0 && OrdersThisMonth.length === 0) {
-  //   OrdersMonthPercent = 0;
-  // } else if (OrdersLastMonth.length === 0) {
-  //   OrdersMonthPercent = 100;
-  // } else {
-  //   OrdersMonthPercent =
-  //     ((OrdersThisMonth.length - OrdersLastMonth.length) /
-  //       OrdersLastMonth.length) *
-  //     100;
-  // }
-  // const OrdersTMI =
-  //   OrdersMonthPercent >= 0
-  //     ? OrdersMonthPercent + "% increase"
-  //     : -OrdersMonthPercent + "% decrease";
+  let OrdersMonthPercent;
+  if (OrdersLastMonth.length === 0 && OrdersThisMonth.length === 0) {
+    OrdersMonthPercent = 0;
+  } else if (OrdersLastMonth.length === 0) {
+    OrdersMonthPercent = 100;
+  } else {
+    OrdersMonthPercent =
+      ((OrdersThisMonth.length - OrdersLastMonth.length) /
+        OrdersLastMonth.length) *
+      100;
+  }
+  const OrdersTMI =
+    OrdersMonthPercent >= 0
+      ? OrdersMonthPercent + "% increase"
+      : -OrdersMonthPercent + "% decrease";
 
   const [CanceledOrderThisMonth, setCanceledOrderThisMonth] = useState([]);
   useEffect(() => {
@@ -119,10 +113,10 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            order.TrangThai === 5 &&
-            new Date(order.ThoiGianTao).getMonth() + 1 === today.getMonth() + 1
+            order?.TrangThai === 5 &&
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
           );
         });
         setCanceledOrderThisMonth(filterOrder);
@@ -139,34 +133,34 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            order.TrangThai === 5 &&
-            new Date(order.ThoiGianTao).getMonth() + 1 === lastmonth.getMonth()
+            order?.TrangThai === 5 &&
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
           );
         });
         setCanceledOrderLastMonth(filterOrder);
       });
   }, [Seller]);
 
-  // let CanceledOrdersMonthPercent;
-  // if (
-  //   CanceledOrderLastMonth.length === 0 &&
-  //   CanceledOrderThisMonth.length === 0
-  // ) {
-  //   CanceledOrdersMonthPercent = 0;
-  // } else if (CanceledOrderLastMonth.length === 0) {
-  //   CanceledOrdersMonthPercent = 100;
-  // } else {
-  //   CanceledOrdersMonthPercent =
-  //     ((CanceledOrderThisMonth.length - CanceledOrderLastMonth.length) /
-  //       CanceledOrderLastMonth.length) *
-  //     100;
-  // }
-  // const CanceledOrdersTMI =
-  //   CanceledOrdersMonthPercent >= 0
-  //     ? CanceledOrdersMonthPercent + "% increase"
-  //     : -CanceledOrdersMonthPercent + "% decrease";
+  let CanceledOrdersMonthPercent;
+  if (
+    CanceledOrderLastMonth.length === 0 &&
+    CanceledOrderThisMonth.length === 0
+  ) {
+    CanceledOrdersMonthPercent = 0;
+  } else if (CanceledOrderLastMonth.length === 0) {
+    CanceledOrdersMonthPercent = 100;
+  } else {
+    CanceledOrdersMonthPercent =
+      ((CanceledOrderThisMonth.length - CanceledOrderLastMonth.length) /
+        CanceledOrderLastMonth.length) *
+      100;
+  }
+  const CanceledOrdersTMI =
+    CanceledOrdersMonthPercent >= 0
+      ? CanceledOrdersMonthPercent + "% increase"
+      : -CanceledOrdersMonthPercent + "% decrease";
 
   const [SuccessOrderThisMonth, setSuccessOrderThisMonth] = useState([]);
   useEffect(() => {
@@ -178,10 +172,10 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            order.TrangThai === 4 &&
-            new Date(order.ThoiGianTao).getMonth() + 1 === today.getMonth() + 1
+            order?.TrangThai === 4 &&
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
           );
         });
         setSuccessOrderThisMonth(filterOrder);
@@ -198,34 +192,34 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            order.TrangThai === 4 &&
-            new Date(order.ThoiGianTao).getMonth() + 1 === lastmonth.getMonth()
+            order?.TrangThai === 4 &&
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
           );
         });
         setSuccessOrderLastMonth(filterOrder);
       });
   }, [Seller]);
 
-  // let SuccessOrdersMonthPercent;
-  // if (
-  //   SuccessOrderLastMonth.length === 0 &&
-  //   SuccessOrderThisMonth.length === 0
-  // ) {
-  //   SuccessOrdersMonthPercent = 0;
-  // } else if (CanceledOrderLastMonth.length === 0) {
-  //   SuccessOrdersMonthPercent = 100;
-  // } else {
-  //   SuccessOrdersMonthPercent =
-  //     ((SuccessOrderThisMonth.length - SuccessOrderLastMonth.length) /
-  //     SuccessOrderLastMonth.length) *
-  //     100;
-  // }
-  // const SuccessOrdersTMI =
-  // SuccessOrdersMonthPercent >= 0
-  //     ? SuccessOrdersMonthPercent + "% increase"
-  //     : -SuccessOrdersMonthPercent + "% decrease";
+  let SuccessOrdersMonthPercent;
+  if (
+    SuccessOrderLastMonth.length === 0 &&
+    SuccessOrderThisMonth.length === 0
+  ) {
+    SuccessOrdersMonthPercent = 0;
+  } else if (CanceledOrderLastMonth.length === 0) {
+    SuccessOrdersMonthPercent = 100;
+  } else {
+    SuccessOrdersMonthPercent =
+      ((SuccessOrderThisMonth.length - SuccessOrderLastMonth.length) /
+      SuccessOrderLastMonth.length) *
+      100;
+  }
+  const SuccessOrdersTMI =
+  SuccessOrdersMonthPercent >= 0
+      ? SuccessOrdersMonthPercent + "% increase"
+      : -SuccessOrdersMonthPercent + "% decrease";
 
   const [RecentOrders, setRecentOrders] = useState([]);
   useEffect(() => {
@@ -237,36 +231,36 @@ console.log("Seller", userInfo)
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
+        const filterOrder = data?.filter((order) => {
           return (
-            order.TrangThai === 1 &&
-            new Date(order.ThoiGianTao).getMonth() + 1 ===
-              today.getMonth() + 1 &&
-            new Date(order.ThoiGianTao).getDate() === today.getDate()
+            order?.TrangThai === 1 &&
+            new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+              today?.getMonth() + 1 &&
+            new Date(order?.ThoiGianTao)?.getDate() === today?.getDate()
           );
         });
         setRecentOrders(filterOrder);
       });
   }, [Seller]);
 
-  // const listRecentOrder = RecentOrders.map((item) => {
-  //   return (
-  //     <tr>
-  //       <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-  //         {item.MaDonHang}
-  //       </td>
-  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //         {formatDate(item.ThoiGianTao)}
-  //       </td>
-  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //         {formatTime(item.ThoiGianTao)}
-  //       </td>
-  //       <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-  //         {formatCurrency(item.GiaBan)}
-  //       </td>
-  //     </tr>
-  //   );
-  // });
+  const listRecentOrder = RecentOrders?.map((item) => {
+    return (
+      <tr>
+        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
+          {item?.MaDonHang}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          {formatDate(item?.ThoiGianTao)}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          {formatTime(item?.ThoiGianTao)}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          {formatCurrency(item?.GiaBan)}
+        </td>
+      </tr>
+    );
+  });
 
   return (
     // <h1>Hello World</h1>
@@ -280,16 +274,16 @@ console.log("Seller", userInfo)
             <div className="mt-6 grid grid-cols-4 gap-6">
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-center w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {/* {formatCurrency(TotalRevenue)} */}
+                  {formatCurrency(TotalRevenue)}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Total Revenue</h6>
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {/* {OrdersThisMonth.length} */}
+                  {OrdersThisMonth.length}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Receive Orders</h6>
-                {/* {OrdersMonthPercent >= 0 && (
+                {OrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {OrdersTMI}
                   </p>
@@ -298,14 +292,14 @@ console.log("Seller", userInfo)
                   <p className="text-[#EF4444] text-sm font-medium">
                     {OrdersTMI}
                   </p>
-                )} */}
+                )}
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {/* {CanceledOrderThisMonth.length} */}
+                  {CanceledOrderThisMonth.length}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Canceled Orders</h6>
-                {/* {CanceledOrdersMonthPercent >= 0 && (
+                {CanceledOrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {CanceledOrdersTMI}
                   </p>
@@ -314,14 +308,14 @@ console.log("Seller", userInfo)
                   <p className="text-[#EF4444] text-sm font-medium">
                     {CanceledOrdersTMI}
                   </p>
-                )} */}
+                )}
               </div>
               <div className="p-4 border border-default-200 rounded-lg flex flex-col items-center justify-between w-auto">
                 <h4 className="text-[#F58220] font-semibold text-2xl mb-2">
-                  {/* {SuccessOrderThisMonth.length} */}
+                  {SuccessOrderThisMonth.length}
                 </h4>
                 <h6 className="font-medium text-lg mb-4">Successful Orders</h6>
-                {/* {SuccessOrdersMonthPercent >= 0 && (
+                {SuccessOrdersMonthPercent >= 0 && (
                   <p className="text-[#22C55E] text-sm font-medium">
                     {SuccessOrdersTMI}
                   </p>
@@ -330,14 +324,14 @@ console.log("Seller", userInfo)
                   <p className="text-[#EF4444] text-sm font-medium">
                     {SuccessOrdersTMI}
                   </p>
-                )} */}
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-6 mt-6">
               <div>
                 <h1 className="text-xl font-medium mb-6">Revenue</h1>
                 <div className="bg-gray-100 flex items-center justify-center w-full">
-                  {/* <LineChart /> */}
+                  <LineChart />
                 </div>
                 <h1 className="text-xl font-medium mt-6">
                   Best Selling Products
@@ -414,7 +408,7 @@ console.log("Seller", userInfo)
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-default-200">
-                    {/* {listRecentOrder} */}
+                    {listRecentOrder}
                   </tbody>
                 </table>
               </div>

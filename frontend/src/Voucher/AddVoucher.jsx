@@ -8,10 +8,27 @@ import { vi } from "date-fns/locale";
 import { AddVoucher, getFormattedDate, handleRefreshPage } from "../routebackend";
 import axios from "axios";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function VoucherAdd() {
-  
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
+
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleSelectChange = (event) => {
@@ -38,7 +55,7 @@ export default function VoucherAdd() {
     TenKhuyenMai: "",
     PhanTram: null,
     GiaTri: null,
-    MaNguoiBan: userData.MaNguoiBan,
+    MaNguoiBan: Seller?.[0]?.MaNguoiBan,
     SoLuong: "",
     NgayTao: null,
     NgayHetHan: null,
@@ -60,7 +77,7 @@ export default function VoucherAdd() {
     console.log(voucher);
     try{
       const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",Authorization: `Bearer ${tokenValue}`, },
         withCredentials: true,
       })
       alert("Add sucesss");

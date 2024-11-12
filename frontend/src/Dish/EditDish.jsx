@@ -12,12 +12,31 @@ import NavBar from "../Components/NavBar";
 
 export default function EditDish() {
   const data = useLocation();
-  const { userData } = useContext(UserAccount);
   const detailsFood = data.state;
+  // const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
+
+  const [Seller, getSeller] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
+
   const navigate = useNavigate();
   const Cancel = () => {
     navigate("/dish");
   };
+
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
     fetch(GetFoodTypeRestaurant)
@@ -29,7 +48,7 @@ export default function EditDish() {
       })
       .then((data) => {
         const filterTypeFood = data.filter((type) => {
-          return type.MaNguoiBan === userData.MaNguoiBan;
+          return type.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
         setTypeFood(filterTypeFood);
       })
@@ -38,7 +57,8 @@ export default function EditDish() {
           setTypeFood([]);
         } else console.log("Another error", err.message);
       });
-  }, [userData]);
+  }, [Seller]);
+
   const [dish, setDish] = useState({
     MaMonAn: detailsFood.MaMonAn,
     TenMonAn: "",
@@ -46,8 +66,9 @@ export default function EditDish() {
     GiaBan: "",
     MoTa: "",
     MaLoaiMonAn: "",
-    MaNguoiBan: userData.MaNguoiBan,
+    MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setDish((prevForm) => {
@@ -65,7 +86,10 @@ export default function EditDish() {
         `http://localhost:3030/monan/update`,
         dish,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
           withCredentials: true,
         }
       );

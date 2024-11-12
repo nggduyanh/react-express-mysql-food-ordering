@@ -9,27 +9,50 @@ import {
   formatPercent,
   formatTime,
   GetFoodRestaurant,
+  GetUserInfo,
   GetVoucher,
   handleRefreshPage,
 } from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 export default function Voucher() {
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const userInfo = userData?.data?.[0];
 
-  const [listVoucher, setListVoucher] = useState([]);
-
+  const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(GetVoucher)
+    fetch(`http://localhost:3030/nguoiban/current`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
+        getSeller(data);
+      });
+  }, [userInfo]);
+
+  const [listVoucher, setListVoucher] = useState([]);
+  useEffect(() => {
+    fetch(GetVoucher, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
         const filterVoucher = data.filter((voucher) => {
-          return voucher.MaNguoiBan === userData.MaNguoiBan;
+          return voucher.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
         setListVoucher(filterVoucher);
       });
-  }, [userData]);
+  }, [Seller]);
+// console.log('listVoucher', listVoucher);
 
   const handleRemoveVoucher = async (id) => {
     const findVoucher = listVoucher.find(
@@ -42,7 +65,10 @@ export default function Voucher() {
       };
       const response = await axios.delete(DeleteVoucher, {
         data: deleteId, // Truyền dữ liệu trong thuộc tính data
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenValue}`,
+        },
         withCredentials: true,
       });
       alert("Success Delete");
@@ -51,7 +77,8 @@ export default function Voucher() {
       console.error("Error deleting dish:", err);
     }
   };
-console.log("listVoucher", listVoucher);
+
+  console.log("listVoucher", listVoucher);
   const Voucherlist = listVoucher?.map((item) => {
     const isoStringStart = item.NgayTao;
     const isoStringEnd = item.NgayHetHan;
@@ -81,12 +108,6 @@ console.log("listVoucher", listVoucher);
             </div>
           </div>
         </td>
-        {/* <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatPercent(item.PhanTram)}
-        </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatCurrency(item.GiaTri)}
-        </td> */}
         {item.PhanTram !== null && (
           <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             {formatPercent(item.PhanTram)}
@@ -110,8 +131,7 @@ console.log("listVoucher", listVoucher);
           <br />
           {localTimeEnd}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-        </td>
+        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600"></td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600 ">
           <div className="flex gap-4">
             <Link to="/edit_voucher" state={item}>
@@ -180,7 +200,7 @@ console.log("listVoucher", listVoucher);
       <div className="flex h-full">
         <SideBar />
         <div class="flex-1 mt-0">
-        <NavBar />
+          <NavBar />
           <section className="p-6">
             <h1>Voucher List</h1>
             <div className="rounded-lg border border-default-200">
