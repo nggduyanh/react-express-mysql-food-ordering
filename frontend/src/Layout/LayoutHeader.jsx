@@ -1,31 +1,48 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import imageFood from "../assets/orderfood1.png";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { GetRestaurant, localStaticFile } from "../Route";
-import { UserAccount } from "../App";
+import toast from "react-hot-toast";
 import useFetchData from "../Hook/useFetchData";
+import { GetUserInfo } from ".././Route/index.js";
+import LayoutFooter from "./LayoutFooter.jsx";
 const UserContext = createContext();
 export default function LayoutHeader() {
-  const { userData } = useContext(UserAccount);
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  const navigate = useNavigate();
+  const [Restaurants, errorRestaurant] = useFetchData(
+    GetRestaurant,
+    tokenValue
+  );
+  let userResponse = useFetchData(GetUserInfo, tokenValue);
+  let userData = userResponse[0]?.data?.[0];
   const [place, setPlaces] = useState("");
-  const [Restaurants, setRestaurant] = useFetchData(GetRestaurant);
-  const getPlaceRestaurant = Restaurants.reduce((accumulate, currentVal) => {
-    if (!accumulate.includes(currentVal.ThanhPho)) {
-      accumulate.push(currentVal.ThanhPho);
-    }
-    return accumulate;
-  }, []);
+  const getPlaceRestaurant = Restaurants?.data?.reduce(
+    (accumulate, currentVal) => {
+      if (!accumulate.includes(currentVal.ThanhPho)) {
+        accumulate.push(currentVal.ThanhPho);
+      }
+      return accumulate;
+    },
+    []
+  );
   useEffect(() => {
-    setPlaces(getPlaceRestaurant[0]);
-  }, [Restaurants]);
+    setPlaces(getPlaceRestaurant?.[0]);
+  }, [Restaurants, tokenValue]);
   const handleChangePlaces = (event) => {
     setPlaces(event.target.value);
   };
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    toast.success("Logged out!");
+  };
   return (
-    <UserContext.Provider value={{ userData, place }}>
+    <UserContext.Provider value={{ userData, place, tokenValue }}>
       <div className="bg-white shadow-lg">
         <header className="flex justify-between py-3 items-center marginJustification">
           <div className="logo flex items-center">
@@ -51,8 +68,12 @@ export default function LayoutHeader() {
                   onChange={handleChangePlaces}
                   className="text-xs  border border-gray-400 py-0.5 rounded-md "
                 >
-                  {getPlaceRestaurant.map((place) => {
-                    return <option value={place}>{place}</option>;
+                  {getPlaceRestaurant?.map((place) => {
+                    return (
+                      <option key={place} value={place}>
+                        {place}
+                      </option>
+                    );
                   })}
                 </select>
               </div>
@@ -97,23 +118,19 @@ export default function LayoutHeader() {
                 </Link>
               </div>
               <div className="logout">
-                <Link className=" text-red-500 font-bold p-2 rounded-md uppercase">
+                <button
+                  onClick={handleLogOut}
+                  className=" text-red-500 font-bold p-2 rounded-md uppercase"
+                >
                   Logout
-                </Link>
+                </button>
               </div>
             </div>
           </div>
         </header>
       </div>
-      <Outlet />
-      <div className="bg-black text-white">
-        <footer className="marginJustification  py-24">
-          <div className="flex items-center">
-            <img src={imageFood} alt="" className="w-20 h-w-20" />
-            <p>About us</p>
-          </div>
-        </footer>
-      </div>
+      <Outlet context={{ tokenValue, userData }} />
+      <LayoutFooter />
     </UserContext.Provider>
   );
 }

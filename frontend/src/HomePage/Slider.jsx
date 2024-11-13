@@ -1,22 +1,32 @@
 import ResTypeButton from "../RestaurantPage/ResTypeButton";
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
-import { GetTypeRes } from "../Route";
+import { GetRestaurant, GetTypeRes, getTypeRestaurant } from "../Route";
 import useFetchData from "../Hook/useFetchData";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../Layout/LayoutHeader";
 export default function Slider() {
-  const [typeRes, setTypeRes] = useFetchData(GetTypeRes);
+  const { tokenValue } = useContext(UserContext);
+  const [typeRes, errorTypeRes] = useFetchData(GetTypeRes, tokenValue);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [type, setType] = useFetchData(getTypeRestaurant, tokenValue);
+  const [res, setRes] = useFetchData(GetRestaurant, tokenValue);
+  console.log("type", type);
+  // console.log("restaurant", res);
   const itemsPerPage = 8;
-  const listType = typeRes
-    .slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage)
+  const listType = type?.data
+    ?.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage)
     .map((food) => {
       return <ResTypeButton key={food.id} {...food} />;
     });
 
   const handleClickNext = () => {
-    if (currentIndex < Math.ceil(typeRes.length / itemsPerPage) - 1)
-      setCurrentIndex(currentIndex + 1);
+    if (typeRes && typeRes.data) {
+      const totalPages = Math.ceil(typeRes.data.length / itemsPerPage);
+      if (currentIndex < totalPages - 1) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    }
   };
   const handleClickPrev = () => {
     if (currentIndex > 0) {
@@ -52,7 +62,7 @@ export default function Slider() {
             className="advertiseBanner"
           />
           <img
-            src="/advertise/safeDriver.jpg"
+            src="/advertise/banner4.jpg"
             alt="Designed by Freepik"
             className="advertiseBanner"
           />
