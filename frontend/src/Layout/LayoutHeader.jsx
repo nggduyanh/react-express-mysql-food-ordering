@@ -1,0 +1,137 @@
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import imageFood from "../assets/orderfood1.png";
+import { IoLocationOutline } from "react-icons/io5";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { createContext, useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { GetRestaurant, localStaticFile } from "../Route";
+import toast from "react-hot-toast";
+import useFetchData from "../Hook/useFetchData";
+import { GetUserInfo } from ".././Route/index.js";
+import LayoutFooter from "./LayoutFooter.jsx";
+const UserContext = createContext();
+export default function LayoutHeader() {
+  const tokenStorage = localStorage.getItem("token");
+  const tokenValue = JSON.parse(tokenStorage).token;
+  const navigate = useNavigate();
+  const [Restaurants, errorRestaurant] = useFetchData(
+    GetRestaurant,
+    tokenValue
+  );
+  let userResponse = useFetchData(GetUserInfo, tokenValue);
+  let userData = userResponse[0]?.data?.[0];
+  const [place, setPlaces] = useState("");
+  const getPlaceRestaurant = Restaurants?.data?.reduce(
+    (accumulate, currentVal) => {
+      if (!accumulate.includes(currentVal.ThanhPho)) {
+        accumulate.push(currentVal.ThanhPho);
+      }
+      return accumulate;
+    },
+    []
+  );
+  useEffect(() => {
+    setPlaces(getPlaceRestaurant?.[0]);
+  }, [Restaurants, tokenValue]);
+  const handleChangePlaces = (event) => {
+    setPlaces(event.target.value);
+  };
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    toast.success("Logged out!");
+  };
+  return (
+    <UserContext.Provider value={{ userData, place, tokenValue }}>
+      <div className="bg-white shadow-lg">
+        <header className="flex justify-between py-3 items-center marginJustification">
+          <div className="logo flex items-center">
+            <div className="">
+              <Link to=".">
+                <img
+                  src={imageFood}
+                  alt="Designed by Starline / Freepik"
+                  className="w-20 h-w-20 mr-5"
+                />
+              </Link>
+            </div>
+            <div className="flex items-center gap-2">
+              <IoLocationOutline className="text-2xl" />
+              <div>
+                <label htmlFor="location" className="text-gray-500 text-xs">
+                  Select location
+                </label>
+                <br />
+                <select
+                  name="place"
+                  id="location"
+                  onChange={handleChangePlaces}
+                  className="text-xs  border border-gray-400 py-0.5 rounded-md "
+                >
+                  {getPlaceRestaurant?.map((place) => {
+                    return (
+                      <option key={place} value={place}>
+                        {place}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="infor flex items-center gap-3 ">
+            <Link
+              to="all"
+              className="flex items-center gap-2 border border-gray-300 p-2 rounded-md transition-all ease-in duration-300 text-white font-bold bg-pink-500 hover:bg-white hover:text-black hover:border-pink-500"
+            >
+              <FaSearch />
+              <p className="">Search</p>
+            </Link>
+
+            <div className="user flex items-center gap-5">
+              <div className="avatar">
+                <Link to="information" className="flex items-center">
+                  <img
+                    src={
+                      userData?.AnhNguoiDung !== null
+                        ? localStaticFile + userData?.AnhNguoiDung
+                        : "/avatar.png"
+                    }
+                    alt=""
+                    className="w-8 h-8 mx-2"
+                  />
+                  <p className="text-gray-500 text-xs">
+                    {" "}
+                    {userData?.TenNguoiDung}
+                  </p>
+                </Link>
+              </div>
+
+              <div className="activity">
+                <Link
+                  to="activity"
+                  className="flex items-center text-md text-gray-400 gap-2"
+                >
+                  <MdAccessTimeFilled className="text-green-500" />
+                  <p className="text-green-500">Activity</p>
+                </Link>
+              </div>
+              <div className="logout">
+                <button
+                  onClick={handleLogOut}
+                  className=" text-red-500 font-bold p-2 rounded-md uppercase"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+      <Outlet context={{ tokenValue, userData }} />
+      <LayoutFooter />
+    </UserContext.Provider>
+  );
+}
+export { UserContext };

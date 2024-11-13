@@ -1,8 +1,17 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login({ assignAccount }) {
+=======
+import { useEffect, useState } from "react";
+import videoLogin from "../assets/food_login.mp4";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+export default function Login() {
+>>>>>>> 846c6f17ca0ec9763fc46ec1d607791e9dba7e71
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
     MatKhau: "",
@@ -20,14 +29,20 @@ export default function Login({ assignAccount }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.get(GetUserInfo);
-      const getUserInfoArray = response.data;
-      const filterResult = getUserInfoArray.some((user) => {
-        return (
-          user.SoDienThoai === loginForm.SoDienThoai &&
-          user.MatKhau === loginForm.MatKhau
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const response = await axios.post(
+          "http://localhost:3030/auth/login",
+          loginForm,
+          {
+            headers: {
+              secretTokenKey:
+                "PX1fGoibstQNJnr9LGvuEoMxh4U8b2ugCfNiAvT2qiPol9Pk5Mh/NbvCS3Nv7poV/kDD7skuT13aD0unwL2ZoJWQ6eK6biY7s2fe7svzjkzrdF7wfXSmlEqQ17aYyy4IljtOmaYymaDNv+/QNbCjzzF7sOaWmIxBn0Ej1b/dzLAdu2H/DJuataMoOL4AhlkNrQR08/cDnnr3Kw2DDGZlDUl++K75O5+ejO1pCbhnar7zpD2zghMVxxxrQw5GAulL3pVJ2EfnXtxC4mdLKLHlpuzliAfJrof8FxQHfPyuaBMfECNIRe5bBC7v3/K6nSGYUjr3OdWRiNy45kqajqGedw==",
+            },
+          }
         );
+<<<<<<< HEAD
       });
       if (filterResult === false) {
         alert("User not found");
@@ -49,13 +64,48 @@ export default function Login({ assignAccount }) {
         } else {
           alert("User not found");
         }
+=======
+
+        const getUserInfo = response.data;
+        const now = new Date();
+        const epxireToken = {
+          token: getUserInfo.accessToken,
+          expireDate: now.getTime() + 3600000,
+        };
+        localStorage.setItem("token", JSON.stringify(epxireToken));
+        navigate("/home");
+      })(),
+      {
+        loading: "Check credentials",
+        success: "Login successful",
+        error: (err) => {
+          if (err.response) {
+            if (err.response.status === 400) {
+              return "Please enter your credentials";
+            } else if (err.response.status === 404) {
+              return "User not found";
+            } else {
+              return "An error occurred: " + err.response.data.message;
+            }
+          } else if (err.request) {
+            return "No response from server";
+          } else {
+            return "Error: " + err.message;
+          }
+        },
+>>>>>>> 846c6f17ca0ec9763fc46ec1d607791e9dba7e71
       }
-    } catch (err) {
-      alert("Something went wrong between sending data");
-      console.log(err.message);
-    }
+    );
   };
 
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token) {
+      navigate("/home");
+    } else {
+      console.log("Login again");
+    }
+  }, []);
   return (
     <div className="flex">
       <video
@@ -108,7 +158,9 @@ export default function Login({ assignAccount }) {
           </button>
         </form>
         <div className="text-center mt-3">
-          <button className="mb-5">Forgot your password?</button>
+          <Link to="forgot-password" className="mb-5">
+            Forgot your password?
+          </Link>
           <p>
             You do not have an account? <Link to="/register">Sign up</Link>
           </p>

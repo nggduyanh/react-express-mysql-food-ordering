@@ -15,48 +15,40 @@ import Voucher from "./Voucher/Voucher";
 import VoucherAdd from "./Voucher/AddVoucher";
 import VoucherEdit from "./Voucher/EditVoucher";
 import PrivateRoute from "./Components/PrivateRoute";
+
 const UserAccount = createContext();
 function App() {
-  const [account, setAccount] = useState(() => {
-    const storedAccount = localStorage.getItem("user");
-    if (storedAccount) {
-      const parsedAccount = JSON.parse(storedAccount);
-      const now = new Date().getTime();
-      if (parsedAccount.expire > now) {
-        return parsedAccount.value; // Khởi tạo account từ localStorage nếu còn hạn
-      } else {
-        localStorage.removeItem("user"); // Xóa nếu đã hết hạn
-        return null;
-      }
-    }
-    return null; // Giá trị mặc định nếu không có gì trong localStorage
-  });
-  const [userData, setUserData] = useState({});
-  const OneDaysMilliseconds = 86400000;
-  useEffect(() => {
-    const setLocalStorage = async (key, timeExpire) => {
-      const now = new Date();
-      const expireDate = {
-        value: account,
-        expire: now.getTime() + timeExpire,
-      };
-      localStorage.setItem(key, JSON.stringify(expireDate));
-    };
-    const checklocalStorage = async (key, timeExpire) => {
-      setLocalStorage(key, timeExpire);
-      const getJsonData = localStorage.getItem(key);
-      const data = JSON.parse(getJsonData);
-      const now = new Date().getTime();
-      if (now > data.expire) {
-        localStorage.removeItem(key);
-        return null;
-      }
-      setUserData(data.value);
-    };
-    checklocalStorage("user", OneDaysMilliseconds);
-  }, [account]);
   return (
-    <UserAccount.Provider value={{ userData }}>
+    <UserAccount.Provider value={"Noce"}>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              border: "2px solid gray",
+              background: "green",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          error: {
+            style: {
+              border: "2px solid gray",
+              background: "red",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+          loading: {
+            style: {
+              border: "2px solid gray",
+              background: "#D1006B",
+              color: "white",
+              fontWeight: "bold",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/signup" element={<Signup />} />
@@ -77,6 +69,7 @@ function App() {
             <Route path="/add_voucher" element={<VoucherAdd />} />
             <Route path="/edit_voucher" element={<VoucherEdit />} />
           </Route>
+
         </Routes>
       </BrowserRouter>
     </UserAccount.Provider>
