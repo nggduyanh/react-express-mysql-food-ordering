@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { formatCurrency, GetFoodTypeRestaurant } from "../routebackend";
+import {
+  formatCurrency,
+  formatDate,
+  formatTime,
+  GetFoodTypeRestaurant,
+  GetUserInfo,
+} from "../routebackend";
 import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function DishDetails() {
   const data = useLocation();
@@ -29,7 +36,6 @@ export default function DishDetails() {
         const filterTypeFood = data.filter((type) => {
           return type.MaLoaiMonAn === detailsFood.MaLoaiMonAn;
         });
-        console.log("FilterTypeFood", filterTypeFood);
         setTypeFood(filterTypeFood);
       })
       .catch((err) => {
@@ -38,6 +44,92 @@ export default function DishDetails() {
         } else console.log("Another error", err.message);
       });
   }, [data]);
+  //http://localhost:3030/nguoiban/nhanxet/1
+
+  const [NhanXet, setNhanXet] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoiban/nhanxet/1`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("List empty");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const filterData = data.filter((item) => {
+          return item?.MonAn?.MaMonAn === 4;
+        });
+        setNhanXet(filterData);
+      })
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          setNhanXet([]);
+        } else console.log("Another error", err.message);
+      });
+  });
+
+  // console.log(NhanXet?.[0]?.NhanXet.MaNguoiMua);
+  const [Buyers, setBuyers] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/nguoidung/`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("List empty");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setBuyers(data);
+      })
+      .catch((err) => {
+        if (err.message.includes("404")) {
+          setBuyers([]);
+        } else console.log("Another error", err.message);
+      });
+  });
+
+  // console.log(Buyers);
+
+  const list = NhanXet.map((item) => {
+    // console.log(item?.NhanXet?.MaNguoiMua)
+    return (
+      <div className="w-full flex gap-3 p-2 rounded-lg border border-default-200 items-center">
+        <img
+          src="../../images/avatar.png"
+          alt=""
+          className="rounded-full h-10"
+        />
+        <div className="flex flex-col w-full">
+          <div className="flex flex-col">
+            <h1 className="text-md ">
+              {item?.NhanXet?.MaNguoiDung}
+              {Buyers.find(
+                (buyer) => buyer?.MaNguoiDung === item?.NhanXet?.MaNguoiMua
+              )?.TenNguoiDung || "N/A"}
+              <span className="text-xs text-gray-500 ml-2">
+                {formatDate(item?.NhanXet?.ThoiGianTao)}
+              </span>
+              <span className="text-xs text-gray-500 ml-1">
+                {formatTime(item?.NhanXet?.ThoiGianTao)}
+              </span>
+            </h1>
+            <span className="text-sm">Diem: {item?.NhanXet?.Diem}</span>
+          </div>
+          
+          <p>{item?.NhanXet?.NoiDung}</p>
+        </div>
+      </div>
+    );
+  });
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -81,7 +173,7 @@ export default function DishDetails() {
                 <p className="mb-4 text-md text-default-500">
                   {detailsFood.MoTa}
                 </p>
-                <div className="flex mb-5 gap-2">
+                <div className="flex mb-4 gap-2">
                   {typeFood.map((type) => {
                     return (
                       <div className="rounded-full border border-default-200 px-3 py-1.5 text-xs">
@@ -90,6 +182,8 @@ export default function DishDetails() {
                     );
                   })}
                 </div>
+                <h4 className="text-xl mb-4">Đánh giá</h4>
+                {list}
               </div>
             </div>
           </section>

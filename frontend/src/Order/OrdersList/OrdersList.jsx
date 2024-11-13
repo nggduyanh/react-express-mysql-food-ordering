@@ -10,6 +10,7 @@ import {
   GetOrder,
   GetOrderRestaurant,
   GetUserInfo,
+  handleRefreshPage,
   localStaticFile,
   OrderStatus,
 } from "../../routebackend";
@@ -58,7 +59,7 @@ export default function OrdersList() {
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
-          return order.TrangThai === 1;
+          return order.TrangThai;
         });
         setSuccessOrder(filterOrder);
       });
@@ -119,6 +120,21 @@ export default function OrdersList() {
     }
   });
 
+const handleChangeStatus = async (id)=>{
+  fetch(`http://localhost:3030/donhang/update/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${tokenValue}`,
+    },
+    body: JSON.stringify({
+      TrangThai: 2,
+      MaDonHang: id,
+    }),
+  }).then((res) => res.json());
+  handleRefreshPage()
+}
+
   const list = SuccessOrder?.map((item) => {
     if (SuccessOrder.length > 0) {
       return (
@@ -134,13 +150,14 @@ export default function OrdersList() {
                 <p className="text-sm mb-1">{item.MaDonHang}</p>
                 <p className="text-sm mb-1">{formatTime(item.ThoiGianTao)}</p>
               </div>
-              <span>#C0E4F7</span>
+              <button onClick={()=>handleChangeStatus(item.MaDonHang)} className="bg-red-900">Doi trang thai</button>
             </div>
           </div>
         </div>
       );
     }
   });
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
