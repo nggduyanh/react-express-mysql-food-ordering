@@ -60,7 +60,7 @@ export default function AddDish() {
 
   const [dish, setDish] = useState({
     TenMonAn: "",
-    Anh: null,
+    AnhMonAn: null,
     GiaBan: "",
     MoTa: "",
     MaLoaiMonAn: "",
@@ -92,7 +92,7 @@ export default function AddDish() {
     event.preventDefault();
     const formUserData = new FormData();
     formUserData.append("TenMonAn", dish.TenMonAn);
-    formUserData.append("Anh", dish.Anh);
+    formUserData.append("AnhMonAn", dish.AnhMonAn);
     formUserData.append("GiaBan", dish.GiaBan);
     formUserData.append("MoTa", dish.MoTa);
     formUserData.append("MaLoaiMonAn", dish.MaLoaiMonAn);
@@ -133,7 +133,7 @@ export default function AddDish() {
                     <input
                       type="file"
                       accept=".jpeg,.jpg,.png,.gif,.svg"
-                      name="Anh"
+                      name="AnhMonAn"
                       // onChange={handleFileChange}
                       onChange={handleChange}
                       className="relative z-10 opacity-0 w-full h-full"

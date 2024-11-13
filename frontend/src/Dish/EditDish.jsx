@@ -4,11 +4,14 @@ import { UserAccount } from "../App";
 import {
   GetFoodRestaurant,
   GetFoodTypeRestaurant,
+  GetUserInfo,
+  localStaticFile,
   UpdateFoodRestaurant,
 } from "../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function EditDish() {
   const data = useLocation();
@@ -39,7 +42,11 @@ export default function EditDish() {
 
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
-    fetch(GetFoodTypeRestaurant)
+    fetch(GetFoodTypeRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("List empty");
@@ -68,16 +75,33 @@ export default function EditDish() {
     MaLoaiMonAn: "",
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
+  const [srcimg, setSrcImg] = useState(null);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setDish((prevForm) => {
-      return {
+    const { name, value, type, files } = event.target;
+    if (type === "file" && files[0]) {
+      const file = files[0];
+      setSrcImg(URL.createObjectURL(file));
+      setDish((prevForm) => ({
+        ...prevForm,
+        [name]: file, // Lưu tệp ảnh vào trạng thái của dish
+      }));
+    } else {
+      setDish((prevForm) => ({
         ...prevForm,
         [name]: name === "gia" ? parseInt(value) : value,
-      };
-    });
+      }));
+    }
   };
+  // const handleChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setDish((prevForm) => {
+  //     return {
+  //       ...prevForm,
+  //       [name]: name === "gia" ? parseInt(value) : value,
+  //     };
+  //   });
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("dish", dish);
@@ -87,7 +111,7 @@ export default function EditDish() {
         dish,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${tokenValue}`,
           },
           withCredentials: true,
@@ -105,7 +129,7 @@ export default function EditDish() {
       console.error("Error adding dish:", err);
     }
   };
-
+console.log(detailsFood);
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -118,13 +142,25 @@ export default function EditDish() {
               <h3>Back to list</h3>
             </Link>
             <div className="grid grid-cols-3 gap-6">
-              <div className="border border-default-200 p-6 rounded-lg">
+            <div className="border border-default-200 p-6 rounded-lg">
                 <div className="border border-default-200 p-6 rounded-lg mb-4 flex justify-center items-center">
-                  <div className="h-[300px] flex flex-col items-center">
-                    <div className="h-64 w-64 border-[#F97316] border-dashed border-2 rounded-lg flex items-center justify-center bg-[#FFF0E9]">
+                  <div className="relative h-[300px] flex flex-col items-center justify-center">
+                    <input
+                      type="file"
+                      accept=".jpeg,.jpg,.png,.gif,.svg"
+                      name="AnhMonAn"
+                      // onChange={handleFileChange}
+                      onChange={handleChange}
+                      className="relative z-10 opacity-0 w-full h-full"
+                    />
+                    <div className="absolute h-full w-full border-[#F97316] border-dashed border-2 rounded-lg flex items-center justify-center bg-[#FFF0E9]">
                       <label htmlFor="">Upload Image</label>
                     </div>
-                    <input type="file" name="" id="" className="mt-4" />
+                    <img
+                      src={localStaticFile + detailsFood.AnhMonAn}
+                      alt=""
+                      className="absolute h-full w-full rounded-lg"
+                    />
                   </div>
                 </div>
               </div>
@@ -160,6 +196,7 @@ export default function EditDish() {
                             </option>
                           );
                         })}
+                       
                       {typeFood?.map((type) => {
                         return (
                           <option
@@ -171,11 +208,7 @@ export default function EditDish() {
                         );
                       })}
                     </select>
-                    {/* <input
-                      type="text"
-                      placeholder="Select"
-                      className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
-                    /> */}
+                    
                     <div className="grid grid-cols-2 gap-6 mb-6">
                       <div>
                         <h5 className="mb-2">Selling Price</h5>

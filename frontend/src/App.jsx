@@ -20,35 +20,7 @@ const UserAccount = createContext();
 function App() {
   return (
     <UserAccount.Provider value={"Noce"}>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          success: {
-            style: {
-              border: "2px solid gray",
-              background: "green",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          error: {
-            style: {
-              border: "2px solid gray",
-              background: "red",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-          loading: {
-            style: {
-              border: "2px solid gray",
-              background: "#D1006B",
-              color: "white",
-              fontWeight: "bold",
-            },
-          },
-        }}
-      />
+      
       <BrowserRouter>
         <Routes>
           <Route path="/signup" element={<Signup />} />

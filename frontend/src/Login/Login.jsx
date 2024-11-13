@@ -1,17 +1,10 @@
-<<<<<<< HEAD
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login({ assignAccount }) {
-=======
-import { useEffect, useState } from "react";
-import videoLogin from "../assets/food_login.mp4";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-export default function Login() {
->>>>>>> 846c6f17ca0ec9763fc46ec1d607791e9dba7e71
+
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
     MatKhau: "",
@@ -42,8 +35,8 @@ export default function Login() {
             },
           }
         );
-<<<<<<< HEAD
-      });
+
+      }));
       if (filterResult === false) {
         alert("User not found");
       } else {
@@ -64,38 +57,9 @@ export default function Login() {
         } else {
           alert("User not found");
         }
-=======
 
-        const getUserInfo = response.data;
-        const now = new Date();
-        const epxireToken = {
-          token: getUserInfo.accessToken,
-          expireDate: now.getTime() + 3600000,
-        };
-        localStorage.setItem("token", JSON.stringify(epxireToken));
-        navigate("/home");
-      })(),
-      {
-        loading: "Check credentials",
-        success: "Login successful",
-        error: (err) => {
-          if (err.response) {
-            if (err.response.status === 400) {
-              return "Please enter your credentials";
-            } else if (err.response.status === 404) {
-              return "User not found";
-            } else {
-              return "An error occurred: " + err.response.data.message;
-            }
-          } else if (err.request) {
-            return "No response from server";
-          } else {
-            return "Error: " + err.message;
-          }
-        },
->>>>>>> 846c6f17ca0ec9763fc46ec1d607791e9dba7e71
       }
-    );
+    ;
   };
 
   useEffect(() => {

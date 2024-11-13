@@ -8,6 +8,7 @@ import {
   GetFoodTypeRestaurant,
   GetUserInfo,
   handleRefreshPage,
+  localStaticFile,
 } from "../routebackend";
 import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
@@ -94,11 +95,20 @@ export default function Dish() {
       <tr>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
           <div className="flex items-center gap-4">
-            <img
+          {item.AnhMonAn !== null &&  item.AnhMonAn !== "undefined" ? (
+              <img
+              src={localStaticFile + item.AnhMonAn}
+              alt=""
+              className="h-[72px] max-w-[72px]"
+            />
+            ) : (
+              <img
               src="./images/Dashboard/pizza.png"
               alt=""
               className="h-[72px] max-w-[72px]"
             />
+            )}
+            
             <div>
               <p className="text-sm mb-1">{item.TenMonAn}</p>
             </div>
