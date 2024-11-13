@@ -23,6 +23,7 @@ const RegisterReducer = (state, action) => {
     case "inputValue": {
       const { name, value } = action.event.target;
       return {
+
         inputError: true,
         form: {
           ...state.form,
@@ -56,7 +57,8 @@ const RegisterReducer = (state, action) => {
       return state;
   }
 };
-export default function Register() {
+
+export default function Register({ assignAccount }) {
   const [RegisterForm, dispatch] = useReducer(RegisterReducer, RegisterAction);
   const navigate = useNavigate();
   const handleChange = (e) => {
