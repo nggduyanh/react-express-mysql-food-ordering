@@ -184,6 +184,14 @@ export default function Register() {
             Already has account? <Link to="/">Sign in</Link>
           </p>
         </div>
+        <div className="text-center mt-3">
+          <p className="">
+            Want to become a merchant?{" "}
+            <Link to="/register_restaurant" className="text-pink-500 font-bold">
+              Join now
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

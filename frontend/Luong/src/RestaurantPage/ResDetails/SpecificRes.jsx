@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
-import ResInfo from "../InfoRes/ResInfo";
+import ResInfo from "../InfoRes/ResInfo.jsx";
 import { lazy, Suspense, useContext, useEffect, useState } from "react";
 import { useMemo } from "react";
-import FoodDetails from "../Food/FoodDetails";
-import MarginJustifi from "../../Function/MarginJustifi";
-import GridDiv from "../../Function/GridDiv";
-const Rating = lazy(() => import("../Comment/Rating"));
-import OrderDetails from "./OrderDetails";
-import ListComment from "../Comment/ListComment";
+import FoodDetails from "../Food/FoodDetails.jsx";
+import MarginJustifi from "../../Function/MarginJustifi.jsx";
+import GridDiv from "../../Function/GridDiv.jsx";
+const Rating = lazy(() => import("../Comment/Rating.jsx"));
+import OrderDetails from "./OrderDetails.jsx";
+import ListComment from "../Comment/ListComment.jsx";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
 import {
@@ -17,7 +17,7 @@ import {
   GetRestaurant,
   localStaticFile,
 } from "../../Route/index.js";
-import Card from "../../Information/Payment/Card";
+import Card from "../../Information/Payment/Card.jsx";
 import { UserContext } from "../../Layout/LayoutHeader.jsx";
 
 export default function SpecificRes() {

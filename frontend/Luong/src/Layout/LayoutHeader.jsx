@@ -4,11 +4,12 @@ import { IoLocationOutline } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { createContext, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { GetRestaurant, localStaticFile } from "../Route";
+import { GetRestaurant, localStaticFile } from "../Route/index.js";
 import toast from "react-hot-toast";
-import useFetchData from "../Hook/useFetchData";
-import { GetUserInfo } from ".././Route/index.js";
+import useFetchData from "../Hook/useFetchData.jsx";
+import { GetUserInfo } from "../Route/index.js";
 import LayoutFooter from "./LayoutFooter.jsx";
+import { MdOutlineFoodBank } from "react-icons/md";
 const UserContext = createContext();
 export default function LayoutHeader() {
   const tokenStorage = localStorage.getItem("token");
@@ -81,6 +82,15 @@ export default function LayoutHeader() {
           </div>
 
           <div className="infor flex items-center gap-3 ">
+            <div className="merchant">
+              <Link
+                to="/register_restaurant/create_restaurant"
+                className="flex items-center gap-2 text-white font-bold p-2 border bg-pink-500 rounded-md hover:bg-white hover:text-black hover:border-pink-500 transition-all ease-in duration-300"
+              >
+                <MdOutlineFoodBank className="text-xl font-bold" /> Want to
+                become merchant ?
+              </Link>
+            </div>
             <Link
               to="all"
               className="flex items-center gap-2 border border-gray-300 p-2 rounded-md transition-all ease-in duration-300 text-white font-bold bg-pink-500 hover:bg-white hover:text-black hover:border-pink-500"

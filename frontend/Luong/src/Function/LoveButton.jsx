@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Toggle from "../Function/Toggle/LayoutToggle";
+import Toggle from "./Toggle/LayoutToggle";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
 import { addLoveRestaurant, getLoveRestaurant, refreshPage } from "../Route";

@@ -80,10 +80,10 @@ export default function OrderStatus(props) {
   console.log(orderDetails);
   let colorStatus = " ";
   let nameStatus = " ";
-  if (props.TrangThai === orderStatus[4].MaTrangThai) {
+  if (props.TrangThai === orderStatus?.[4].MaTrangThai) {
     colorStatus = "bg-red-500";
     nameStatus = orderStatus[4].TenTrangThai;
-  } else if (props.TrangThai === orderStatus[3].MaTrangThai) {
+  } else if (props.TrangThai === orderStatus?.[3].MaTrangThai) {
     colorStatus = "bg-green-500";
     nameStatus = orderStatus[3].TenTrangThai;
   } else {
