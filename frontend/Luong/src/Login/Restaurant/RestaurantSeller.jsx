@@ -1,14 +1,33 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPlusCircle } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 export default function RestaurantSeller() {
   const avatarResRef = useRef(null);
+  const tokenValue = JSON.parse(localStorage.getItem("token"));
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await axios.get(
+        "http://localhost:3030/nguoidung/current",
+        {
+          headers: {
+            Authorization: "Bearer " + tokenValue.token,
+          },
+        }
+      );
+      const data = response.data;
+      setUser(data?.[0]);
+    };
+    getUser();
+  }, []);
   const CCCD = useRef(null);
   const Businesslicense = useRef(null);
   const [SellerForm, setSellerForm] = useState({
-    MaNguoiBan: "",
+    MaNguoiBan: user?.MaNguoiDung,
     ThanhPho: "",
     ThoiGianMoCua: "",
     ThoiGianDongCua: "",
@@ -27,6 +46,16 @@ export default function RestaurantSeller() {
     Email: "",
     Hotline: "",
   });
+  useEffect(() => {
+    if (user?.MaNguoiDung) {
+      setSellerForm((prevForm) => {
+        return {
+          ...prevForm,
+          MaNguoiBan: user?.MaNguoiDung,
+        };
+      });
+    }
+  }, [user]);
   const handleChangeForm = (event) => {
     const { name, value } = event.target;
     setSellerForm((prevForm) => {
@@ -53,7 +82,52 @@ export default function RestaurantSeller() {
     ) {
       toast.error("Please fullfill the form");
     } else {
-      toast.success("Success");
+      toast.promise(
+        (async () => {
+          const formSellerData = new FormData();
+          formSellerData.append("MaNguoiBan", SellerForm?.MaNguoiBan);
+          formSellerData.append("ThanhPho", SellerForm.ThanhPho);
+          formSellerData.append("ThoiGianMoCua", SellerForm.ThoiGianMoCua);
+          formSellerData.append("ThoiGianDongCua", SellerForm.ThoiGianDongCua);
+          formSellerData.append("DiaChi", SellerForm.DiaChi);
+          formSellerData.append("AnhNguoiBan", SellerForm.AnhNguoiBan);
+          formSellerData.append("CanCuoc", SellerForm.CanCuoc);
+          formSellerData.append("GiayPhep", SellerForm.GiayPhep);
+          formSellerData.append("TenChuSoHuu", SellerForm.TenChuSoHuu);
+          formSellerData.append("TenNguoiBan", SellerForm.TenChuSoHuu);
+          formSellerData.append("QueQuanChuSoHuu", SellerForm.QueQuanChuSoHuu);
+          formSellerData.append(
+            "NgaySinhChuSoHuu",
+            SellerForm.NgaySinhChuSoHuu
+          );
+          formSellerData.append("Email", SellerForm.Email);
+          formSellerData.append("Hotline", SellerForm.Hotline);
+          const response = await axios.post(
+            "http://localhost:3030/nguoiban/add",
+            formSellerData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: "Bearer " + tokenValue.token,
+              },
+            }
+          );
+          console.log(response);
+          const Token = await response.data;
+          const now = new Date();
+          const epxireToken = {
+            token: Token.accessToken,
+            expireDate: now.getTime() + 3600000,
+          };
+          localStorage.setItem("token", JSON.stringify(epxireToken));
+          navigate("/home");
+        })(),
+        {
+          loading: "Create credentials for seller",
+          success: "Success created",
+          error: "Error creating credentials",
+        }
+      );
     }
   };
   const handleAvatarChange = (event) => {
@@ -323,8 +397,8 @@ export default function RestaurantSeller() {
       <div className="flex flex-col justify-end  h-full mt-5 gap-5 ">
         <div className="flex items-center gap-4">
           <FaArrowLeftLong className="text-black font-bold" />
-          <Link to="/register" className="text-black font-bold">
-            Back to register
+          <Link to="/" className="text-black font-bold">
+            Back to previous page
           </Link>
         </div>
       </div>

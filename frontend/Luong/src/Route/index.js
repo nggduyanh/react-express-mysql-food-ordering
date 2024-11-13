@@ -158,3 +158,23 @@ export const District = {
 export const urlPayment = "http://localhost:3030/payment/create";
 export const searchUrl = "http://localhost:3030/nguoidung/search/";
 export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/:";
+export const customBadWords = [
+  "chửi",
+  "ngu",
+  "đồ ngốc",
+  "thằng",
+  "con",
+  "địt",
+  "cặc",
+  "vô dụng",
+  "khốn nạn",
+  "mẹ",
+  "chó",
+  "bẩn",
+  "hâm",
+  "ngu dốt",
+  "khùng",
+  "xạo",
+  "lừa",
+  "lozz",
+];

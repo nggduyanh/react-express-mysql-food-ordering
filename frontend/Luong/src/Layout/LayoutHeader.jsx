@@ -10,11 +10,13 @@ import useFetchData from "../Hook/useFetchData.jsx";
 import { GetUserInfo } from "../Route/index.js";
 import LayoutFooter from "./LayoutFooter.jsx";
 import { MdOutlineFoodBank } from "react-icons/md";
+import axios from "axios";
 const UserContext = createContext();
 export default function LayoutHeader() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   const navigate = useNavigate();
+  const [isActive, setIsActive] = useState(false);
   const [Restaurants, errorRestaurant] = useFetchData(
     GetRestaurant,
     tokenValue
@@ -31,6 +33,25 @@ export default function LayoutHeader() {
     },
     []
   );
+  useEffect(() => {
+    const getSellerInfor = async () => {
+      const resposne = await axios.get(
+        "http://localhost:3030/nguoiban/current",
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      );
+      console.log(resposne);
+      if (resposne.status === 403) {
+        setIsActive(false);
+      } else {
+        setIsActive(true);
+      }
+    };
+    getSellerInfor();
+  }, [tokenValue]);
   useEffect(() => {
     setPlaces(getPlaceRestaurant?.[0]);
   }, [Restaurants, tokenValue]);
@@ -82,15 +103,17 @@ export default function LayoutHeader() {
           </div>
 
           <div className="infor flex items-center gap-3 ">
-            <div className="merchant">
-              <Link
-                to="/register_restaurant/create_restaurant"
-                className="flex items-center gap-2 text-white font-bold p-2 border bg-pink-500 rounded-md hover:bg-white hover:text-black hover:border-pink-500 transition-all ease-in duration-300"
-              >
-                <MdOutlineFoodBank className="text-xl font-bold" /> Want to
-                become merchant ?
-              </Link>
-            </div>
+            {!isActive && (
+              <div className="merchant">
+                <Link
+                  to="/register_restaurant/create_restaurant"
+                  className="flex items-center gap-2 text-white font-bold p-2 border bg-pink-500 rounded-md hover:bg-white hover:text-black hover:border-pink-500 transition-all ease-in duration-300"
+                >
+                  <MdOutlineFoodBank className="text-xl font-bold" /> Want to
+                  become merchant ?
+                </Link>
+              </div>
+            )}
             <Link
               to="all"
               className="flex items-center gap-2 border border-gray-300 p-2 rounded-md transition-all ease-in duration-300 text-white font-bold bg-pink-500 hover:bg-white hover:text-black hover:border-pink-500"

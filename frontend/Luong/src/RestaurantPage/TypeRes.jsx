@@ -35,7 +35,7 @@ export default function TypeRes() {
   }, [typeValue, tokenValue]);
   const list = listType
     .map((res) => {
-      const foodType = typeFood?.[0]?.data.filter((type) => {
+      const foodType = typeFood?.[0]?.data?.filter((type) => {
         return type?.MaNguoiBan === res.tmp?.MaNguoiBan;
       });
       console.log("foodType", foodType);

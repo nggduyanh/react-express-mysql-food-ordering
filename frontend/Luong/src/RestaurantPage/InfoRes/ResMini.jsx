@@ -1,9 +1,7 @@
 import { Link, useOutletContext } from "react-router-dom";
-import { getLoveRestaurant, localStaticFile, refreshPage } from "../../Route";
+import { localStaticFile, refreshPage } from "../../Route";
 import axios from "axios";
-import { useContext } from "react";
-import { UserAccount } from "../../App";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 export default function ResMini(props) {
   const { userData, tokenValue } = useOutletContext();
   const handleRemoveLove = async () => {

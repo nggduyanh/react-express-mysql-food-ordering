@@ -18,7 +18,7 @@ export default function OnGoing() {
     .map((items) => {
       return <OrderStatus {...items} key={items.MaDonHang} />;
     });
-  console.log("order", order);
+  console.log("OnGoing", order);
   return (
     <div className="overflow-auto max-h-[720px]">
       {orderList?.length > 0 ? (

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 export default function Login() {
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
@@ -23,7 +23,7 @@ export default function Login() {
     event.preventDefault();
     toast.promise(
       (async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = await axios.post(
           "http://localhost:3030/auth/login",
           loginForm,
@@ -73,13 +73,14 @@ export default function Login() {
     } else {
       console.log("Login again");
     }
-  }, []);
+  }, [navigate]);
   return (
     <div className="flex">
       <video
         loop
         autoPlay
         muted
+        preload="auto"
         id="login_video"
         className="w-1/2 h-screen object-cover"
       >

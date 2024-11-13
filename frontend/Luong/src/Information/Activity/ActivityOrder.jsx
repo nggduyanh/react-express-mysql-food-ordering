@@ -11,7 +11,6 @@ export default function OrderHistory() {
   const order = Listorder?.data?.filter((items) => {
     return items.MaNguoiMua === userData?.MaNguoiDung;
   });
-  console.log("order status: ", order);
   return (
     <div className="bg_homeScreen">
       <div className="orderHistory marginJustification min-h-screen ">

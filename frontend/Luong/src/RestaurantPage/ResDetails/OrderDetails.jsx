@@ -150,6 +150,7 @@ export default function OrderDetails(props) {
               MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
               TrangThaiThanhToan: TrangThaiThanhToan,
               MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+              LoiNhan: detailsOrder.suggestion,
             },
             {
               headers: {
@@ -234,6 +235,7 @@ export default function OrderDetails(props) {
                   MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
                   TrangThaiThanhToan: false,
                   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+                  LoiNhan: detailsOrder.suggestion,
                   ListItems: reponseDetailsOrder?.data,
                 },
                 {
@@ -333,6 +335,7 @@ export default function OrderDetails(props) {
               // props.orderList
             )}
           </div>
+
           <div className="flex items-center justify-between">
             <select
               name="promotions"

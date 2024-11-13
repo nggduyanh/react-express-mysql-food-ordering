@@ -3,8 +3,9 @@ import { TiStarOutline } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import Toggle from "../../Function/Toggle/LayoutToggle";
 import LoveButton from "../../Function/LoveButton";
+import { localStaticFile } from "../../Route";
 export default function ResInfo({ children, details, ...rest }) {
-  const NumberOfStar = rest.Diem;
+  const NumberOfStar = Math.floor(rest.Diem / rest.LuotDanhGia);
   const DecimalOfStar = Number.parseInt(NumberOfStar);
   let arrayOfStar = new Array(5);
   let i = 0;
@@ -28,7 +29,7 @@ export default function ResInfo({ children, details, ...rest }) {
             <Link to={`/home/restaurant/:${rest.TenNguoiBan}`} state={rest}>
               {rest.AnhNguoiBan !== null ? (
                 <img
-                  src={rest.AnhNguoiBan}
+                  src={localStaticFile + rest.AnhNguoiBan}
                   alt=""
                   className="w-full h-48 rounded-lg"
                 />
@@ -44,7 +45,15 @@ export default function ResInfo({ children, details, ...rest }) {
             <div className="absolute bottom-0 right-0 p-2">
               <div className="flex items-center bg-green-700 gap-1 text-white font-bold text-xs p-1 rounded-md">
                 <TiStarOutline />
-                <p>{rest.Diem}</p>
+                <p>
+                  {isNaN(
+                    Math.floor(parseInt(rest.Diem) / parseInt(rest.LuotDanhGia))
+                  )
+                    ? 0
+                    : Math.floor(
+                        parseInt(rest.Diem) / parseInt(rest.LuotDanhGia)
+                      )}
+                </p>
                 <p>({rest.LuotDanhGia}+)</p>
               </div>
             </div>
