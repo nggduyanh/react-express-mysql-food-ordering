@@ -52,6 +52,7 @@ class NguoiBanController
 
     async update (req,res,next)
     {
+        // console.log(req.body)
         let obj = await NguoiBan.update (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))
@@ -91,6 +92,7 @@ class NguoiBanController
 
     async replyNhanXet (req,res,next)
     {
+        console.log (req.body)
         let obj = await NhanXet.update (req.body)
         if (!obj.success) return next (new Exception (obj.res,400))
         if (!obj.res.length) return next (new Exception ({msg: `Not found resource`}, 404))

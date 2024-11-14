@@ -33,6 +33,17 @@ export default function Profile() {
       });
   }, [userInfo]);
 
+  useEffect(() => {
+    if (Seller?.MaNguoiBan) {
+      setSeller((prevForm) => {
+        return {
+          ...prevForm,
+          MaNguoiBan: Seller?.MaNguoiBan,
+        };
+      });
+    }
+  }, [userInfo ]);
+
   // console.log(userData.TenNguoiBan);
   // const handleSubmit = async (event) => {
   //   event.preventDefault();
@@ -91,40 +102,10 @@ export default function Profile() {
               City = {Seller?.[0]?.ThanhPho}
               MoCua = {Seller?.[0]?.ThoiGianMoCua}
               DongCua = {Seller?.[0]?.ThoiGianDongCua}
+              Var = {[Seller, setSeller]}
               />
 
-              <div className="border border-default-200 p-6 rounded-lg">
-                <h4 class="mb-4 text-xl font-medium text-default-900">
-                  Change Password
-                </h4>
-                <div className="mb-4">
-                  <h5 className="mb-2">Current Password</h5>
-                  <input
-                    type="password"
-                    placeholder="Enter your password"
-                    className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                  />
-                </div>
-                <div className="mb-4">
-                  <h5 className="mb-2">New Password</h5>
-                  <input
-                    type="password"
-                    placeholder="Enter your new password"
-                    className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                  />
-                </div>
-                <div className="mb-4">
-                  <h5 className="mb-2">Confirm Password</h5>
-                  <input
-                    type="password"
-                    placeholder="Enter your confirm password"
-                    className="border border-default-200 py-3 px-4 rounded-lg w-full"
-                  />
-                </div>
-                <button className="px-4 py-2 text-white font-medium flex gap-2 items-center justify-center text-center bg-[#F97316] rounded-lg ml-auto">
-                  Save Changes
-                </button>
-              </div>
+              
             </div>
           </section>
         </div>

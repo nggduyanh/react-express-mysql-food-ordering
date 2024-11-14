@@ -24,6 +24,7 @@ export const GetOrder = "http://localhost:3030/donhang";
 export const GetOrderStatus = "http://localhost:3030/trangthaidonhang";
 export const GetOrderRestaurant = "http://localhost:3030/donhang/nguoiban/:idNguoiBan";
 export const GetPaymentMethods = "http://localhost:3030/phuongthucgiaodich";
+export const RepComment = "http://localhost:3030/nguoiban/nhanxet/update"
 
 export const handleRefreshPage = () => {
     window.location.reload();

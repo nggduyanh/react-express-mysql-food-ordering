@@ -6,10 +6,12 @@ import {
   formatTime,
   GetFoodTypeRestaurant,
   GetUserInfo,
+  RepComment,
 } from "../routebackend";
 import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
 import useFetchData from "../Components/useFetchData";
+import axios from "axios";
 
 export default function DishDetails() {
   const data = useLocation();
@@ -61,6 +63,7 @@ export default function DishDetails() {
       })
       .then((data) => {
         const filterData = data.filter((item) => {
+          // return item?.MonAn?.MaMonAn === detailsFood.MaMonAn;
           return item?.MonAn?.MaMonAn === 4;
         });
         setNhanXet(filterData);
@@ -96,36 +99,102 @@ export default function DishDetails() {
       });
   });
 
-  // console.log(Buyers);
+  const [showRep, setShowRep] = useState(false);
+  const handleRep = () => {
+    setShowRep(!showRep);
+  };
+
+  const [RepNhanXet, setRepNhanXet] = useState({
+    MaMonAn: 4,
+    MaNguoiMua: 1,
+    TraLoi: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value, type, files } = event.target;
+    setRepNhanXet((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+    console.log(RepNhanXet);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("RepNhanXet", RepNhanXet);
+    try {
+      const response = await axios.patch(
+        "http://localhost:3030/nguoiban/nhanxet/update",
+        RepNhanXet,
+        {
+          headers: {
+            "Content-Type": "applications/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.status === 201) {
+        alert("Rep successful");
+        handleRefreshPage();
+      } else {
+        console.error("Failed to update. Status:", response.status);
+        alert("Failed to update. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error adding:", err);
+    }
+  };
 
   const list = NhanXet.map((item) => {
-    // console.log(item?.NhanXet?.MaNguoiMua)
     return (
-      <div className="w-full flex gap-3 p-2 rounded-lg border border-default-200 items-center">
-        <img
-          src="../../images/avatar.png"
-          alt=""
-          className="rounded-full h-10"
-        />
-        <div className="flex flex-col w-full">
-          <div className="flex flex-col">
-            <h1 className="text-md ">
-              {item?.NhanXet?.MaNguoiDung}
-              {Buyers.find(
-                (buyer) => buyer?.MaNguoiDung === item?.NhanXet?.MaNguoiMua
-              )?.TenNguoiDung || "N/A"}
-              <span className="text-xs text-gray-500 ml-2">
-                {formatDate(item?.NhanXet?.ThoiGianTao)}
-              </span>
-              <span className="text-xs text-gray-500 ml-1">
-                {formatTime(item?.NhanXet?.ThoiGianTao)}
-              </span>
-            </h1>
-            <span className="text-sm">Diem: {item?.NhanXet?.Diem}</span>
+      <div className="w-full flex flex-col rounded-lg border border-default-200">
+        <div className="w-full flex gap-3 p-2 items-center">
+          <img
+            src="../../images/avatar.png"
+            alt=""
+            className="rounded-full h-10"
+          />
+          <div className="flex flex-col w-full">
+            <div className="flex flex-col">
+              <h1 className="text-md ">
+                {item?.NhanXet?.MaNguoiDung}
+                {Buyers.find(
+                  (buyer) => buyer?.MaNguoiDung === item?.NhanXet?.MaNguoiMua
+                )?.TenNguoiDung || "N/A"}
+                <span className="text-xs text-gray-500 ml-2">
+                  {formatDate(item?.NhanXet?.ThoiGianTao)}
+                </span>
+                <span className="text-xs text-gray-500 ml-1">
+                  {formatTime(item?.NhanXet?.ThoiGianTao)}
+                </span>
+              </h1>
+              <span className="text-sm">Diem: {item?.NhanXet?.Diem}</span>
+            </div>
+            <p className="mb-2">{item?.NhanXet?.NoiDung}</p>
+            <p className="mb-3">{item?.NhanXet?.TraLoi}</p>
           </div>
-          
-          <p>{item?.NhanXet?.NoiDung}</p>
+          {/* <button onClick={handleRep}>reply</button>
+      {showRep && (
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+          }}
+        >
+          Đây là nội dung của div!
         </div>
+      )} */}
+        </div>
+        <textarea
+          name="TraLoi"
+          id=""
+          onChange={handleChange}
+          className="ml-16 px-2 py-1 w-[500px] rounded-lg mb-2 border border-default-200"
+          placeholder="Reply"
+        ></textarea>
+        <button onClick={handleSubmit}>Commit</button>
       </div>
     );
   });

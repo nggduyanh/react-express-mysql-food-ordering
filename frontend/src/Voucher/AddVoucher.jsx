@@ -1,11 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link } from "react-router-dom";
 import SideBar from "../Components/SideBar";
 import { UserAccount } from "../App";
 import { vi } from "date-fns/locale";
-import { AddVoucher, getFormattedDate, handleRefreshPage } from "../routebackend";
+import {
+  AddVoucher,
+  getFormattedDate,
+  GetUserInfo,
+  handleRefreshPage,
+} from "../routebackend";
 import axios from "axios";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
@@ -27,7 +32,7 @@ export default function VoucherAdd() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
+  }, []);
 
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -40,26 +45,37 @@ export default function VoucherAdd() {
   const handleDateChangeStart = (date) => {
     setSelectedDateTimeStart(date);
     setVoucher((prevVoucher) => ({
-        ...prevVoucher,
-        NgayTao: getFormattedDate(date),
+      ...prevVoucher,
+      NgayTao: getFormattedDate(date),
     }));
   };
   const handleDateChangeEnd = (date) => {
     setSelectedDateTimeEnd(date);
     setVoucher((prevVoucher) => ({
-        ...prevVoucher,
-        NgayHetHan: getFormattedDate(date),
+      ...prevVoucher,
+      NgayHetHan: getFormattedDate(date),
     }));
   };
+
   const [voucher, setVoucher] = useState({
     TenKhuyenMai: "",
     PhanTram: null,
     GiaTri: null,
-    MaNguoiBan: Seller?.[0]?.MaNguoiBan,
+    MaNguoiBan: null,
     SoLuong: "",
     NgayTao: null,
     NgayHetHan: null,
   });
+
+  useEffect(() => {
+    if (Seller && Seller[0]?.MaNguoiBan) {
+      setVoucher((prevVoucher) => ({
+        ...prevVoucher,
+        MaNguoiBan: Seller[0].MaNguoiBan, // Cập nhật MaNguoiBan khi Seller có giá trị
+      }));
+    }
+  }, [Seller]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setVoucher((prevForm) => {
@@ -75,15 +91,17 @@ export default function VoucherAdd() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(voucher);
-    try{
+    try {
       const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
-        headers: { "Content-Type": "application/json",Authorization: `Bearer ${tokenValue}`, },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenValue}`,
+        },
         withCredentials: true,
-      })
+      });
       alert("Add sucesss");
       handleRefreshPage();
-      
-    }catch(err){
+    } catch (err) {
       console.error("Error adding voucher:", err);
     }
   };
@@ -92,7 +110,7 @@ export default function VoucherAdd() {
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
-        <NavBar />
+          <NavBar />
           <section className="p-6">
             <h1>Add Voucher</h1>
             <Link to="/voucher">

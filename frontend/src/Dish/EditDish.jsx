@@ -75,6 +75,7 @@ export default function EditDish() {
     MaLoaiMonAn: "",
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
+  
   const [srcimg, setSrcImg] = useState(null);
 
   const handleChange = (event) => {

@@ -4,10 +4,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserAccount } from "../App";
 import { vi } from "date-fns/locale";
-import { AddVoucher, getFormattedDate, handleRefreshPage } from "../routebackend";
+import {
+  AddVoucher,
+  getFormattedDate,
+  GetUserInfo,
+  handleRefreshPage,
+} from "../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
 
 export default function VoucherEdit() {
   const tokenStorage = localStorage.getItem("token");
@@ -27,87 +33,102 @@ export default function VoucherEdit() {
         getSeller(data);
       });
   }, [userInfo]);
-    const [selectedOption, setSelectedOption] = useState("");
-    const data = useLocation();
-    const detailsVoucher = data.state;
-    const TypeKM = detailsVoucher.PhanTram === null ? "Theo gia":"Theo phan tram" 
-    const valueType = detailsVoucher.PhanTram === null ? "Gia":"PhanTram" 
-    const NgayBatDau = getFormattedDate(detailsVoucher.NgayTao);
-    const NgayHetHan = getFormattedDate(detailsVoucher.NgayHetHan);  
-    const Cancel = () => {
-      navigate("/dish");
-    };
-    const handleSelectChange = (event) => {
-      setSelectedOption(event.target.value);
-    };
-    const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(null);
-    const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(null);
-    // Handler for date change
-    const handleDateChangeStart = (date) => {
-      setSelectedDateTimeStart(date);
+  const [selectedOption, setSelectedOption] = useState("");
+  const data = useLocation();
+  const detailsVoucher = data.state;
+  const TypeKM =
+    detailsVoucher.PhanTram === null ? "Theo gia" : "Theo phan tram";
+  const valueType = detailsVoucher.PhanTram === null ? "Gia" : "PhanTram";
+  const NgayBatDau = getFormattedDate(detailsVoucher.NgayTao);
+  const NgayHetHan = getFormattedDate(detailsVoucher.NgayHetHan);
+  const Cancel = () => {
+    navigate("/dish");
+  };
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+  const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(null);
+  const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(null);
+  // Handler for date change
+  const handleDateChangeStart = (date) => {
+    setSelectedDateTimeStart(date);
+    setVoucher((prevVoucher) => ({
+      ...prevVoucher,
+      NgayTao: getFormattedDate(date),
+    }));
+  };
+  const handleDateChangeEnd = (date) => {
+    setSelectedDateTimeEnd(date);
+    setVoucher((prevVoucher) => ({
+      ...prevVoucher,
+      NgayHetHan: getFormattedDate(date),
+    }));
+  };
+
+  const [voucher, setVoucher] = useState({
+    MaKhuyenMai: detailsVoucher.MaKhuyenMai,
+    TenKhuyenMai: "",
+    PhanTram: null,
+    GiaTri: null,
+    MaNguoiBan: Seller?.[0]?.MaNguoiBan,
+    SoLuong: "",
+    NgayTao: null,
+    NgayHetHan: null,
+  });
+
+  useEffect(() => {
+    if (Seller && Seller[0]?.MaNguoiBan) {
       setVoucher((prevVoucher) => ({
-          ...prevVoucher,
-          NgayTao: getFormattedDate(date),
+        ...prevVoucher,
+        MaNguoiBan: Seller[0].MaNguoiBan, // Cập nhật MaNguoiBan khi Seller có giá trị
       }));
-    };
-    const handleDateChangeEnd = (date) => {
-      setSelectedDateTimeEnd(date);
-      setVoucher((prevVoucher) => ({
-          ...prevVoucher,
-          NgayHetHan: getFormattedDate(date),
-      }));
-    };
-    const [voucher, setVoucher] = useState({
-      MaKhuyenMai: detailsVoucher.MaKhuyenMai,
-      TenKhuyenMai: "",
-      PhanTram: null,
-      GiaTri: null,
-      MaNguoiBan: Seller?.[0]?.MaNguoiBan,
-      SoLuong: "",
-      NgayTao: null,
-      NgayHetHan: null,
+    }
+  }, [Seller]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setVoucher((prevForm) => {
+      return {
+        ...prevForm,
+        [name]:
+          name === "GiaTri" || name === "soluong" || name === "PhanTram"
+            ? parseInt(value)
+            : value,
+      };
     });
-    const handleChange = (event) => {
-      const { name, value } = event.target;
-      setVoucher((prevForm) => {
-        return {
-          ...prevForm,
-          [name]:
-            name === "GiaTri" || name === "soluong" || name === "PhanTram"
-              ? parseInt(value)
-              : value,
-        };
-      });
-    };
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      console.log(voucher);
-      try {
-        const response = await axios.patch(
-          `http://localhost:3030/khuyenmai/update`,
-          voucher,
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          }
-        );
-        if (response.status === 201) {
-          alert("Update successful");
-          handleRefreshPage();
-        } else {
-          console.error("Failed to update dish. Status:", response.status);
-          alert("Failed to update dish. Please try again.");
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(voucher);
+    try {
+      const response = await axios.patch(
+        `http://localhost:3030/khuyenmai/update`,
+        voucher,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+          withCredentials: true,
         }
-      } catch (err) {
-        console.error("Error adding dish:", err);
+      );
+      if (response.status === 201) {
+        alert("Update successful");
+        handleRefreshPage();
+      } else {
+        console.error("Failed to update dish. Status:", response.status);
+        alert("Failed to update dish. Please try again.");
       }
-    };
+    } catch (err) {
+      console.error("Error adding dish:", err);
+    }
+  };
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
-        <NavBar />
+          <NavBar />
           <section className="p-6">
             <h1>Add Voucher</h1>
             <Link to="/voucher">
