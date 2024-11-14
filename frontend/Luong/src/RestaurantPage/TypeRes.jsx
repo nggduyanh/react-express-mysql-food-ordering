@@ -38,7 +38,6 @@ export default function TypeRes() {
       const foodType = typeFood?.[0]?.data?.filter((type) => {
         return type?.MaNguoiBan === res.tmp?.MaNguoiBan;
       });
-      console.log("foodType", foodType);
       return {
         ...res,
         NguoiBan: {

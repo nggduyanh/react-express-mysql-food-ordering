@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createContext, lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
+import ScaleLoader from "react-spinners/ScaleLoader";
 // import HomePage from "./HomePage/HomePage";
 // import Login from "./Login/Login";
 // import Register from "./Login/Register";
@@ -102,7 +103,13 @@ function App() {
         }}
       />
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <div style={styles.loaderContainer}>
+              <ScaleLoader size={100} color="pink" />
+            </div>
+          }
+        >
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="register" element={<Register />} />
@@ -145,5 +152,13 @@ function App() {
     </UserAccount.Provider>
   );
 }
+const styles = {
+  loaderContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh", // Chiều cao toàn màn hình để spinner nằm chính giữa
+  },
+};
 
 export default App;

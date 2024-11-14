@@ -4,8 +4,10 @@ import {
   formatCurrency,
   formatDate,
   getDetailsOrder,
+  GetTypeRes,
   localStaticFile,
 } from "../../Route";
+import axios from "axios";
 
 const OrderAction = {
   orderDetaiInfo: [],
@@ -36,7 +38,7 @@ export default function OrderStatus(props) {
   const { tokenValue, userData } = useOutletContext();
   const { orderStatus } = useOutletContext();
   const [orderDetails, dispatch] = useReducer(OrderReducer, OrderAction);
-  const [seller, setSeller] = useState([]);
+  const [seller, setSeller] = useState({});
   useEffect(() => {
     fetch(getDetailsOrder + `${props.MaDonHang}`, {
       headers: {
@@ -80,7 +82,7 @@ export default function OrderStatus(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, [orderDetails.orderDetaiInfo]);
+  }, [tokenValue, orderDetails.orderDetaiInfo]);
 
   let colorStatus = " ";
   let nameStatus = " ";
@@ -99,6 +101,27 @@ export default function OrderStatus(props) {
     else if (props.TrangThai === orderStatus?.[2].MaTrangThai)
       nameStatus = orderStatus[2].TenTrangThai;
   }
+  useEffect(() => {
+    const getTypeFood = async () => {
+      if (seller.MaNguoiBan) {
+        const response = await axios.get(GetTypeRes, {
+          headers: {
+            Authorization: "Bearer " + tokenValue,
+          },
+        });
+        const data = response.data;
+        const filterFoodType = data.filter((food) => {
+          return food.MaNguoiBan === seller.MaNguoiBan;
+        });
+        setSeller((prevSeller) => ({
+          ...prevSeller,
+          loaiMonAn: filterFoodType,
+        }));
+      }
+    };
+    getTypeFood();
+  }, [tokenValue, seller.MaNguoiBan]);
+  console.log(seller);
   return (
     <div className="bg-white p-4 rounded-xl mb-3">
       <div className="flex justify-between mb-2">

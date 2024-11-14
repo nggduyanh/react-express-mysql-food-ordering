@@ -16,7 +16,7 @@ async function CreatePayment(req, res) {
 
   const order = {
     app_id: process.env.app_id,
-    app_trans_id: `${moment().format("YYMMDD")}_${transID}-`,
+    app_trans_id: `${moment().format("YYMMDD")}_${transID}+`,
     app_user: req.body.MaNguoiMua,
     app_time: Date.now(), // miliseconds
     item: JSON.stringify(req.body.ListItems),

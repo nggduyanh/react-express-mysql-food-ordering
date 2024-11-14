@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CiKeyboard } from "react-icons/ci";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function ConfirmCode() {
   const data = useLocation();
+  const [timeLeft, setTimeLeft] = useState(30);
   const navigate = useNavigate();
   const [confirmCode, setConfirmCode] = useState({
     number1: "",
@@ -35,7 +36,7 @@ export default function ConfirmCode() {
       confirmCode.number5 === "" ||
       confirmCode.number6 === ""
     ) {
-      toast.error("Please fullfile the number");
+      toast.error("Please fullfill the number");
     } else {
       const number6digit = Number.parseInt(
         confirmCode.number1 +
@@ -71,7 +72,20 @@ export default function ConfirmCode() {
       );
     }
   };
-  console.log(data);
+  useEffect(() => {
+    if (timeLeft === 0) {
+      toast.error(
+        "Your code is expired or something went wrong, please try again or get a new code"
+      );
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
   const receiveAgain = () => {
     toast.promise(
       (async () => {
@@ -85,6 +99,17 @@ export default function ConfirmCode() {
         );
         if (response.status === 201) {
           const data = response.data;
+          setTimeLeft(30);
+          setConfirmCode((prevForm) => {
+            return {
+              number1: "",
+              number2: "",
+              number3: "",
+              number4: "",
+              number5: "",
+              number6: "",
+            };
+          });
         } else {
           console.log("Something went wrong");
         }
@@ -113,6 +138,11 @@ export default function ConfirmCode() {
             value={confirmCode.number1}
             max="9"
             onChange={handleNumberChange}
+            style={{
+              appearance: "textfield",
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+            }}
             className="border border-black w-20 h-20 mx-2 rounded-lg text-5xl text-center"
           />
           <input
@@ -159,6 +189,11 @@ export default function ConfirmCode() {
         <button className="mt-3 inline-block w-full bg-pink-500 p-3 rounded-lg text-white font-bold hover:bg-pink-700 transition-all duration-200 ease-in">
           Continue
         </button>
+        <div>
+          <p className="text-red-500 font-bold py-2 text-xl">
+            Countdown: {timeLeft} seconds
+          </p>
+        </div>
         <div>
           <p>
             Didnt receive the email or the code is expired ?{" "}

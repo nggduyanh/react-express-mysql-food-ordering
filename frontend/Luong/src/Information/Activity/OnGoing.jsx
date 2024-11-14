@@ -1,5 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import OrderStatus from "./OrderStatus";
+import { useEffect } from "react";
 
 export default function OnGoing() {
   const { order, orderStatus } = useOutletContext();
@@ -18,7 +19,6 @@ export default function OnGoing() {
     .map((items) => {
       return <OrderStatus {...items} key={items.MaDonHang} />;
     });
-  console.log("OnGoing", order);
   return (
     <div className="overflow-auto max-h-[720px]">
       {orderList?.length > 0 ? (
