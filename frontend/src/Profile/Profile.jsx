@@ -44,40 +44,6 @@ export default function Profile() {
     }
   }, [userInfo ]);
 
-  // console.log(userData.TenNguoiBan);
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log(User);
-  //   console.log(Seller);
-  //   try {
-  //     const response = await axios.patch(
-  //       `http://localhost:3030/nguoidung/update`,
-  //       User,
-  //       {
-  //         headers: { "Content-Type": "application/json" },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     const res = await axios.patch(
-  //       `http://localhost:3030/nguoiban/update`,
-  //       Seller,
-  //       {
-  //         headers: { "Content-Type": "application/json" },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (response.status === 201) {
-  //       alert("Update successful");
-  //       handleRefreshPage();
-  //     } else {
-  //       console.error("Failed to update dish. Status:", response.status);
-  //       alert("Failed to update dish. Please try again.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error adding dish:", err);
-  //   }
-  // };
-
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -87,14 +53,10 @@ export default function Profile() {
           <section className="p-6">
             <h1 className="text-xl font-medium mb-6">Profile</h1>
             <div className="flex flex-col gap-6">
-              <PersonalDetails
-                TenChuSoHuu={Seller?.[0]?.TenChuSoHuu}
-                NgaySinh={Seller?.[0]?.NgaySinhChuSoHuu}
-                QueQuan={Seller?.[0]?.QueQuanChuSoHuu}
-                SDT={userInfo?.SoDienThoai}
-                Email={userInfo?.Email}
-              />
               <RestaurantInfo
+              TenChuSoHuu={Seller?.[0]?.TenChuSoHuu}
+              NgaySinh={Seller?.[0]?.NgaySinhChuSoHuu}
+              QueQuan={Seller?.[0]?.QueQuanChuSoHuu}
               TenCuaHang= {Seller?.[0]?.TenNguoiBan}
               Hotline = {Seller?.[0]?.Hotline}
               Email = {Seller?.[0]?.Email}
@@ -104,8 +66,6 @@ export default function Profile() {
               DongCua = {Seller?.[0]?.ThoiGianDongCua}
               Var = {[Seller, setSeller]}
               />
-
-              
             </div>
           </section>
         </div>

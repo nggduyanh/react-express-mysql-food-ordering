@@ -6,6 +6,7 @@ import {
   formatTime,
   GetFoodTypeRestaurant,
   GetUserInfo,
+  handleRefreshPage,
   RepComment,
 } from "../routebackend";
 import NavBar from "../Components/NavBar";
@@ -64,7 +65,7 @@ export default function DishDetails() {
       .then((data) => {
         const filterData = data.filter((item) => {
           // return item?.MonAn?.MaMonAn === detailsFood.MaMonAn;
-          return item?.MonAn?.MaMonAn === 4;
+          return item?.MonAn?.MaMonAn === 8;
         });
         setNhanXet(filterData);
       })
@@ -105,13 +106,13 @@ export default function DishDetails() {
   };
 
   const [RepNhanXet, setRepNhanXet] = useState({
-    MaMonAn: 4,
     MaNguoiMua: 1,
+    MaMonAn: 8,
     TraLoi: "",
   });
 
   const handleChange = (event) => {
-    const { name, value, type, files } = event.target;
+    const { name, value} = event.target;
     setRepNhanXet((prevForm) => ({
       ...prevForm,
       [name]: value,
@@ -128,13 +129,13 @@ export default function DishDetails() {
         RepNhanXet,
         {
           headers: {
-            "Content-Type": "applications/json",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${tokenValue}`,
           },
           withCredentials: true,
         }
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         alert("Rep successful");
         handleRefreshPage();
       } else {

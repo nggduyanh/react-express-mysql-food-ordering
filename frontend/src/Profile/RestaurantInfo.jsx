@@ -10,7 +10,7 @@ export default function RestaurantInfo(props) {
   const userInfo = userData?.data?.[0];
 
   const [Seller, setSeller] = useState({
-    MaNguoiBan: 8
+    MaNguoiBan: 8,
   });
 
   const [srcimg, setSrcImg] = useState(null);
@@ -31,7 +31,7 @@ export default function RestaurantInfo(props) {
         };
       });
     }
-console.log(Seller)
+    console.log(Seller);
   };
 
   const handleSubmit = async (event) => {
@@ -39,7 +39,8 @@ console.log(Seller)
     try {
       const res = await axios.patch(
         `http://localhost:3030/nguoiban/update`,
-        Seller,{
+        Seller,
+        {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${tokenValue}`,
@@ -58,11 +59,13 @@ console.log(Seller)
       console.error("Error adding profile:", err);
     }
   };
-// console.log("Seller", Seller)
+  // console.log("Seller", Seller)
   return (
     <div className="border border-default-200 p-6 rounded-lg">
       <h4 class="mb-4 text-xl font-medium text-default-900">Restaurant</h4>
       <div className="grid grid-cols-5 gap-6">
+        <div>
+          <h5 className="mb-2">Restaurant's Logo</h5>
         <div className="flex flex-col items-center  mt-4">
           <div className="relative h-40 w-40 flex flex-col items-center justify-center">
             <input
@@ -83,8 +86,33 @@ console.log(Seller)
             />
           </div>
         </div>
+        </div>
         <div className="col-span-4">
           <div className="grid grid-cols-2 gap-6">
+            <div className="col-span-2">
+              <h5 className="mb-2">Chủ sở hữu</h5>
+              <input
+                type="text"
+                placeholder={props.TenChuSoHuu}
+                className="border border-default-200 py-3 px-4 rounded-lg w-full"
+              />
+            </div>
+            <div>
+              <h5 className="mb-2">Ngày sinh</h5>
+              <input
+                type="text"
+                placeholder={props.NgaySinh}
+                className="border border-default-200 py-3 px-4 rounded-lg w-full"
+              />
+            </div>
+            <div>
+              <h5 className="mb-2">Quê quán</h5>
+              <input
+                type="text"
+                placeholder={props.QueQuan}
+                className="border border-default-200 py-3 px-4 rounded-lg w-full"
+              />
+            </div>
             <div className=" col-span-2">
               <h5 className="mb-2">Restaurant Name</h5>
               <input
@@ -95,6 +123,7 @@ console.log(Seller)
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
             </div>
+
             <div>
               <h5 className="mb-2">Hotline</h5>
               <input

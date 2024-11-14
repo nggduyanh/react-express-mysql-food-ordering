@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+// Đã bỏ không dùng Component này
 export default function PersonalDetails(props) {
     const [srcimg, setSrcImg] = useState(null);
     const handleChange = (event) => {
@@ -25,46 +25,18 @@ export default function PersonalDetails(props) {
       <h4 class="mb-4 text-xl font-medium text-default-900">
         Personal Details
       </h4>
-      <div className="grid grid-cols-5 gap-6">
-        <div className="flex flex-col items-center mt-4">
-          <div className="relative h-40 w-40 flex flex-col items-center justify-center">
-            <input
-              type="file"
-              accept=".jpeg,.jpg,.png,.gif,.svg"
-              name="bgfile"
-              id="bgfile"
-              onChange={handleChange}
-              className="relative z-10 opacity-0 w-full h-full rounded-full"
-            />
-            <div className=" absolute bg-[#FFF0E9] border-[#F97316] border-2 border-dashed rounded-full h-40 w-40 flex items-center justify-center">
-              <p>Add photo</p>
-            </div>
-            <img
-              src={srcimg}
-              alt=""
-              className="absolute h-full w-full rounded-full"
-            />
-          </div>
-        </div>
+      <div className="grid grid-cols-4 gap-6">
+        
         <div className="col-span-4">
           <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h5 className="mb-2">First Name</h5>
+            <div className="col-span-2">
+              <h5 className="mb-2">Chủ sở hữu</h5>
               <input
                 type="text"
                 placeholder={props.TenChuSoHuu}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
             </div>
-            <div>
-              <h5 className="mb-2">Last Name</h5>
-              <input
-                type="text"
-                placeholder={props.TenChuSoHuu}
-                className="border border-default-200 py-3 px-4 rounded-lg w-full"
-              />
-            </div>
-
             <div>
               <h5 className="mb-2">Ngày sinh</h5>
               <input
