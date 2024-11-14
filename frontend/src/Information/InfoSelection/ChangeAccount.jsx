@@ -28,7 +28,6 @@ export default function ChangeAccount() {
       };
     });
   };
-
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
     if (
@@ -74,15 +73,6 @@ export default function ChangeAccount() {
         error: (err) => `Error uploading data: ${err.message}`,
       }
     );
-    // try {
-    //   const response = await axios.patch(UpdateUser, formUserData, {
-    //     headers: { "Content-Type": "multipart/form-data" },
-    //     withCredentials: true,
-    //   });
-    //   alert("Uploaded successfully: ", response.data);
-    // } catch (err) {
-    //   console.error("Error uploading data: ", err);
-    // }
   };
   useEffect(() => {
     setUpdateUser((prevUser) => {

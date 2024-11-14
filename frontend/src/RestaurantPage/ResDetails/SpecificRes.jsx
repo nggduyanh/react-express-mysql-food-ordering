@@ -14,6 +14,7 @@ import {
   formatCurrency,
   GetFoodRestaurant,
   GetPromotion,
+  GetRestaurant,
   localStaticFile,
 } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card";
@@ -60,6 +61,24 @@ export default function SpecificRes() {
         } else console.log(err.message);
       });
   }, [tokenValue]);
+  const [Seller, setSeller] = useState([]);
+  useEffect(() => {
+    fetch(GetRestaurant + `/${ResInfor.state.MaNguoiBan}`, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Not found seller");
+        }
+        return res.json();
+      })
+      .then((data) => setSeller(data))
+      .catch((err) => {
+        setSeller([]);
+      });
+  }, []);
   useEffect(() => {
     fetch(GetPromotion, {
       headers: {
@@ -269,7 +288,10 @@ export default function SpecificRes() {
                         <Rating />
                       </Suspense>
                       <Suspense fallback={<p>Loading...</p>}>
-                        <ListComment foodDetails={detailsFood} />
+                        <ListComment
+                          sellerInfor={Seller}
+                          foodDetails={detailsFood}
+                        />
                       </Suspense>
                     </div>
                   </div>

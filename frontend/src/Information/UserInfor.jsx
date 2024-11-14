@@ -25,8 +25,8 @@ export default function UserInfo() {
         <BtnSelection className="btnSelections p-5" des="favourite">
           <p>Favourite Restaurant</p>
         </BtnSelection>
-        <BtnSelection className="btnSelections p-5" des="payment">
-          <p>Payment</p>
+        <BtnSelection className="btnSelections p-5" des="history">
+          <p>History Comment</p>
         </BtnSelection>
       </div>
       <div className="shadow-xl border border-gray-300 w-3/4 h-screen">
