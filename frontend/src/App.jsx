@@ -69,6 +69,18 @@ const RestaurantSeller = lazy(() =>
   import("./Login/Restaurant/RestaurantSeller")
 );
 const PrivateRoute = lazy(() => import("./Layout/PrivateRoute"));
+import Homepage from "./Home/Homepage";
+import Signin from "./Login/Signin";
+import OrdersList from "./Order/OrdersList/OrdersList";
+import OrderDetails from "./Order/OrderDetails/OrderDetails";
+import Dish from "./Dish/Dish";
+import AddDish from "./Dish/AddDish";
+import EditDish from "./Dish/EditDish";
+import DishDetails from "./Dish/DishDetails";
+import Profile from "./Profile/Profile";
+import Voucher from "./Voucher/Voucher";
+import VoucherAdd from "./Voucher/AddVoucher";
+import VoucherEdit from "./Voucher/EditVoucher";
 const UserAccount = createContext();
 function App() {
   return (
@@ -111,6 +123,10 @@ function App() {
           }
         >
           <Routes>
+            <Route
+              path="/loginSeller"
+              element={<Signin assignAccount={""} />}
+            />
             <Route path="/" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="register_restaurant" element={<RegisterRes />}>
@@ -144,6 +160,19 @@ function App() {
                 <Route path="all" element={<ListRes />} />
                 <Route path="typeRes/:type" element={<TypeRes />} />
                 <Route path="restaurant/:resname" element={<SpecificRes />} />
+              </Route>
+              <Route element={<PrivateRoute />}>
+                <Route path="/home/seller" element={<Homepage />} />
+                <Route path="/orders_list" element={<OrdersList />} />
+                <Route path="/order_details" element={<OrderDetails />} />
+                <Route path="/dish" element={<Dish />} />
+                <Route path="/add_dish" element={<AddDish />} />
+                <Route path="/edit_dish" element={<EditDish />} />
+                <Route path="/dish_details" element={<DishDetails />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/voucher" element={<Voucher />} />
+                <Route path="/add_voucher" element={<VoucherAdd />} />
+                <Route path="/edit_voucher" element={<VoucherEdit />} />
               </Route>
             </Route>
           </Routes>
