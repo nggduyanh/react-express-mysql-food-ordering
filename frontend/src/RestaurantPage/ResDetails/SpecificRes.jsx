@@ -188,7 +188,7 @@ export default function SpecificRes() {
           <div className="res_image flex justify-end">
             {ResInfor.state.AnhNguoiBan !== null ? (
               <img
-                src={ResInfor.state.img}
+                src={localStaticFile + ResInfor.state.AnhNguoiBan}
                 alt=""
                 className="w-11/12 h-48 rounded-xl"
               />

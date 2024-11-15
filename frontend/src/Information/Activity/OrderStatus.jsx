@@ -35,7 +35,7 @@ const OrderReducer = (state, action) => {
 };
 
 export default function OrderStatus(props) {
-  const { tokenValue, userData } = useOutletContext();
+  const { tokenValue, userData, setIsCloseFunct } = useOutletContext();
   const { orderStatus } = useOutletContext();
   const [orderDetails, dispatch] = useReducer(OrderReducer, OrderAction);
   const [seller, setSeller] = useState({});
@@ -59,29 +59,39 @@ export default function OrderStatus(props) {
       });
   }, [props.MaDonHang, tokenValue]);
   useEffect(() => {
-    fetch("http://localhost:3030/nguoiban", {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("No seller / restaurant was found");
-        }
-        return res.json();
-      })
-      .then((sellers) => {
-        const filterSeller = sellers.find((seller) => {
+    const getNguoiBan = async () => {
+      try {
+        const response = await axios.get("http://localhost:3030/nguoiban", {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
+        const seller = response.data;
+        const filterSeller = seller.find((seller) => {
           return (
             seller.MaNguoiBan ===
             orderDetails.orderDetaiInfo?.[0]?.MonAn?.MaNguoiBan
           );
         });
-        setSeller(filterSeller || {});
-      })
-      .catch((err) => {
+        const responseFilterFood = await axios.get(GetTypeRes, {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
+        const data = responseFilterFood.data;
+        const filterFoodType = data.filter((food) => {
+          return food.MaNguoiBan === filterSeller?.MaNguoiBan;
+        });
+
+        setSeller({
+          ...filterSeller,
+          loaiMonAn: filterFoodType,
+        });
+      } catch (err) {
         console.log(err);
-      });
+      }
+    };
+    getNguoiBan();
   }, [tokenValue, orderDetails.orderDetaiInfo]);
 
   let colorStatus = " ";
@@ -101,27 +111,7 @@ export default function OrderStatus(props) {
     else if (props.TrangThai === orderStatus?.[2].MaTrangThai)
       nameStatus = orderStatus[2].TenTrangThai;
   }
-  useEffect(() => {
-    const getTypeFood = async () => {
-      if (seller.MaNguoiBan) {
-        const response = await axios.get(GetTypeRes, {
-          headers: {
-            Authorization: "Bearer " + tokenValue,
-          },
-        });
-        const data = response.data;
-        const filterFoodType = data.filter((food) => {
-          return food.MaNguoiBan === seller.MaNguoiBan;
-        });
-        setSeller((prevSeller) => ({
-          ...prevSeller,
-          loaiMonAn: filterFoodType,
-        }));
-      }
-    };
-    getTypeFood();
-  }, [tokenValue, seller.MaNguoiBan]);
-  console.log(seller);
+
   return (
     <div className="bg-white p-4 rounded-xl mb-3">
       <div className="flex justify-between mb-2">
@@ -157,6 +147,7 @@ export default function OrderStatus(props) {
         </div>
       </div>
       <hr />
+
       <div className="detailsOrders flex items-center justify-between text-xs ">
         <div className="listOrder py-4">
           <div>
@@ -194,6 +185,14 @@ export default function OrderStatus(props) {
           </Link>
           <button className="py-2 px-4 border-red-500 border text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200 ease-in">
             Help
+          </button>
+          <button
+            onClick={() => {
+              setIsCloseFunct(false, props);
+            }}
+            className="py-2 px-4 bg-gray-300 font-bold border-gray-300 border text-gray-500 rounded-md hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
+          >
+            Cancel
           </button>
         </div>
       </div>

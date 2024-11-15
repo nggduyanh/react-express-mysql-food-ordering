@@ -3,7 +3,10 @@ import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { MdCancel } from "react-icons/md";
 import { NavLink, Outlet, useOutletContext } from "react-router-dom";
 import useFetchData from "../../Hook/useFetchData";
-import { Order, OrderStatus } from "../../Route";
+import { Order, OrderStatus, refreshPage, updateOrder } from "../../Route";
+import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 export default function OrderHistory() {
   const { userData, tokenValue } = useOutletContext();
   const [Listorder, errorOrder] = useFetchData(Order, tokenValue);
@@ -11,10 +14,68 @@ export default function OrderHistory() {
   const order = Listorder?.data?.filter((items) => {
     return items.MaNguoiMua === userData?.MaNguoiDung;
   });
+  const [cancel, setCancel] = useState(false);
+  const [getInforOrder, setGetInforOrder] = useState({});
+  const CancelStatusOrder = async () => {
+    console.log(getInforOrder);
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.patch(
+          updateOrder,
+          {
+            MaDonHang: getInforOrder.MaDonHang,
+            TrangThai: 5,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + tokenValue,
+            },
+          }
+        );
+        if (response.status === 200 || response.status === 201) {
+          refreshPage();
+        }
+      })(),
+      {
+        loading: "Cancel order...",
+        success: "Success",
+        error: "Cant cancel order",
+      }
+    );
+  };
+  const [isClose, setIsClose] = useState(true);
   return (
     <div className="bg_homeScreen">
       <div className="orderHistory marginJustification min-h-screen ">
         <br />
+        {!isClose && (
+          <div className="fixed left-1/2 bg-white border border-pink-500 rounded-lg w-1/4 h-1/6 top-1/2 -translate-y-1/2 text-center -translate-x-1/2">
+            <p className="font-bold mt-3">
+              Are you sure you want to cancel the order?
+            </p>
+            <div className="mt-6 flex items-center gap-5 justify-center">
+              <button
+                onClick={() => {
+                  CancelStatusOrder();
+                  setIsClose(true);
+                }}
+                className="bg-red-500 px-4 py-1 rounded-md font-bold text-white"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => {
+                  setCancel(false);
+                  setIsClose(true);
+                }}
+                className="bg-blue-500 px-4 py-1 rounded-md font-bold text-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-2 h-screen">
           <div className="Status col-span-1 border border-gray-300 rounded-md p-2 bg-white h-52">
             <NavLink
@@ -65,6 +126,12 @@ export default function OrderHistory() {
                 orderStatus: orderStatus?.data,
                 userData,
                 tokenValue,
+                setIsCloseFunct: (value, infor) => {
+                  setIsClose(value);
+                  // console.log("infor", infor);
+                  setGetInforOrder(infor);
+                },
+                isCancel: cancel,
               }}
             />
           </div>

@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 // import { UserAccount } from "../App";
 import useFetchData from "../Components/useFetchData";
-import { GetUserInfo } from "../routebackend";
+import { GetUserInfo } from "../../routebackend";
 
 ChartJS.register(
   LineElement,

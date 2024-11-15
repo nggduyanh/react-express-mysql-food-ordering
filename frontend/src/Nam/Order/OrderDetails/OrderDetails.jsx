@@ -7,7 +7,7 @@ import {
   GetPaymentMethods,
   GetUserInfo,
   GetVoucher,
-} from "../../routebackend";
+} from "../../../routebackend";
 // import { UserAccount } from "../../App";
 import useFetchData from "../../Components/useFetchData";
 import NavBar from "../../Components/NavBar";
@@ -108,7 +108,7 @@ export default function OrderDetails() {
 
   const listFoodOrder = detailsOrder?.ChiTietDonHang?.map((item) => {
     return (
-      <tr className="border border-gray-300">
+      <tr key={item} className="border border-gray-300">
         <td className="p-2 whitespace-nowrap text-sm text-default-600">
           <div className="flex items-center gap-4">
             <img
@@ -138,7 +138,7 @@ export default function OrderDetails() {
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <div className="flex justify-between mb-4">
@@ -256,30 +256,30 @@ export default function OrderDetails() {
                       </div>
                     </div>
                   </div>
-                  <table class="w-full border-collapse border border-[#F58220] rounded-lg overflow-hidden">
+                  <table className="w-full border-collapse border border-[#F58220] rounded-lg overflow-hidden">
                     <thead>
                       <tr className="bg-[#F1F5F9] border border-gray-300">
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800 "
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800 "
                         >
                           Dish
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Quantity
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Price
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Sub Total
                         </th>

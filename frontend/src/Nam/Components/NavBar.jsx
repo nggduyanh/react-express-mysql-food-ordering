@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // import { Link } from "react-router-dom";
-import { GetUserInfo } from "../routebackend";
+import { GetUserInfo } from "../../routebackend";
 // import { UserAccount } from "../App";
 import useFetchData from "./useFetchData";
 

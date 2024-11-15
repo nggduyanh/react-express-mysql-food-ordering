@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+// import Dropdown from "./DropDown";
 // import { UserAccount } from "../App";
 import {
-  // GetFoodRestaurant,
+  AddFoodRestaurant,
   GetFoodTypeRestaurant,
   GetUserInfo,
   handleRefreshPage,
-  localStaticFile,
-  // UpdateFoodRestaurant,
-} from "../routebackend";
+} from "../../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
 
-export default function EditDish() {
-  const data = useLocation();
-  const detailsFood = data.state;
-  // const { userData } = useContext(UserAccount);
+export default function AddDish() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
@@ -34,12 +30,7 @@ export default function EditDish() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
-
-  const navigate = useNavigate();
-  const Cancel = () => {
-    navigate("/dish");
-  };
+  }, [userInfo, tokenValue]);
 
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
@@ -65,10 +56,9 @@ export default function EditDish() {
           setTypeFood([]);
         } else console.log("Another error", err.message);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
 
   const [dish, setDish] = useState({
-    MaMonAn: detailsFood.MaMonAn,
     TenMonAn: "",
     AnhMonAn: null,
     GiaBan: "",
@@ -76,6 +66,7 @@ export default function EditDish() {
     MaLoaiMonAn: "",
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
+  // console.log("dish", dish);
   useEffect(() => {
     if (Seller?.length > 0) {
       setDish((prevDish) => {
@@ -104,43 +95,34 @@ export default function EditDish() {
       }));
     }
   };
-  // const handleChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setDish((prevForm) => {
-  //     return {
-  //       ...prevForm,
-  //       [name]: name === "gia" ? parseInt(value) : value,
-  //     };
-  //   });
-  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("dish", dish);
+    const formUserData = new FormData();
+    formUserData.append("TenMonAn", dish.TenMonAn);
+    formUserData.append("AnhMonAn", dish.AnhMonAn);
+    formUserData.append("GiaBan", dish.GiaBan);
+    formUserData.append("MoTa", dish.MoTa);
+    formUserData.append("MaLoaiMonAn", dish.MaLoaiMonAn);
+    formUserData.append("MaNguoiBan", dish.MaNguoiBan);
+    for (let pair of formUserData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
     try {
-      const response = await axios.patch(
-        `http://localhost:3030/monan/update`,
-        dish,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${tokenValue}`,
-          },
-          withCredentials: true,
-        }
-      );
-      if (response.status === 201) {
-        // Kiểm tra trạng thái phản hồi
-        alert("Update successful");
-        navigate("/dish");
-      } else {
-        console.error("Failed to update dish. Status:", response.status);
-        alert("Failed to update dish. Please try again.");
-      }
+      const response = await axios.post(AddFoodRestaurant, formUserData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokenValue}`,
+        },
+        withCredentials: true,
+      });
+      alert("Add sucesss");
+      handleRefreshPage();
     } catch (err) {
       console.error("Error adding dish:", err);
     }
   };
-  console.log(detailsFood);
+
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -148,7 +130,7 @@ export default function EditDish() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Edit Dish</h1>
+            <h1>Add Dish</h1>
             <Link to="/dish">
               <h3>Back to list</h3>
             </Link>
@@ -168,7 +150,7 @@ export default function EditDish() {
                       <label htmlFor="">Upload Image</label>
                     </div>
                     <img
-                      src={localStaticFile + detailsFood.AnhMonAn}
+                      src={srcimg}
                       alt=""
                       className="absolute h-full w-full rounded-lg"
                     />
@@ -183,7 +165,7 @@ export default function EditDish() {
                       type="text"
                       name="TenMonAn"
                       onChange={handleChange}
-                      placeholder={detailsFood.TenMonAn}
+                      placeholder="Product Name"
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     />
                     <h5 className="mb-2">Product Catagory</h5>
@@ -193,22 +175,10 @@ export default function EditDish() {
                       id=""
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     >
-                      {typeFood
-                        .filter((type) => {
-                          return type.MaLoaiMonAn === detailsFood.MaLoaiMonAn;
-                        })
-                        .map((items) => {
-                          return (
-                            <option
-                              key={items.MaLoaiMonAn}
-                              value={items.MaLoaiMonAn}
-                            >
-                              {items.TenLoaiMonAn}
-                            </option>
-                          );
-                        })}
-
-                      {typeFood?.map((type) => {
+                      <option value="" hidden>
+                        Choose category
+                      </option>
+                      {typeFood.map((type) => {
                         return (
                           <option
                             key={type.MaLoaiMonAn}
@@ -219,7 +189,6 @@ export default function EditDish() {
                         );
                       })}
                     </select>
-
                     <div className="grid grid-cols-2 gap-6 mb-6">
                       <div>
                         <h5 className="mb-2">Selling Price</h5>
@@ -227,7 +196,7 @@ export default function EditDish() {
                           type="text"
                           name="GiaBan"
                           onChange={handleChange}
-                          placeholder={detailsFood.GiaBan}
+                          placeholder="Selling Price"
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
                         />
                       </div>
@@ -239,16 +208,13 @@ export default function EditDish() {
                       name="MoTa"
                       id=""
                       onChange={handleChange}
-                      placeholder={detailsFood.MoTa}
+                      placeholder="short Description"
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6 h-36"
                     ></textarea>
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <button
-                    onClick={Cancel}
-                    className="px-4 py-2 text-[#F97316] font-medium flex gap-2 items-center justify-center text-center border border-[#F97316] rounded-lg ml-auto"
-                  >
+                  <button className="px-4 py-2 text-[#EF4444] font-medium flex gap-2 items-center justify-center text-center bg-red-500/10 rounded-lg ml-auto">
                     <svg
                       stroke="currentColor"
                       fill="none"
@@ -260,10 +226,11 @@ export default function EditDish() {
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path d="M3 7v6h6"></path>
-                      <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                      <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"></path>
+                      <path d="M22 21H7"></path>
+                      <path d="m5 11 9 9"></path>
                     </svg>
-                    Cancel
+                    Clear
                   </button>
                   <button
                     onClick={handleSubmit}

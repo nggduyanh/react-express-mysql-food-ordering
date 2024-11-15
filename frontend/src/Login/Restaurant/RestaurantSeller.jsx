@@ -112,7 +112,6 @@ export default function RestaurantSeller() {
               },
             }
           );
-          console.log(response);
           const Token = await response.data;
           const now = new Date();
           const epxireToken = {
@@ -120,7 +119,7 @@ export default function RestaurantSeller() {
             expireDate: now.getTime() + 3600000,
           };
           localStorage.setItem("token", JSON.stringify(epxireToken));
-          navigate("/home");
+          navigate("/home/seller");
         })(),
         {
           loading: "Create credentials for seller",

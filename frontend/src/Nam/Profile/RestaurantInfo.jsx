@@ -1,7 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useFetchData from "../Components/useFetchData";
-import { GetSellerInfo, GetUserInfo, handleRefreshPage } from "../routebackend";
+import {
+  GetSellerInfo,
+  GetUserInfo,
+  handleRefreshPage,
+} from "../../routebackend";
 
 export default function RestaurantInfo(props) {
   const tokenStorage = localStorage.getItem("token");

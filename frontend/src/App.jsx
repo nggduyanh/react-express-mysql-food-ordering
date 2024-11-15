@@ -69,18 +69,18 @@ const RestaurantSeller = lazy(() =>
   import("./Login/Restaurant/RestaurantSeller")
 );
 const PrivateRoute = lazy(() => import("./Layout/PrivateRoute"));
-import Homepage from "./Home/Homepage";
-import Signin from "./Login/Signin";
-import OrdersList from "./Order/OrdersList/OrdersList";
-import OrderDetails from "./Order/OrderDetails/OrderDetails";
-import Dish from "./Dish/Dish";
-import AddDish from "./Dish/AddDish";
-import EditDish from "./Dish/EditDish";
-import DishDetails from "./Dish/DishDetails";
-import Profile from "./Profile/Profile";
-import Voucher from "./Voucher/Voucher";
-import VoucherAdd from "./Voucher/AddVoucher";
-import VoucherEdit from "./Voucher/EditVoucher";
+import Homepage from "./Nam/Home/Homepage";
+import Signin from "./Nam/Login/Signin";
+import OrdersList from "./Nam/Order/OrdersList/OrdersList";
+import OrderDetails from "./Nam/Order/OrderDetails/OrderDetails";
+import Dish from "./Nam/Dish/Dish";
+import AddDish from "./Nam/Dish/AddDish";
+import EditDish from "./Nam/Dish/EditDish";
+import DishDetails from "./Nam/Dish/DishDetails";
+import Profile from "./Nam/Profile/Profile";
+import Voucher from "./Nam/Voucher/Voucher";
+import VoucherAdd from "./Nam/Voucher/AddVoucher";
+import VoucherEdit from "./Nam/Voucher/EditVoucher";
 const UserAccount = createContext();
 function App() {
   return (

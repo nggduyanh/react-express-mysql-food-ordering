@@ -9,12 +9,12 @@ import {
   handleRefreshPage,
   localStaticFile,
   RepComment,
-} from "../routebackend";
+} from "../../routebackend";
 import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
 // import useFetchData from "../Components/useFetchData";
 import axios from "axios";
-import { GetSellerInfo } from "../Route";
+import { GetSellerInfo } from "../../Route";
 import toast from "react-hot-toast";
 
 export default function DishDetails() {

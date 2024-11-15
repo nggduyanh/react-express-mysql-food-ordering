@@ -5,7 +5,7 @@ import {
   // GetSellerInfo,
   GetUserInfo,
   // GetUserRole,
-} from "../routebackend";
+} from "../../routebackend";
 // import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 // import axios from "axios";

@@ -12,9 +12,11 @@ export default function OnGoing() {
       return (
         items.TrangThai === parseInt(orderReceive?.MaTrangThai) ||
         items.TrangThai === parseInt(orderPrepare?.MaTrangThai) ||
-        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai) ||
-        items.TrangThaiThanhToan === 1
+        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai)
       );
+    })
+    .filter((items) => {
+      return items.TrangThaiThanhToan === 1;
     })
     .map((items) => {
       return <OrderStatus {...items} key={items.MaDonHang} />;

@@ -36,6 +36,7 @@ export const OrderAdd = "http://localhost:3030/donhang/add";
 export const OrderDetailAdd =
   "http://localhost:3030/donhang/chitietdonhang/add";
 export const getDetailsOrder = "http://localhost:3030/monan/donhang/";
+export const updateOrder = "http://localhost:3030/donhang/update";
 export const formatDate = (ISO_date) => {
   const date = new Date(ISO_date);
 

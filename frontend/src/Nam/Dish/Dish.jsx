@@ -3,22 +3,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   // DeleteFoodRestaurant,
-  DeleteVoucher,
   formatCurrency,
-  formatDate,
-  formatPercent,
-  formatTime,
-  // GetFoodRestaurant,
+  GetFoodRestaurant,
+  GetFoodTypeRestaurant,
   GetUserInfo,
-  GetVoucher,
   handleRefreshPage,
+  localStaticFile,
 } from "../../routebackend";
 // import { UserAccount } from "../App";
-import SideBar from "../../Components/SideBar";
-import NavBar from "../../Components/NavBar";
-import useFetchData from "../../Components/useFetchData";
-import toast from "react-hot-toast";
-export default function Voucher() {
+import SideBar from "../Components/SideBar";
+import NavBar from "../Components/NavBar";
+import useFetchData from "../Components/useFetchData";
+export default function Dish() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
@@ -37,9 +33,25 @@ export default function Voucher() {
       });
   }, [userInfo, tokenValue]);
 
-  const [listVoucher, setListVoucher] = useState([]);
+  const [listDish, setListDish] = useState([]);
   useEffect(() => {
-    fetch(GetVoucher, {
+    fetch(GetFoodRestaurant, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const filterDish = data.filter((dish) => {
+          return dish?.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
+        });
+        setListDish(filterDish);
+      });
+  }, [Seller, tokenValue]);
+
+  const [listDishT, setlistDishT] = useState([]);
+  useEffect(() => {
+    fetch(GetFoodTypeRestaurant, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -47,95 +59,75 @@ export default function Voucher() {
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
-        const filterVoucher = data.filter((voucher) => {
-          return voucher.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
+        const filterDish = data.filter((dish) => {
+          return dish?.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
-        setListVoucher(filterVoucher);
+        setlistDishT(filterDish);
       });
-  }, [Seller, tokenValue]);
-  // console.log('listVoucher', listVoucher);
+  }, [listDish, Seller, tokenValue]);
 
-  const handleRemoveVoucher = async (id) => {
-    const findVoucher = listVoucher.find(
-      (voucher) => voucher.MaKhuyenMai === id
-    );
+  const handleRemoveFood = async (id) => {
+    const findDish = listDish.find((dish) => dish.MaMonAn === id);
     try {
       const deleteId = {
-        MaKhuyenMai: findVoucher.MaKhuyenMai,
+        MaMonAn: findDish.MaMonAn,
       };
-      const response = await axios.delete(DeleteVoucher, {
-        data: deleteId, // Truyền dữ liệu trong thuộc tính data
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenValue}`,
-        },
-        withCredentials: true,
-      });
-      alert("Successfully deleted");
+      const response = await axios.delete(
+        "http://localhost:3030/monan/delete",
+        {
+          data: deleteId, // Truyền dữ liệu trong thuộc tính data
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+          withCredentials: true,
+        }
+      );
+      alert("Success Delete");
       handleRefreshPage();
     } catch (err) {
       console.error("Error deleting dish:", err);
     }
   };
-  const handleSort = () => {
-    console.log("Sorting");
-  };
-  const Voucherlist = listVoucher?.map((item, index) => {
-    const isoStringStart = item.NgayTao;
-    const isoStringEnd = item.NgayHetHan;
-    const dateStart = new Date(isoStringStart);
-    const dateEnd = new Date(isoStringEnd);
-    const localDateStart = formatDate(dateStart);
-    const localTimeStart = formatTime(dateStart);
-    const localDateEnd = formatDate(dateEnd);
-    const localTimeEnd = formatTime(dateEnd);
+
+  const listFood = listDish?.map((item, index) => {
     return (
       <tr key={index}>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
-          <div className="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              className="bi bi-ticket-detailed"
-              viewBox="0 0 20 16"
-            >
-              <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2z" />
-              <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5z" />
-            </svg>
+          <div className="flex items-center gap-4">
+            {item.AnhMonAn !== null && item.AnhMonAn !== "undefined" ? (
+              <img
+                src={localStaticFile + item.AnhMonAn}
+                alt=""
+                className="h-[72px] max-w-[72px]"
+              />
+            ) : (
+              <img
+                src="./images/Dashboard/pizza.png"
+                alt=""
+                className="h-[72px] max-w-[72px]"
+              />
+            )}
+
             <div>
-              <p className="text-sm">{item.TenKhuyenMai}</p>
+              <p className="text-sm mb-1">{item.TenMonAn}</p>
             </div>
           </div>
         </td>
-        {item.PhanTram !== null && (
-          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-            {formatPercent(item.PhanTram)}
-          </td>
-        )}
-        {item.GiaTri !== null && (
-          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-            {formatCurrency(item.GiaTri)}
-          </td>
-        )}
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {item.SoLuong}
+          {listDishT.find((dish) => dish.MaLoaiMonAn === item.MaLoaiMonAn)
+            ?.TenLoaiMonAn || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {localDateStart}
-          <br />
-          {localTimeStart}
+          {formatCurrency(item.GiaBan)}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {localDateEnd}
-          <br />
-          {localTimeEnd}
+          {item.MoTa}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600"></td>
+
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600 ">
           <div className="flex gap-4">
-            <Link to="/edit_voucher" state={item}>
+            <Link to="/edit_dish" state={item}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -152,8 +144,24 @@ export default function Voucher() {
                 <path d="m15 5 4 4"></path>
               </svg>
             </Link>
-
-            <button onClick={() => handleRemoveVoucher(item.MaKhuyenMai)}>
+            <Link to="/dish_details" state={item}>
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-primary"
+                height="20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </Link>
+            <button onClick={() => handleRemoveFood(item.MaMonAn)}>
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -178,7 +186,6 @@ export default function Voucher() {
       </tr>
     );
   });
-
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -186,19 +193,16 @@ export default function Voucher() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Voucher List</h1>
+            <h1>Dishes List</h1>
             <div className="rounded-lg border border-default-200">
               <div className="py-4 px-6 flex justify-between items-center">
-                <h2>Voucher List</h2>
+                <h2>Dishes List</h2>
                 <div className="flex gap-4 items-center">
-                  <button
-                    onClick={handleSort}
-                    className="px-4 py-3 rounded-md bg-[#F1F5F9]"
-                  >
+                  <button className="px-4 py-3 rounded-md bg-[#F1F5F9]">
                     Sort
                   </button>
                   <Link
-                    to="/add_voucher"
+                    to="/add_dish"
                     className="bg-[#F58220] px-4 py-3 rounded-md"
                   >
                     <svg
@@ -216,7 +220,7 @@ export default function Voucher() {
                       <path d="M5 12h14"></path>
                       <path d="M12 5v14"></path>
                     </svg>
-                    Add Voucher
+                    Add Dish
                   </Link>
                 </div>
               </div>
@@ -227,37 +231,25 @@ export default function Voucher() {
                       scope="col"
                       className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      Voucher Name
+                      Dish Name
                     </th>
                     <th
                       scope="col"
                       className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      PhanTram / GiaTri
+                      Category
                     </th>
                     <th
                       scope="col"
                       className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      SoLuong
+                      Price
                     </th>
                     <th
                       scope="col"
                       className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
-                      NgayBatDau
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                    >
-                      NgayHetHan
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
-                    >
-                      Status
+                      Description
                     </th>
                     <th
                       scope="col"
@@ -268,7 +260,7 @@ export default function Voucher() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-default-200">
-                  {Voucherlist}
+                  {listFood}
                 </tbody>
               </table>
             </div>

@@ -8,6 +8,9 @@ export default function Complete() {
     ?.filter((items) => {
       return items.TrangThai === parseInt(orderComplete?.MaTrangThai);
     })
+    .filter((items) => {
+      return items.TrangThaiThanhToan === 1;
+    })
     .map((items) => {
       return <OrderStatus {...items} key={items.MaDonHang} />;
     });
