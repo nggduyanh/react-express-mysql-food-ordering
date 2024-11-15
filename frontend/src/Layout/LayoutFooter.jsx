@@ -2,6 +2,39 @@ import imageFood from "../assets/orderfood1.png";
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 export default function LayoutFooter() {
   return (
+    // <div className= "bg-black text-white">
+    //   <footer className="marginJustification py-24">
+    //     <div className="flex justify-between items-center ">
+    //       <div className="flex items-center w-2/5">
+    //         <img src={imageFood} alt="" className="w-20 h-w-20" />
+    //       </div>
+    //         <p className=" text-sm font-bold">About Us</p>
+    //         <div className="">
+    //           <p className="text-md">
+    //           Some short text about company like You might remember the Dell
+    //           computer commercials in which a youth reports.
+    //           </p>
+    //           <br />
+    //           <div className="flex items-center gap-4">
+    //             <FaFacebook />
+    //             <FaInstagram />
+    //             <FaTwitter />
+    //             <FaYoutube />
+    //           </div>
+    //         </div>
+    //     </div>
+    //   <div>
+    //     <p className="text-sm font-bold">Error Page</p>
+    //     <p>Not Found</p>
+    //     <p>Maintence</p>
+    //     <p>Coming Soon</p>
+    //   </div>
+    //   <div>
+    //     <p className="text-sm font-bold"> Severice</p>
+    //   </div>
+    //   </footer>
+
+    // </div>
     <div className="bg-black text-white">
       <footer className="marginJustification py-24">
         <div className="flex justify-between items-center  ">
