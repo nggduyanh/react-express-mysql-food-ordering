@@ -1,22 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {
-  DeleteFoodRestaurant,
+  // DeleteFoodRestaurant,
   DeleteVoucher,
   formatCurrency,
   formatDate,
   formatPercent,
   formatTime,
-  GetFoodRestaurant,
+  // GetFoodRestaurant,
   GetUserInfo,
   GetVoucher,
   handleRefreshPage,
 } from "../routebackend";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import toast from "react-hot-toast";
 export default function Voucher() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
@@ -34,7 +35,7 @@ export default function Voucher() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   const [listVoucher, setListVoucher] = useState([]);
   useEffect(() => {
@@ -51,14 +52,13 @@ export default function Voucher() {
         });
         setListVoucher(filterVoucher);
       });
-  }, [Seller]);
-// console.log('listVoucher', listVoucher);
+  }, [Seller, tokenValue]);
+  // console.log('listVoucher', listVoucher);
 
   const handleRemoveVoucher = async (id) => {
     const findVoucher = listVoucher.find(
       (voucher) => voucher.MaKhuyenMai === id
     );
-    console.log("findVoucher", findVoucher);
     try {
       const deleteId = {
         MaKhuyenMai: findVoucher.MaKhuyenMai,
@@ -71,15 +71,16 @@ export default function Voucher() {
         },
         withCredentials: true,
       });
-      alert("Success Delete");
+      alert("Successfully deleted");
       handleRefreshPage();
     } catch (err) {
       console.error("Error deleting dish:", err);
     }
   };
-
-  console.log("listVoucher", listVoucher);
-  const Voucherlist = listVoucher?.map((item) => {
+  const handleSort = () => {
+    console.log("Sorting");
+  };
+  const Voucherlist = listVoucher?.map((item, index) => {
     const isoStringStart = item.NgayTao;
     const isoStringEnd = item.NgayHetHan;
     const dateStart = new Date(isoStringStart);
@@ -89,7 +90,7 @@ export default function Voucher() {
     const localDateEnd = formatDate(dateEnd);
     const localTimeEnd = formatTime(dateEnd);
     return (
-      <tr>
+      <tr key={index}>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
           <div className="flex items-center gap-1">
             <svg
@@ -97,7 +98,7 @@ export default function Voucher() {
               width="20"
               height="20"
               fill="currentColor"
-              class="bi bi-ticket-detailed"
+              className="bi bi-ticket-detailed"
               viewBox="0 0 20 16"
             >
               <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M5 7a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2z" />
@@ -138,11 +139,11 @@ export default function Voucher() {
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-primary"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-primary"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -151,33 +152,16 @@ export default function Voucher() {
                 <path d="m15 5 4 4"></path>
               </svg>
             </Link>
-            <Link to="/dish_details" state={item}>
-              <svg
-                stroke="currentColor"
-                fill="none"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-primary"
-                height="20"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </Link>
 
             <button onClick={() => handleRemoveVoucher(item.MaKhuyenMai)}>
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-red-500"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-red-500"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +183,7 @@ export default function Voucher() {
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1>Voucher List</h1>
@@ -207,7 +191,10 @@ export default function Voucher() {
               <div className="py-4 px-6 flex justify-between items-center">
                 <h2>Voucher List</h2>
                 <div className="flex gap-4 items-center">
-                  <button className="px-4 py-3 rounded-md bg-[#F1F5F9]">
+                  <button
+                    onClick={handleSort}
+                    className="px-4 py-3 rounded-md bg-[#F1F5F9]"
+                  >
                     Sort
                   </button>
                   <Link
@@ -217,11 +204,11 @@ export default function Voucher() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="me-2 inline-flex align-middle"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="me-2 inline-flex align-middle"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -233,48 +220,48 @@ export default function Voucher() {
                   </Link>
                 </div>
               </div>
-              <table class="min-w-full divide-y divide-default-200">
+              <table className="min-w-full divide-y divide-default-200">
                 <thead>
                   <tr className="bg-[#F1F5F9]">
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Voucher Name
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       PhanTram / GiaTri
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       SoLuong
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       NgayBatDau
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       NgayHetHan
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Action
                     </th>

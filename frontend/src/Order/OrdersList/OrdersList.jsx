@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SideBar from "../../Components/SideBar";
-import { UserAccount } from "../../App";
+// import { UserAccount } from "../../App";
 import {
   formatCurrency,
   formatDate,
   formatTime,
-  GetDetailsOrder,
-  GetOrder,
-  GetOrderRestaurant,
+  // GetDetailsOrder,
+  // GetOrder,
+  // GetOrderRestaurant,
   GetUserInfo,
   handleRefreshPage,
-  localStaticFile,
+  // localStaticFile,
   OrderStatus,
 } from "../../routebackend";
 import NavBar from "../../Components/NavBar";
@@ -34,7 +34,7 @@ export default function OrdersList() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function OrdersList() {
       .then((data) => {
         setOrders(data);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
 
   const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công Trang thai === 4
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function OrdersList() {
         });
         setSuccessOrder(filterOrder);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
 
   const [TrangThai, setTrangThai] = useState([]);
   useEffect(() => {
@@ -76,36 +76,36 @@ export default function OrdersList() {
       .then((data) => {
         setTrangThai(data);
       });
-  }, [userData]);
+  }, [userData, tokenValue]);
 
   const listOrder = SuccessOrder?.map((item) => {
     if (SuccessOrder.length > 0) {
       return (
-        <tr>
-          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+        <tr key={item}>
+          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             {formatDate(item.ThoiGianTao)}
           </td>
-          <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600 hover:cursor-pointer">
+          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600 hover:cursor-pointer">
             {item.MaDonHang}
           </td>
-          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             {formatCurrency(item.GiaBan)}
           </td>
-          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             {TrangThai.find((order) => order.MaTrangThai === item.TrangThai)
               ?.TenTrangThai || "N/A"}
           </td>
 
-          <td class="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+          <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
             <Link to="/order_details" state={item}>
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-primary"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-primary"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -120,25 +120,28 @@ export default function OrdersList() {
     }
   });
 
-const handleChangeStatus = async (id)=>{
-  fetch(`http://localhost:3030/donhang/update/`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${tokenValue}`,
-    },
-    body: JSON.stringify({
-      TrangThai: 2,
-      MaDonHang: id,
-    }),
-  }).then((res) => res.json());
-  handleRefreshPage()
-}
+  const handleChangeStatus = async (id) => {
+    fetch(`http://localhost:3030/donhang/update/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenValue}`,
+      },
+      body: JSON.stringify({
+        TrangThai: 2,
+        MaDonHang: id,
+      }),
+    }).then((res) => res.json());
+    handleRefreshPage();
+  };
 
-  const list = SuccessOrder?.map((item) => {
+  const list = SuccessOrder?.map((item, index) => {
     if (SuccessOrder.length > 0) {
       return (
-        <div className="flex flex-col gap-4 bg-[#FFF2E9] p-2 rounded-lg mt-4">
+        <div
+          key={index}
+          className="flex flex-col gap-4 bg-[#FFF2E9] p-2 rounded-lg mt-4"
+        >
           <div className="flex items-center gap-2">
             <img
               src="./images/Dashboard/pizza.png"
@@ -150,7 +153,12 @@ const handleChangeStatus = async (id)=>{
                 <p className="text-sm mb-1">{item.MaDonHang}</p>
                 <p className="text-sm mb-1">{formatTime(item.ThoiGianTao)}</p>
               </div>
-              <button onClick={()=>handleChangeStatus(item.MaDonHang)} className="bg-red-900">Doi trang thai</button>
+              <button
+                onClick={() => handleChangeStatus(item.MaDonHang)}
+                className="bg-red-900"
+              >
+                Doi trang thai
+              </button>
             </div>
           </div>
         </div>
@@ -162,7 +170,7 @@ const handleChangeStatus = async (id)=>{
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1>Orders List</h1>
@@ -174,10 +182,10 @@ const handleChangeStatus = async (id)=>{
                       <svg
                         stroke="#F58220"
                         fill="none"
-                        stroke-width="2"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         height="32"
                         width="32"
                         xmlns="http://www.w3.org/2000/svg"
@@ -197,10 +205,10 @@ const handleChangeStatus = async (id)=>{
                       <svg
                         stroke="#23C55E"
                         fill="none"
-                        stroke-width="2"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         height="32"
                         width="32"
                         xmlns="http://www.w3.org/2000/svg"
@@ -220,10 +228,10 @@ const handleChangeStatus = async (id)=>{
                       <svg
                         stroke="#EAB309"
                         fill="none"
-                        stroke-width="2"
+                        strokeWidth="2"
                         viewBox="0 0 24 24"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         height="32"
                         width="32"
                         xmlns="http://www.w3.org/2000/svg"
@@ -251,42 +259,42 @@ const handleChangeStatus = async (id)=>{
                       </button>
                     </div>
                   </div>
-                  <table class="w-full divide-y divide-default-200">
+                  <table className="w-full divide-y divide-default-200">
                     <thead>
                       <tr className="bg-[#F1F5F9]">
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Date
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Order ID
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Total
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Status
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                          className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                         >
                           Action
                         </th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-default-200">
+                    <tbody className="divide-y divide-default-200">
                       {listOrder}
                     </tbody>
                   </table>

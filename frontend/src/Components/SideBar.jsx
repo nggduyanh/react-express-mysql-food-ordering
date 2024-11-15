@@ -1,16 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SideLink from "./SideBarEle";
 export default function SideBar() {
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    navigate("/loginSeller");
+  };
   return (
     <div
       id="sidebar"
       className="flex flex-col transition-all duration-300 w-64 p-4 border-r border-[#F58220]"
     >
-      <img src="./images/logo.png" className="relative h-10 w-10 mx-auto" />
+      <img src="../../images/logo.png" className="relative h-10 w-10 mx-auto" />
       <div className="flex flex-col h-full mt-5 text-sm">
         <Link
-          to="/home"
+          to="/home/seller"
           className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
         >
           Dashboard
@@ -23,24 +28,19 @@ export default function SideBar() {
             ["Add Dish", "/add_dish"],
           ]}
         />
-        <SideLink
-          label="Vouchers"
-          list={[
-            ["Voucher List", "/voucher"],
-          ]}
-        />
+        <SideLink label="Vouchers" list={[["Voucher List", "/voucher"]]} />
         <Link
           to="/profile"
           className="py-3 px-4 mt-auto hover:bg-gray-200 hover:rounded-lg"
         >
           Profile
         </Link>
-        <Link
-          to="/"
+        <button
+          onClick={handleLogOut}
           className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
         >
           Logout
-        </Link>
+        </button>
       </div>
     </div>
   );

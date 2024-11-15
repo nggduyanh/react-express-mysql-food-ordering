@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Dropdown from "./DropDown";
-import { UserAccount } from "../App";
+// import Dropdown from "./DropDown";
+// import { UserAccount } from "../App";
 import {
   AddFoodRestaurant,
   GetFoodTypeRestaurant,
@@ -30,7 +30,7 @@ export default function AddDish() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   const [typeFood, setTypeFood] = useState([]);
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function AddDish() {
           setTypeFood([]);
         } else console.log("Another error", err.message);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
 
   const [dish, setDish] = useState({
     TenMonAn: "",
@@ -64,11 +64,19 @@ export default function AddDish() {
     GiaBan: "",
     MoTa: "",
     MaLoaiMonAn: "",
-    MaNguoiBan: 8,
+    MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
-
   // console.log("dish", dish);
-
+  useEffect(() => {
+    if (Seller?.length > 0) {
+      setDish((prevDish) => {
+        return {
+          ...prevDish,
+          MaNguoiBan: Seller?.[0]?.MaNguoiBan,
+        };
+      });
+    }
+  }, [Seller]);
   const [srcimg, setSrcImg] = useState(null);
 
   const handleChange = (event) => {
@@ -119,7 +127,7 @@ export default function AddDish() {
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1>Add Dish</h1>
@@ -172,7 +180,10 @@ export default function AddDish() {
                       </option>
                       {typeFood.map((type) => {
                         return (
-                          <option value={type.MaLoaiMonAn}>
+                          <option
+                            key={type.MaLoaiMonAn}
+                            value={type.MaLoaiMonAn}
+                          >
                             {type.TenLoaiMonAn}
                           </option>
                         );
@@ -207,10 +218,10 @@ export default function AddDish() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -228,10 +239,10 @@ export default function AddDish() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"

@@ -8,7 +8,7 @@ import {
   GetUserInfo,
   GetVoucher,
 } from "../../routebackend";
-import { UserAccount } from "../../App";
+// import { UserAccount } from "../../App";
 import useFetchData from "../../Components/useFetchData";
 import NavBar from "../../Components/NavBar";
 export default function OrderDetails() {
@@ -32,7 +32,6 @@ export default function OrderDetails() {
         getSeller(data);
       });
   }, [userData]);
-
 
   const [KhuyenMai, setKhuyenMai] = useState([]);
   if (
@@ -105,7 +104,7 @@ export default function OrderDetails() {
         );
         setPayment(findPayment);
       });
-  },[detailsOrder]);
+  }, [detailsOrder]);
 
   const listFoodOrder = detailsOrder?.ChiTietDonHang?.map((item) => {
     return (
@@ -144,7 +143,9 @@ export default function OrderDetails() {
           <section className="p-6">
             <div className="flex justify-between mb-4">
               <h1 className="text-xl font-medium">Order Details</h1>
-              <Link to="/orders_list"><h3 className="text-base">Back to list</h3></Link>
+              <Link to="/orders_list">
+                <h3 className="text-base">Back to list</h3>
+              </Link>
             </div>
             <div className="border border-[#F58220] rounded-lg">
               <div className="p-6 flex items-center justify-between gap-8 border-b border-[#F58220] text-base">

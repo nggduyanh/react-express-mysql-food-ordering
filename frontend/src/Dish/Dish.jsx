@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {
-  DeleteFoodRestaurant,
+  // DeleteFoodRestaurant,
   formatCurrency,
   GetFoodRestaurant,
   GetFoodTypeRestaurant,
@@ -10,7 +10,7 @@ import {
   handleRefreshPage,
   localStaticFile,
 } from "../routebackend";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
@@ -31,7 +31,7 @@ export default function Dish() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   const [listDish, setListDish] = useState([]);
   useEffect(() => {
@@ -43,11 +43,11 @@ export default function Dish() {
       .then((response) => response.json())
       .then((data) => {
         const filterDish = data.filter((dish) => {
-          return dish.MaNguoiBan === Seller?.[0].MaNguoiBan;
+          return dish?.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
         setListDish(filterDish);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
 
   const [listDishT, setlistDishT] = useState([]);
   useEffect(() => {
@@ -60,11 +60,11 @@ export default function Dish() {
       .then((data) => {
         // console.log(data);
         const filterDish = data.filter((dish) => {
-          return dish.MaNguoiBan === Seller?.[0].MaNguoiBan;
+          return dish?.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
         setlistDishT(filterDish);
       });
-  }, [listDish, Seller]);
+  }, [listDish, Seller, tokenValue]);
 
   const handleRemoveFood = async (id) => {
     const findDish = listDish.find((dish) => dish.MaMonAn === id);
@@ -90,25 +90,25 @@ export default function Dish() {
     }
   };
 
-  const listFood = listDish?.map((item) => {
+  const listFood = listDish?.map((item, index) => {
     return (
-      <tr>
+      <tr key={index}>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
           <div className="flex items-center gap-4">
-          {item.AnhMonAn !== null &&  item.AnhMonAn !== "undefined" ? (
+            {item.AnhMonAn !== null && item.AnhMonAn !== "undefined" ? (
               <img
-              src={localStaticFile + item.AnhMonAn}
-              alt=""
-              className="h-[72px] max-w-[72px]"
-            />
+                src={localStaticFile + item.AnhMonAn}
+                alt=""
+                className="h-[72px] max-w-[72px]"
+              />
             ) : (
               <img
-              src="./images/Dashboard/pizza.png"
-              alt=""
-              className="h-[72px] max-w-[72px]"
-            />
+                src="./images/Dashboard/pizza.png"
+                alt=""
+                className="h-[72px] max-w-[72px]"
+              />
             )}
-            
+
             <div>
               <p className="text-sm mb-1">{item.TenMonAn}</p>
             </div>
@@ -131,11 +131,11 @@ export default function Dish() {
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-primary"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-primary"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -148,11 +148,11 @@ export default function Dish() {
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-primary"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-primary"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -165,11 +165,11 @@ export default function Dish() {
               <svg
                 stroke="currentColor"
                 fill="none"
-                stroke-width="2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="cursor-pointer transition-colors hover:text-red-500"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="cursor-pointer transition-colors hover:text-red-500"
                 height="20"
                 width="20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +190,7 @@ export default function Dish() {
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1>Dishes List</h1>
@@ -208,11 +208,11 @@ export default function Dish() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="me-2 inline-flex align-middle"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="me-2 inline-flex align-middle"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -224,36 +224,36 @@ export default function Dish() {
                   </Link>
                 </div>
               </div>
-              <table class="min-w-full divide-y divide-default-200">
+              <table className="min-w-full divide-y divide-default-200">
                 <thead>
                   <tr className="bg-[#F1F5F9]">
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Dish Name
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Category
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Price
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Description
                     </th>
                     <th
                       scope="col"
-                      class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                      className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                     >
                       Action
                     </th>

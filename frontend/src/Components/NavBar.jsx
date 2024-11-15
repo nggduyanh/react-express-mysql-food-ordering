@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { Link } from "react-router-dom";
 import { GetUserInfo } from "../routebackend";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import useFetchData from "./useFetchData";
 
 export default function NavBar() {
@@ -20,17 +20,17 @@ export default function NavBar() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userData]);
+  }, [userData, tokenValue]);
   return (
     <nav className="flex h-16 px-6 items-center border-b border-[#F58220]  text-sm">
       <div className="ml-auto bg-gray-200 p-2 rounded-full mr-4">
         <svg
           stroke="currentColor"
           fill="none"
-          stroke-width="2"
+          strokeWidth="2"
           viewBox="0 0 24 24"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           height="24"
           width="24"
           xmlns="http://www.w3.org/2000/svg"

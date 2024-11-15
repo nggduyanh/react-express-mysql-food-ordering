@@ -1,4 +1,5 @@
 import { formatCurrency } from "../../Route";
+import { localStaticFile } from "../../routebackend";
 
 export default function FoodDetails({
   disabled,
@@ -23,7 +24,7 @@ export default function FoodDetails({
         <div className={mini ? "flex items-center gap-2" : ""}>
           {rest.AnhMonAn !== null ? (
             <img
-              src={rest.AnhMonAn}
+              src={localStaticFile + rest.AnhMonAn}
               alt=""
               className={
                 mini

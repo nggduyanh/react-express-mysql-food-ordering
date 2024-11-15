@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import useFetchData from "../Components/useFetchData";
 import { GetUserInfo } from "../routebackend";
 
@@ -26,7 +26,7 @@ export default function LineChart() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
-  const userInfo = userData?.data?.[0];
+  // const userInfo = userData?.data?.[0];
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function LineChart() {
       .then((data) => {
         getSeller(data);
       });
-  }, [userData]);
+  }, [userData, tokenValue]);
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
@@ -48,82 +48,90 @@ export default function LineChart() {
         Authorization: `Bearer ${tokenValue}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No order found");
+        }
+        return response.json();
+      })
       .then((data) => {
         setOrders(data);
+      })
+      .catch((err) => {
+        setOrders([]);
       });
-  }, [Seller]);
+  }, [Seller, tokenValue]);
   const superdata = [];
 
   const obj = Array.isArray(Orders)
-  ? Orders.map((item) => ({
-      month: new Date(item.ThoiGianTao).getMonth() + 1,
-      count: 0,
-      data: item.GiaBan,
-    }))
-  : [];
+    ? Orders.map((item) => ({
+        month: new Date(item.ThoiGianTao).getMonth() + 1,
+        count: 0,
+        data: item.GiaBan,
+      }))
+    : [];
   let flag = 0;
   const spobj = [
     {
       month: 1,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 2,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 3,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 4,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 5,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 6,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 7,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 8,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 9,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 10,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 11,
       count: 0,
       data: 0,
-    }, 
+    },
     {
       month: 12,
       count: 0,
       data: 0,
-    }
+    },
   ];
   for (let i = 0; i < obj.length; i++) {
     for (let j = 0; j < spobj.length; j++) {
@@ -136,12 +144,25 @@ export default function LineChart() {
     }
     flag = 0;
   }
-  for(let i = 0; i < spobj.length; i++) {
-    superdata.push(spobj[i].data/spobj[i].count);
+  for (let i = 0; i < spobj.length; i++) {
+    superdata.push(spobj[i].data / spobj[i].count);
   }
 
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July","August","September","October","November","December"],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
         label: "Revenue",

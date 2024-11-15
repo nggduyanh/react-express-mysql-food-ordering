@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SideBar from "../Components/SideBar";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import { vi } from "date-fns/locale";
 import {
   AddVoucher,
@@ -14,13 +14,14 @@ import {
 import axios from "axios";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import toast from "react-hot-toast";
 
 export default function VoucherAdd() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
   const userInfo = userData?.data?.[0];
-
+  const navigate = useNavigate();
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
     fetch(`http://localhost:3030/nguoiban/current`, {
@@ -90,20 +91,40 @@ export default function VoucherAdd() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(voucher);
-    try {
-      const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenValue}`,
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+          withCredentials: true,
+        });
+        return response;
+      })(),
+      {
+        loading: "Adding voucher...",
+        success: (response) => {
+          navigate("/voucher");
+          return "Voucher added successfully";
         },
-        withCredentials: true,
-      });
-      alert("Add sucesss");
-      handleRefreshPage();
-    } catch (err) {
-      console.error("Error adding voucher:", err);
-    }
+        error: "Error adding voucher",
+      }
+    );
+    // try {
+    // const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${tokenValue}`,
+    //   },
+    //   withCredentials: true,
+    //   });
+    //   alert("Add sucesss");
+    //   handleRefreshPage();
+    // } catch (err) {
+    //   console.error("Error adding voucher:", err);
+    // }
   };
   return (
     <div className="h-screen w-screen">

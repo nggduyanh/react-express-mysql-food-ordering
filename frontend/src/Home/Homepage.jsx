@@ -7,20 +7,21 @@ import {
   GetUserInfo,
   localStaticFile,
 } from "../routebackend";
-import { useActionData } from "react-router-dom";
-import axios from "axios";
-import { UserAccount } from "../App";
+// import { useActionData } from "react-router-dom";
+// import axios from "axios";
+// import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import LineChart from "./LineChart";
-import useFetchData from "../Components/useFetchData";
+// import useFetchData from "../Components/useFetchData";
+// import { formatDate } from "react-datepicker/dist/date_utils";
 
 export default function Homepage() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
-  let [userData] = useFetchData(GetUserInfo, tokenValue);
-  const userInfo = userData?.data?.[0];
-
+  // let userData = useFetchData(GetUserInfo, tokenValue);
+  // const userInfo = userData?.data?.[0];
+  // console.log("userInfo", userInfo);
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
     fetch(`http://localhost:3030/nguoiban/current`, {
@@ -28,64 +29,122 @@ export default function Homepage() {
         Authorization: `Bearer ${tokenValue}`,
       },
     })
-      .then((response) => response.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Something went wrong");
+        }
+        return res.json();
+      })
       .then((data) => {
+        console.log(data);
         getSeller(data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-  }, [userInfo]);
+  }, [tokenValue]);
 
-  const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
+  const [Orders, setOrders] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data);
-      });
-  }, [Seller]);
+    if (Seller?.length > 0) {
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return;
+        })
+        .then((data) => {
+          setOrders(data);
+        });
+    }
+  }, [Seller, tokenValue]);
 
-  const TotalRevenue = Array.isArray(Orders) ? Orders.reduce((total, order) => total + order.GiaBan, 0) : 0;
+  const TotalRevenue = Array.isArray(Orders)
+    ? Orders.reduce((total, order) => total + order.GiaBan, 0)
+    : 0;
 
   const [OrdersThisMonth, setOrdersThisMonth] = useState([]);
   useEffect(() => {
-    const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
-          );
+    if (Seller?.length > 0) {
+      const today = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+              today?.getMonth() + 1
+            );
+          });
+          setOrdersThisMonth(filterOrder);
+        })
+        .catch((err) => {
+          setOrdersThisMonth([]);
         });
-        setOrdersThisMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   const [OrdersLastMonth, setOrdersLastMonth] = useState([]);
   useEffect(() => {
-    const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
-          );
+    if (Seller?.length > 0) {
+      const lastmonth = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+              lastmonth?.getMonth()
+            );
+          });
+          setOrdersLastMonth(filterOrder);
+        })
+        .catch((err) => {
+          setOrdersLastMonth([]);
         });
-        setOrdersLastMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   let OrdersMonthPercent;
   if (OrdersLastMonth.length === 0 && OrdersThisMonth.length === 0) {
@@ -105,43 +164,77 @@ export default function Homepage() {
 
   const [CanceledOrderThisMonth, setCanceledOrderThisMonth] = useState([]);
   useEffect(() => {
-    const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            order?.TrangThai === 5 &&
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
-          );
+    if (Seller?.length > 0) {
+      const today = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response found");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              order?.TrangThai === 5 &&
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+                today?.getMonth() + 1
+            );
+          });
+          setCanceledOrderThisMonth(filterOrder);
+        })
+        .catch((err) => {
+          setCanceledOrderLastMonth([]);
         });
-        setCanceledOrderThisMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   const [CanceledOrderLastMonth, setCanceledOrderLastMonth] = useState([]);
   useEffect(() => {
-    const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            order?.TrangThai === 5 &&
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
-          );
+    if (Seller?.length > 0) {
+      const lastmonth = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              order?.TrangThai === 5 &&
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+                lastmonth?.getMonth()
+            );
+          });
+          setCanceledOrderLastMonth(filterOrder);
+        })
+        .catch((err) => {
+          setCanceledOrderLastMonth([]);
         });
-        setCanceledOrderLastMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   let CanceledOrdersMonthPercent;
   if (
@@ -164,43 +257,77 @@ export default function Homepage() {
 
   const [SuccessOrderThisMonth, setSuccessOrderThisMonth] = useState([]);
   useEffect(() => {
-    const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            order?.TrangThai === 4 &&
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === today?.getMonth() + 1
-          );
+    if (Seller?.length > 0) {
+      const today = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              order?.TrangThai === 4 &&
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+                today?.getMonth() + 1
+            );
+          });
+          setSuccessOrderThisMonth(filterOrder);
+        })
+        .catch((err) => {
+          setCanceledOrderLastMonth([]);
         });
-        setSuccessOrderThisMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   const [SuccessOrderLastMonth, setSuccessOrderLastMonth] = useState([]);
   useEffect(() => {
-    const lastmonth = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            order?.TrangThai === 4 &&
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 === lastmonth?.getMonth()
-          );
+    if (Seller?.length > 0) {
+      const lastmonth = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              order?.TrangThai === 4 &&
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+                lastmonth?.getMonth()
+            );
+          });
+          setSuccessOrderLastMonth(filterOrder);
+        })
+        .catch((err) => {
+          setSuccessOrderLastMonth([]);
         });
-        setSuccessOrderLastMonth(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   let SuccessOrdersMonthPercent;
   if (
@@ -213,44 +340,60 @@ export default function Homepage() {
   } else {
     SuccessOrdersMonthPercent =
       ((SuccessOrderThisMonth.length - SuccessOrderLastMonth.length) /
-      SuccessOrderLastMonth.length) *
+        SuccessOrderLastMonth.length) *
       100;
   }
   const SuccessOrdersTMI =
-  SuccessOrdersMonthPercent >= 0
+    SuccessOrdersMonthPercent >= 0
       ? SuccessOrdersMonthPercent + "% increase"
       : -SuccessOrdersMonthPercent + "% decrease";
 
   const [RecentOrders, setRecentOrders] = useState([]);
   useEffect(() => {
-    const today = new Date();
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const filterOrder = data?.filter((order) => {
-          return (
-            order?.TrangThai === 1 &&
-            new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
-              today?.getMonth() + 1 &&
-            new Date(order?.ThoiGianTao)?.getDate() === today?.getDate()
-          );
+    if (Seller?.length > 0) {
+      const today = new Date();
+      fetch(
+        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error("No order found");
+          }
+          if (!response.ok) {
+            throw new Error("No response founded");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const filterOrder = data?.filter((order) => {
+            return (
+              order?.TrangThai === 1 &&
+              new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
+                today?.getMonth() + 1 &&
+              new Date(order?.ThoiGianTao)?.getDate() === today?.getDate()
+            );
+          });
+          setRecentOrders(filterOrder);
+        })
+        .catch((err) => {
+          setRecentOrders([]);
         });
-        setRecentOrders(filterOrder);
-      });
-  }, [Seller]);
+    }
+  }, [Seller, tokenValue]);
 
   const listRecentOrder = RecentOrders?.map((item) => {
     return (
-      <tr>
+      <tr key={item}>
         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-default-600">
           {item?.MaDonHang}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {formatDate(item?.ThoiGianTao)}
+          {item?.ThoiGianTao}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
           {formatTime(item?.ThoiGianTao)}
@@ -267,7 +410,7 @@ export default function Homepage() {
     <div className="h-screen w-screen">
       <div className="relative flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0 max-w-full">
+        <div className="flex-1 mt-0 max-w-full">
           <NavBar />
           <section className="p-6">
             <h1 className="text-xl font-medium">Dashboard</h1>
@@ -378,30 +521,30 @@ export default function Homepage() {
                     </button>
                   </div>
                 </div>
-                <table class="min-w-full divide-y divide-default-200">
+                <table className="min-w-full divide-y divide-default-200">
                   <thead>
                     <tr className="bg-[#F1F5F9]">
                       <th
                         scope="col"
-                        class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                       >
                         Order ID
                       </th>
                       <th
                         scope="col"
-                        class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                       >
                         Date
                       </th>
                       <th
                         scope="col"
-                        class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                       >
                         Time
                       </th>
                       <th
                         scope="col"
-                        class="px-4 py-4 text-start text-sm font-semibold text-default-800"
+                        className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                       >
                         Total
                       </th>

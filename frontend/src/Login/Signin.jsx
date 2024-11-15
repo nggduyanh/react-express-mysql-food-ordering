@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "./Logo";
 import Heading from "./Heading";
-import Account from "./Account";
-import CreateAccount from "./CreateAccount";
-import { GetSellerInfo, GetUserInfo } from "../routebackend";
-
+// import Account from "./Account";
+// import CreateAccount from "./CreateAccount";
+// import { GetSellerInfo, GetUserInfo } from "../routebackend";
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
+// import { setTime } from "react-datepicker/dist/date_utils";
 export default function Signin({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
-    TenNguoiDung: "",
+    SoDienThoai: "",
     MatKhau: "",
   });
   const navigate = useNavigate();
@@ -25,33 +27,54 @@ export default function Signin({ assignAccount }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:3030/auth/login",
-        loginForm,
-        {
-          headers: {
-            secretTokenKey:
-              "QItRBJaulyIp75/23ZVeqNh5JPgnP4uTF2Cem88Qjwk33zdOXyq8oC352DQKEPXxyE3+fnXQAq7zTxFcu2Vbfv48ncysKJGrcVRCBEFnIKQQ9O/4DPX0hrsY5j2WQPwP6uILHhyWHFENHQORlXvtIAThOORNNyjLo8RfyA4+cJwjQ5iKFLVaKpKjkEdLijAH/+y65Vy2xge4mAL62ZnsTKyLqJU4jSrZMJ5pBAfF12u2IDO7fZxEASEf2WsLfBYesSoqQwBeXnSc6kF6yCfHJlOBzv8C24XoEVyY9GW8uEVAFU4lzeVdNIXIKlUZtMqMDHeejVC0ieBkuJ627TpDig==",
-          },
-        }
-      );
-
-      const getUserInfoArray = response.data;
-      const now = new Date();
-      const epxireToken = {
-        token: getUserInfoArray.accessToken,
-        expireDate: now.getTime() + 3600000,
-      };
-      localStorage.setItem("token", JSON.stringify(epxireToken));
-      console.log( getUserInfoArray)
-      navigate("/home",{state: localStorage.getItem("token")})
-    } catch (err) {
-      alert("Something went wrong between sending data");
-      console.log(err.message);
-    }
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.post(
+          "http://localhost:3030/auth/login",
+          loginForm
+        );
+        const getUserInfoArray = response.data;
+        const now = new Date();
+        const epxireToken = {
+          token: getUserInfoArray.accessToken,
+          expireDate: now.getTime() + 3600000,
+        };
+        localStorage.setItem("token", JSON.stringify(epxireToken));
+        navigate("/home/seller");
+      })(),
+      {
+        loading: "Check credentials",
+        success: "Success login",
+        error: "Login failed",
+      }
+    );
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:3030/auth/login",
+    //     loginForm
+    //   );
+    //   const getUserInfoArray = response.data;
+    //   const now = new Date();
+    //   const epxireToken = {
+    //     token: getUserInfoArray.accessToken,
+    //     expireDate: now.getTime() + 3600000,
+    //   };
+    //   localStorage.setItem("token", JSON.stringify(epxireToken));
+    //   navigate("/home/seller");
+    // } catch (err) {
+    //   alert("Something went wrong between sending data");
+    //   console.log("err.message", err);
+    // }
   };
-
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token) {
+      navigate("/home/seller");
+    } else {
+      console.log("Login again");
+    }
+  }, [navigate]);
   return (
     <div className="relative h-screen w-screen items-center justify-center bg-gradient-to-b from-customColor1 via-customColor1 to-customColor2 ">
       <div className="absolute w-full top-1/2 transform -translate-y-1/2">
@@ -70,7 +93,7 @@ export default function Signin({ assignAccount }) {
             </label>
             <input
               type="text"
-              name="TenNguoiDung"
+              name="SoDienThoai"
               id="phoneNumber"
               className="w-full py-2.5 px-3 rounded p"
               placeholder="Phone Number"
@@ -92,17 +115,24 @@ export default function Signin({ assignAccount }) {
               value={loginForm.MatKhau}
             />
           </div>
-          <Link className="underline ml-auto">Forgot Password?</Link>
+
           <button className="w-full mt-4 py-3 px-6 bg-[#F58220] rounded font-medium text-white">
             Sign In
           </button>
         </form>
+        <Link
+          to="/"
+          className="mt-4 flex items-center gap-5 text-pink-500 font-bold"
+        >
+          <FaLongArrowAltLeft />
+          <p className="">Back to client page</p>
+        </Link>
         {/* <Account /> */}
-        <CreateAccount
+        {/* <CreateAccount
           text="Don't have an account ?"
           linktext="Register"
           link="/signup"
-        />
+        /> */}
       </div>
     </div>
   );

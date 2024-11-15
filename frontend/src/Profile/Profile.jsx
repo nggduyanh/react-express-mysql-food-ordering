@@ -6,7 +6,7 @@ import {
   GetUserInfo,
   GetUserRole,
 } from "../routebackend";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
 import axios from "axios";
 import NavBar from "../Components/NavBar";
@@ -42,7 +42,7 @@ export default function Profile() {
         };
       });
     }
-  }, [userInfo ]);
+  }, [userInfo]);
 
   return (
     <div className="h-screen w-screen">
@@ -54,17 +54,17 @@ export default function Profile() {
             <h1 className="text-xl font-medium mb-6">Profile</h1>
             <div className="flex flex-col gap-6">
               <RestaurantInfo
-              TenChuSoHuu={Seller?.[0]?.TenChuSoHuu}
-              NgaySinh={Seller?.[0]?.NgaySinhChuSoHuu}
-              QueQuan={Seller?.[0]?.QueQuanChuSoHuu}
-              TenCuaHang= {Seller?.[0]?.TenNguoiBan}
-              Hotline = {Seller?.[0]?.Hotline}
-              Email = {Seller?.[0]?.Email}
-              Address = {Seller?.[0]?.DiaChi}
-              City = {Seller?.[0]?.ThanhPho}
-              MoCua = {Seller?.[0]?.ThoiGianMoCua}
-              DongCua = {Seller?.[0]?.ThoiGianDongCua}
-              Var = {[Seller, setSeller]}
+                TenChuSoHuu={Seller?.[0]?.TenChuSoHuu}
+                NgaySinh={Seller?.[0]?.NgaySinhChuSoHuu}
+                QueQuan={Seller?.[0]?.QueQuanChuSoHuu}
+                TenCuaHang={Seller?.[0]?.TenNguoiBan}
+                Hotline={Seller?.[0]?.Hotline}
+                Email={Seller?.[0]?.Email}
+                Address={Seller?.[0]?.DiaChi}
+                City={Seller?.[0]?.ThanhPho}
+                MoCua={Seller?.[0]?.ThoiGianMoCua}
+                DongCua={Seller?.[0]?.ThoiGianDongCua}
+                Var={[Seller, setSeller]}
               />
             </div>
           </section>

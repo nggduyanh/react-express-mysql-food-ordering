@@ -306,7 +306,6 @@ export default function SpecificRes() {
               setAmount={setAmountOrder}
               name={ResInfor.state.TenNguoiBan}
               img={ResInfor.state.AnhNguoiBan}
-              InputCard={(paymentMethod) => {}}
             />
           </div>
           {!close && (

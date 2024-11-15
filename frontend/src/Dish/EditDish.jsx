@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import {
-  GetFoodRestaurant,
+  // GetFoodRestaurant,
   GetFoodTypeRestaurant,
   GetUserInfo,
+  handleRefreshPage,
   localStaticFile,
-  UpdateFoodRestaurant,
+  // UpdateFoodRestaurant,
 } from "../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
@@ -75,7 +76,16 @@ export default function EditDish() {
     MaLoaiMonAn: "",
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
-  
+  useEffect(() => {
+    if (Seller?.length > 0) {
+      setDish((prevDish) => {
+        return {
+          ...prevDish,
+          MaNguoiBan: Seller?.[0]?.MaNguoiBan,
+        };
+      });
+    }
+  }, [Seller]);
   const [srcimg, setSrcImg] = useState(null);
 
   const handleChange = (event) => {
@@ -121,7 +131,7 @@ export default function EditDish() {
       if (response.status === 201) {
         // Kiểm tra trạng thái phản hồi
         alert("Update successful");
-        handleRefreshPage();
+        navigate("/dish");
       } else {
         console.error("Failed to update dish. Status:", response.status);
         alert("Failed to update dish. Please try again.");
@@ -130,12 +140,12 @@ export default function EditDish() {
       console.error("Error adding dish:", err);
     }
   };
-console.log(detailsFood);
+  console.log(detailsFood);
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1>Edit Dish</h1>
@@ -143,7 +153,7 @@ console.log(detailsFood);
               <h3>Back to list</h3>
             </Link>
             <div className="grid grid-cols-3 gap-6">
-            <div className="border border-default-200 p-6 rounded-lg">
+              <div className="border border-default-200 p-6 rounded-lg">
                 <div className="border border-default-200 p-6 rounded-lg mb-4 flex justify-center items-center">
                   <div className="relative h-[300px] flex flex-col items-center justify-center">
                     <input
@@ -197,7 +207,7 @@ console.log(detailsFood);
                             </option>
                           );
                         })}
-                       
+
                       {typeFood?.map((type) => {
                         return (
                           <option
@@ -209,7 +219,7 @@ console.log(detailsFood);
                         );
                       })}
                     </select>
-                    
+
                     <div className="grid grid-cols-2 gap-6 mb-6">
                       <div>
                         <h5 className="mb-2">Selling Price</h5>
@@ -242,10 +252,10 @@ console.log(detailsFood);
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -262,10 +272,10 @@ console.log(detailsFood);
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"

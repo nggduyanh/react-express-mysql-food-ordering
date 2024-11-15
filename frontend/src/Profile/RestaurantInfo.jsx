@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useFetchData from "../Components/useFetchData";
-import { GetUserInfo } from "../routebackend";
+import { GetUserInfo, handleRefreshPage } from "../routebackend";
 
 export default function RestaurantInfo(props) {
   const tokenStorage = localStorage.getItem("token");
@@ -48,11 +48,11 @@ export default function RestaurantInfo(props) {
           withCredentials: true,
         }
       );
-      if (response.status === 201) {
+      if (res.status === 201) {
         alert("Update successful");
         handleRefreshPage();
       } else {
-        console.error("Failed to update profile. Status:", response.status);
+        console.error("Failed to update profile. Status:", res.status);
         alert("Failed to update profile. Please try again.");
       }
     } catch (err) {
@@ -62,30 +62,30 @@ export default function RestaurantInfo(props) {
   // console.log("Seller", Seller)
   return (
     <div className="border border-default-200 p-6 rounded-lg">
-      <h4 class="mb-4 text-xl font-medium text-default-900">Restaurant</h4>
+      <h4 className="mb-4 text-xl font-medium text-default-900">Restaurant</h4>
       <div className="grid grid-cols-5 gap-6">
         <div>
           <h5 className="mb-2">Restaurant's Logo</h5>
-        <div className="flex flex-col items-center  mt-4">
-          <div className="relative h-40 w-40 flex flex-col items-center justify-center">
-            <input
-              type="file"
-              accept=".jpeg,.jpg,.png,.gif,.svg"
-              name="AnhNguoiBan"
-              // id="bgfile"
-              onChange={handleChange}
-              className="relative z-10 opacity-0 w-full h-full rounded-full"
-            />
-            <div className=" absolute bg-[#FFF0E9] border-[#F97316] border-2 border-dashed rounded-full h-40 w-40 flex items-center justify-center">
-              <p>Add photo</p>
+          <div className="flex flex-col items-center  mt-4">
+            <div className="relative h-40 w-40 flex flex-col items-center justify-center">
+              <input
+                type="file"
+                accept=".jpeg,.jpg,.png,.gif,.svg"
+                name="AnhNguoiBan"
+                // id="bgfile"
+                onChange={handleChange}
+                className="relative z-10 opacity-0 w-full h-full rounded-full"
+              />
+              <div className=" absolute bg-[#FFF0E9] border-[#F97316] border-2 border-dashed rounded-full h-40 w-40 flex items-center justify-center">
+                <p>Add photo</p>
+              </div>
+              <img
+                src={srcimg}
+                alt=""
+                className="absolute h-full w-full rounded-full"
+              />
             </div>
-            <img
-              src={srcimg}
-              alt=""
-              className="absolute h-full w-full rounded-full"
-            />
           </div>
-        </div>
         </div>
         <div className="col-span-4">
           <div className="grid grid-cols-2 gap-6">

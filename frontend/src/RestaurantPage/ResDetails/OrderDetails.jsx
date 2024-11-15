@@ -14,6 +14,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { GoHome } from "react-icons/go";
+import { localStaticFile } from "../../routebackend";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -272,7 +273,6 @@ export default function OrderDetails(props) {
               success: (response) => {
                 // console.log("Response: " + response);
                 const successMessage = response.data.return_message;
-                console.log("response", response);
                 if (response.data.return_code !== 1) {
                   const failedMessage = "Something went wrong";
                   return failedMessage;
@@ -304,7 +304,11 @@ export default function OrderDetails(props) {
         <div className="border shadow-xl bg-white border-gray-300 rounded-2xl w-full orderBox p-4 grid grid-rows-9 gap-3">
           <div className="text-xl font-bold pb-2 flex items-center gap-3">
             {props.img !== null ? (
-              <img src={props.img} alt="" className="w-10 h-10 rounded-full" />
+              <img
+                src={localStaticFile + props.img}
+                alt=""
+                className="w-10 h-10 rounded-full"
+              />
             ) : (
               <img
                 src="/resDefault.jpg"
@@ -333,7 +337,7 @@ export default function OrderDetails(props) {
                       <div className="flex items-center">
                         {order.AnhMonAn !== null ? (
                           <img
-                            src={order.AnhMonAn}
+                            src={localStaticFile + order.AnhMonAn}
                             alt=""
                             className="h-10 w-10"
                           />

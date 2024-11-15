@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserAccount } from "../App";
+// import { UserAccount } from "../App";
 import { vi } from "date-fns/locale";
 import {
   AddVoucher,
@@ -22,6 +22,7 @@ export default function VoucherEdit() {
   const userInfo = userData?.data?.[0];
 
   const [Seller, getSeller] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     fetch(`http://localhost:3030/nguoiban/current`, {
       headers: {
@@ -76,15 +77,6 @@ export default function VoucherEdit() {
     NgayHetHan: null,
   });
 
-  useEffect(() => {
-    if (Seller && Seller[0]?.MaNguoiBan) {
-      setVoucher((prevVoucher) => ({
-        ...prevVoucher,
-        MaNguoiBan: Seller[0].MaNguoiBan, // Cập nhật MaNguoiBan khi Seller có giá trị
-      }));
-    }
-  }, [Seller]);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setVoucher((prevForm) => {
@@ -114,7 +106,7 @@ export default function VoucherEdit() {
       );
       if (response.status === 201) {
         alert("Update successful");
-        handleRefreshPage();
+        navigate("/voucher");
       } else {
         console.error("Failed to update dish. Status:", response.status);
         alert("Failed to update dish. Please try again.");

@@ -16,5 +16,5 @@ export default function PrivateRoute() {
     return null;
   });
 
-  return isHasToken !== null ? <Outlet /> : <Navigate to="/" />;
+  return isHasToken !== null ? <Outlet /> : <Navigate to="/loginSeller" />;
 }

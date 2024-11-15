@@ -184,6 +184,14 @@ export default function Register() {
             Already has account? <Link to="/">Sign in</Link>
           </p>
         </div>
+        <div className="text-center mt-3">
+          <p>
+            Change to Merchant?{" "}
+            <Link className="text-pink-500 font-bold" to="/loginSeller">
+              Login Merchant
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

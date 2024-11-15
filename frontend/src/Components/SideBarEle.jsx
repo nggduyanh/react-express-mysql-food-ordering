@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SideLink(props) {
   const [isOpen, setIsOpen] = useState(false);
-  const list = props.list?.map((prop) => {
+  const list = props.list?.map((prop, index) => {
     return (
       <Link
+        key={index}
         to={prop?.[1]}
         className="py-3 px-2 mt-1 hover:bg-gray-200 hover:rounded-lg flex items-center"
       >
         <svg
           stroke="currentColor"
           fill="none"
-          stroke-width="2"
+          strokeWidth="2"
           viewBox="0 0 24 24"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           height="24"
           width="24"
           xmlns="http://www.w3.org/2000/svg"
@@ -38,11 +39,11 @@ export default function SideLink(props) {
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="2"
+              strokeWidth="2"
               viewBox="0 0 24 24"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="ms-auto transition-all"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="ms-auto transition-all"
               height="16"
               width="16"
               xmlns="http://www.w3.org/2000/svg"
@@ -53,11 +54,11 @@ export default function SideLink(props) {
             <svg
               stroke="currentColor"
               fill="none"
-              stroke-width="2"
+              strokeWidth="2"
               viewBox="0 0 24 24"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="ms-auto transition-all rotate-180"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="ms-auto transition-all rotate-180"
               height="16"
               width="16"
               xmlns="http://www.w3.org/2000/svg"
