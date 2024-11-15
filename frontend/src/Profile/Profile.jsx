@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
 import {
-  GetFoodRestaurant,
-  GetSellerInfo,
+  // GetFoodRestaurant,
+  // GetSellerInfo,
   GetUserInfo,
-  GetUserRole,
+  // GetUserRole,
 } from "../routebackend";
 // import { UserAccount } from "../App";
 import SideBar from "../Components/SideBar";
-import axios from "axios";
+// import axios from "axios";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
-import PersonalDetails from "./PersonalDetails";
+// import PersonalDetails from "./PersonalDetails";
 import RestaurantInfo from "./RestaurantInfo";
 
 export default function Profile() {
@@ -31,7 +31,7 @@ export default function Profile() {
       .then((data) => {
         setSeller(data);
       });
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   useEffect(() => {
     if (Seller?.MaNguoiBan) {
@@ -42,13 +42,13 @@ export default function Profile() {
         };
       });
     }
-  }, [userInfo]);
+  }, [userInfo, tokenValue]);
 
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
         <SideBar />
-        <div class="flex-1 mt-0">
+        <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
             <h1 className="text-xl font-medium mb-6">Profile</h1>
@@ -57,7 +57,7 @@ export default function Profile() {
                 TenChuSoHuu={Seller?.[0]?.TenChuSoHuu}
                 NgaySinh={Seller?.[0]?.NgaySinhChuSoHuu}
                 QueQuan={Seller?.[0]?.QueQuanChuSoHuu}
-                TenCuaHang={Seller?.[0]?.TenNguoiBan}
+                TenNguoiBan={Seller?.[0]?.TenNguoiBan}
                 Hotline={Seller?.[0]?.Hotline}
                 Email={Seller?.[0]?.Email}
                 Address={Seller?.[0]?.DiaChi}

@@ -10,10 +10,10 @@ export default function SideBar() {
   return (
     <div
       id="sidebar"
-      className="flex flex-col transition-all duration-300 w-64 p-4 border-r border-[#F58220]"
+      className="flex h-screen sticky top-0 flex-col transition-all duration-300 w-64 p-4  border-r border-[#F58220]"
     >
       <img src="../../images/logo.png" className="relative h-10 w-10 mx-auto" />
-      <div className="flex flex-col h-full mt-5 text-sm">
+      <div className="flex flex-col flex-grow h-full mt-5 text-sm">
         <Link
           to="/home/seller"
           className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"

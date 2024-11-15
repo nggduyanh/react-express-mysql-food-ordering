@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useFetchData from "../Components/useFetchData";
-import { GetUserInfo, handleRefreshPage } from "../routebackend";
+import { GetSellerInfo, GetUserInfo, handleRefreshPage } from "../routebackend";
 
 export default function RestaurantInfo(props) {
   const tokenStorage = localStorage.getItem("token");
@@ -10,9 +10,25 @@ export default function RestaurantInfo(props) {
   const userInfo = userData?.data?.[0];
 
   const [Seller, setSeller] = useState({
-    MaNguoiBan: 8,
+    MaNguoiBan: props?.MaNguoiBan,
   });
-
+  useEffect(() => {
+    const getSellerIdCurrent = async () => {
+      const response = await axios.get(
+        "http://localhost:3030/nguoiban/current",
+        {
+          headers: {
+            Authorization: "Bearer " + tokenValue,
+          },
+        }
+      );
+      const data = response.data;
+      setSeller({
+        MaNguoiBan: data[0].MaNguoiBan,
+      });
+    };
+    getSellerIdCurrent();
+  }, [tokenValue]);
   const [srcimg, setSrcImg] = useState(null);
   const handleChange = (event) => {
     const { name, value, type, files } = event.target;
@@ -31,12 +47,11 @@ export default function RestaurantInfo(props) {
         };
       });
     }
-    console.log(Seller);
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log("Submit", Seller);
       const res = await axios.patch(
         `http://localhost:3030/nguoiban/update`,
         Seller,
@@ -94,13 +109,17 @@ export default function RestaurantInfo(props) {
               <input
                 type="text"
                 placeholder={props.TenChuSoHuu}
+                name="TenChuSoHuu"
+                onChange={handleChange}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
             </div>
             <div>
-              <h5 className="mb-2">Ngày sinh</h5>
+              <h5 className="mb-2">Ngày mở quán</h5>
               <input
-                type="text"
+                type="date"
+                name="NgaySinhChuSoHuu"
+                onChange={handleChange}
                 placeholder={props.NgaySinh}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
@@ -109,6 +128,8 @@ export default function RestaurantInfo(props) {
               <h5 className="mb-2">Quê quán</h5>
               <input
                 type="text"
+                name="QueQuanChuSoHuu"
+                onChange={handleChange}
                 placeholder={props.QueQuan}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
@@ -119,7 +140,7 @@ export default function RestaurantInfo(props) {
                 type="text"
                 name="TenNguoiBan"
                 onChange={handleChange}
-                placeholder={props.TenCuaHang}
+                placeholder={props.TenNguoiBan}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
             </div>
@@ -169,7 +190,7 @@ export default function RestaurantInfo(props) {
               <input
                 name="ThoiGianMoCua"
                 onChange={handleChange}
-                type="text"
+                type="time"
                 placeholder={props.MoCua}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
@@ -179,7 +200,7 @@ export default function RestaurantInfo(props) {
               <input
                 name="ThoiGianDongCua"
                 onChange={handleChange}
-                type="text"
+                type="time"
                 placeholder={props.DongCua}
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
