@@ -37,6 +37,12 @@ export default function SideBar() {
           FoodType
         </Link>
         <Link
+          to="/sellerType"
+          className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
+        >
+          Seller Type
+        </Link>
+        <Link
           to="/profile"
           className="py-3 px-4 mt-auto hover:bg-gray-200 hover:rounded-lg"
         >

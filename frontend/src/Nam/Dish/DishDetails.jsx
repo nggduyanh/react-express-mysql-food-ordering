@@ -141,7 +141,6 @@ export default function DishDetails() {
   };
 
   const handleSubmit = async (id) => {
-    console.log("RepNhanXet", RepNhanXet);
     try {
       if (RepNhanXet.TraLoi === "") {
         toast.error("Please enter your reply");
@@ -176,11 +175,8 @@ export default function DishDetails() {
 
   const list = NhanXet.map((item) => {
     return (
-      <div
-        key={item?.MaNguoiDung}
-        className="w-full flex flex-col rounded-lg border border-default-200"
-      >
-        <div className="w-full flex gap-3 p-2 items-center">
+      <div key={item?.MaNguoiDung} className="">
+        <div className="flex items-center gap-3">
           <img
             src={
               item.AnhNguoiDung && item.AnhNguoiDung !== null
@@ -188,23 +184,10 @@ export default function DishDetails() {
                 : `../../images/avatar.png`
             }
             alt=""
-            className="rounded-full w-10 h-10"
+            className="rounded-full self-start w-10 h-10"
           />
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full ">
             <div className="flex flex-col">
-              {item.AnhNhanXet.length !== 0 && (
-                <div className="flex items-center">
-                  {item.AnhNhanXet.map((items, index) => {
-                    return (
-                      <img
-                        key={index}
-                        src={localStaticFile + items}
-                        className="w-20 h-20 rounded-md"
-                      />
-                    );
-                  })}
-                </div>
-              )}
               <p className="text-md text-pink-500 font-bold">
                 {item?.MaNguoiDung}
                 {Buyers.find((buyer) => buyer?.MaNguoiDung === item?.MaNguoiMua)
@@ -219,6 +202,19 @@ export default function DishDetails() {
               <span className="text-sm">Diem: {item?.Diem}</span>
             </div>
             <p className="mb-2">{item?.NoiDung}</p>
+            {item.AnhNhanXet.length !== 0 && (
+              <div className="flex items-center">
+                {item.AnhNhanXet.map((items, index) => {
+                  return (
+                    <img
+                      key={index}
+                      src={localStaticFile + items}
+                      className="w-20 h-20 rounded-md"
+                    />
+                  );
+                })}
+              </div>
+            )}
             <p className="mb-3 text-red-500 font-bold">
               {item?.TraLoi && item?.TraLoi !== ""
                 ? item?.TraLoi + " (from you)"
@@ -230,15 +226,20 @@ export default function DishDetails() {
           name="TraLoi"
           id=""
           onChange={handleChange}
-          className="ml-16 px-2 py-1 w-[500px] rounded-lg mb-2 border border-default-200"
+          className="px-2 py-1 w-full rounded-lg mb-2 border border-default-200"
           placeholder="Reply"
         ></textarea>
-        <button onClick={() => handleSubmit(item.MaNguoiMua)}>Commit</button>
+        <button
+          className="border border-t-orange-500 border-white w-full bg-orange-500 text-white font-bold text-center rounded-lg mb-3"
+          onClick={() => handleSubmit(item.MaNguoiMua)}
+        >
+          Commit
+        </button>
       </div>
     );
   });
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
@@ -297,7 +298,7 @@ export default function DishDetails() {
                   })}
                 </div>
                 <h4 className="text-xl mb-4">Đánh giá</h4>
-                {list}
+                <div className=" overflow-auto max-h-[600px]">{list}</div>
               </div>
             </div>
           </section>

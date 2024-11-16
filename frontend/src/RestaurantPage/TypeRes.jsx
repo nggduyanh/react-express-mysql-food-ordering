@@ -80,23 +80,25 @@ export default function TypeRes() {
   //     );
   //   }
   // );
-  const compareAToZ = (a, b) => {
-    return a.TenNguoiBan - b.TenNguoiBan;
+  const compareAToZ = (a, b) =>
+    a.NguoiBan.TenNguoiBan.localeCompare(b.NguoiBan.TenNguoiBan);
+  const compareRatingIncrease = (a, b) => a.NguoiBan.Diem - b.NguoiBan.Diem;
+  const compareRatingDecrease = (a, b) => b.NguoiBan.Diem - a.NguoiBan.Diem;
+
+  // Sort functions
+  const handleSortA_Z = () => {
+    const sortedList = [...listType].sort(compareAToZ);
+    setListType(sortedList);
   };
-  const compareRatingIncrease = (a, b) => {
-    return a.Diem - b.Diem;
+
+  const handleSortIncrease = () => {
+    const sortedList = [...listType].sort(compareRatingIncrease);
+    setListType(sortedList);
   };
-  const compareRatingDecrease = (a, b) => {
-    return b.Diem - a.Diem;
-  };
-  const handleA_Z = (arrayOfListFood) => {
-    return arrayOfListFood.sort(compareAToZ);
-  };
-  const handleIncrease = (arrayOfListFood) => {
-    return arrayOfListFood.sort(compareRatingIncrease);
-  };
-  const handleDecrease = (arrayOfListFood) => {
-    return arrayOfListFood.sort(compareRatingDecrease);
+
+  const handleSortDecrease = () => {
+    const sortedList = [...listType].sort(compareRatingDecrease);
+    setListType(sortedList);
   };
   return (
     <div className="marginJustification min-h-screen">
@@ -105,19 +107,19 @@ export default function TypeRes() {
       </p>
       <div className="filterOption flex items-center gap-3 ml-2">
         <button
-          onClick={handleA_Z}
+          onClick={handleSortA_Z}
           className="flex items-center gap-2 p-2 border font-bold hover:bg-green-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md"
         >
           A - Z <FaSortAlphaDown />
         </button>
         <button
-          onClick={handleIncrease}
+          onClick={handleSortIncrease}
           className="flex items-center gap-2 p-2 border font-bold hover:bg-blue-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md"
         >
           Increase <FaSortNumericUp />
         </button>
         <button
-          onClick={handleDecrease}
+          onClick={handleSortDecrease}
           className="flex items-center gap-2 p-2 border font-bold hover:bg-red-500 hover:text-white hover:border-white transition-all ease-in border-gray-500 rounded-md"
         >
           Decrease <FaSortNumericDownAlt />

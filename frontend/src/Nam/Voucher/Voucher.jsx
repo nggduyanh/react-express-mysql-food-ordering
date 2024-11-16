@@ -186,17 +186,11 @@ export default function Voucher() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Voucher List</h1>
+            <h1 className="text-xl font-medium mb-6">Voucher List</h1>
             <div className="rounded-lg border border-default-200">
               <div className="py-4 px-6 flex justify-between items-center">
                 <h2>Voucher List</h2>
                 <div className="flex gap-4 items-center">
-                  <button
-                    onClick={handleSort}
-                    className="px-4 py-3 rounded-md bg-[#F1F5F9]"
-                  >
-                    Sort
-                  </button>
                   <Link
                     to="/add_voucher"
                     className="bg-[#F58220] px-4 py-3 rounded-md"

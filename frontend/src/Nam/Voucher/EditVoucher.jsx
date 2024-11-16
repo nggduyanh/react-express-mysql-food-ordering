@@ -140,7 +140,7 @@ export default function VoucherEdit() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Add Voucher</h1>
+            <h1 className="text-xl font-medium mb-6">Add Voucher</h1>
             <Link to="/voucher">
               <h3>Back to list</h3>
             </Link>

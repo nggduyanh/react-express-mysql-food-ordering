@@ -7,6 +7,7 @@ import {
   GetPaymentMethods,
   GetUserInfo,
   GetVoucher,
+  localStaticFile,
 } from "../../../routebackend";
 // import { UserAccount } from "../../App";
 import useFetchData from "../../Components/useFetchData";
@@ -107,12 +108,14 @@ export default function OrderDetails() {
   }, [detailsOrder]);
 
   const listFoodOrder = detailsOrder?.ChiTietDonHang?.map((item) => {
+    const imgUrl =
+      item.monan?.AnhMonAn || "../../../../images/Dashboard/pizza.png";
     return (
       <tr key={item} className="border border-gray-300">
         <td className="p-2 whitespace-nowrap text-sm text-default-600">
           <div className="flex items-center gap-4">
             <img
-              src="./images/Dashboard/pizza.png"
+              src={localStaticFile + imgUrl}
               alt=""
               className="h-[72px] max-w-[72px]"
             />
@@ -135,7 +138,7 @@ export default function OrderDetails() {
   });
 
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">

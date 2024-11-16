@@ -43,9 +43,17 @@ export default function OrdersList() {
         Authorization: `Bearer ${tokenValue}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Not found");
+        }
+        return response.json();
+      })
       .then((data) => {
         setOrders(data);
+      })
+      .catch((err) => {
+        setOrders([]);
       });
   }, [Seller, tokenValue]);
 
@@ -58,8 +66,8 @@ export default function OrdersList() {
     })
       .then((response) => response.json())
       .then((data) => {
-        const filterOrder = data.filter((order) => {
-          return order.TrangThai;
+        const filterOrder = data?.filter((order) => {
+          return order.TrangThai !== 5 && order.TrangThai !== 1;
         });
         setSuccessOrder(filterOrder);
       });
@@ -134,8 +142,22 @@ export default function OrdersList() {
     }).then((res) => res.json());
     handleRefreshPage();
   };
-
-  const list = SuccessOrder?.map((item, index) => {
+  const [onGoingOrder, setOnGoinOrder] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const filterOrder = data.filter((order) => {
+          return order.TrangThai === 1;
+        });
+        setOnGoinOrder(filterOrder);
+      });
+  }, [Seller, tokenValue]);
+  const list = onGoingOrder?.map((item, index) => {
     if (SuccessOrder.length > 0) {
       return (
         <div
@@ -155,7 +177,7 @@ export default function OrdersList() {
               </div>
               <button
                 onClick={() => handleChangeStatus(item.MaDonHang)}
-                className="bg-red-900"
+                className="bg-orange-500 text-white font-bold rounded-lg"
               >
                 Doi trang thai
               </button>
@@ -173,7 +195,7 @@ export default function OrdersList() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Orders List</h1>
+            <h1 className="text-xl font-medium">Orders List</h1>
             <div className="grid grid-cols-12 gap-6 mt-6">
               <div className="col-span-9">
                 <div className="grid gap-6 grid-cols-3">
@@ -251,9 +273,6 @@ export default function OrdersList() {
                   <div className="p-6 flex flex-wrap gap-4 justify-between items-center">
                     <h2 className="text-xl font-semibold">Recent Orders</h2>
                     <div className="flex flex-wrap gap-2">
-                      <button className="px-4 py-3  rounded-md bg-[#F1F5F9]">
-                        Sort
-                      </button>
                       <button className="px-4 py-3  rounded-md bg-[#F1F5F9]">
                         Status
                       </button>

@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { Link, useLocation } from "react-router-dom";
 import {
   formatCurrency,
   formatTime,
-  GetFoodRestaurant,
-  GetUserInfo,
-  localStaticFile,
+  // GetFoodRestaurant,
+  // GetUserInfo,
+  // localStaticFile,
 } from "../../routebackend";
 // import { useActionData } from "react-router-dom";
 // import axios from "axios";
@@ -407,7 +407,7 @@ export default function Homepage() {
 
   return (
     // <h1>Hello World</h1>
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="relative flex h-full">
         <SideBar />
         <div className="flex-1 mt-0 max-w-full">

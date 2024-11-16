@@ -130,7 +130,7 @@ export default function AddDish() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Add Dish</h1>
+            <h1 className="text-xl font-medium">Add Dish</h1>
             <Link to="/dish">
               <h3>Back to list</h3>
             </Link>

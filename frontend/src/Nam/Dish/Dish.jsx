@@ -193,14 +193,11 @@ export default function Dish() {
         <div className="flex-1 mt-0">
           <NavBar />
           <section className="p-6">
-            <h1>Dishes List</h1>
+            <h1 className="text-xl font-medium">Dishes List</h1>
             <div className="rounded-lg border border-default-200">
               <div className="py-4 px-6 flex justify-between items-center">
                 <h2>Dishes List</h2>
                 <div className="flex gap-4 items-center">
-                  <button className="px-4 py-3 rounded-md bg-[#F1F5F9]">
-                    Sort
-                  </button>
                   <Link
                     to="/add_dish"
                     className="bg-[#F58220] px-4 py-3 rounded-md"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // import { Link } from "react-router-dom";
-import { GetUserInfo } from "../../routebackend";
+import { GetUserInfo, localStaticFile } from "../../routebackend";
 // import { UserAccount } from "../App";
 import useFetchData from "./useFetchData";
 
@@ -39,19 +39,19 @@ export default function NavBar() {
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
         </svg>
       </div>
-      {/* <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-              {userInfo?.AnhNguoiDung !== null ? (
-                <img
-                  src={localStaticFile + userInfo.AnhNguoiDung}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <img
-                  src="./images/avatar.png"
-                  className="object-cover w-full h-full"
-                />
-              )}
-            </div> */}
+      <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
+        {userInfo?.AnhNguoiDung !== null ? (
+          <img
+            src={localStaticFile + userInfo?.AnhNguoiDung}
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <img
+            src="./images/avatar.png"
+            className="object-cover w-full h-full"
+          />
+        )}
+      </div>
       <h3 className="font-medium ml-2">{Seller?.[0]?.TenNguoiBan}</h3>
     </nav>
   );
