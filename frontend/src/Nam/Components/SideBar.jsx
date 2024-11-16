@@ -20,6 +20,7 @@ export default function SideBar() {
         >
           Dashboard
         </Link>
+
         <SideLink label="Orders" list={[["Orders list", "/orders_list"]]} />
         <SideLink
           label="Dishes"
@@ -29,6 +30,12 @@ export default function SideBar() {
           ]}
         />
         <SideLink label="Vouchers" list={[["Voucher List", "/voucher"]]} />
+        <Link
+          to="/foodtype"
+          className="py-3 px-4 mt-1 hover:bg-gray-200 hover:rounded-lg"
+        >
+          FoodType
+        </Link>
         <Link
           to="/profile"
           className="py-3 px-4 mt-auto hover:bg-gray-200 hover:rounded-lg"

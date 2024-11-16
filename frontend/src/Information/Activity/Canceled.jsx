@@ -12,7 +12,7 @@ export default function Canceled() {
     });
   return (
     <div className="overflow-auto max-h-[720px]">
-      {orderList.length > 0 ? (
+      {orderList?.length > 0 ? (
         orderList
       ) : (
         <div className="flex flex-col items-center justify-center">

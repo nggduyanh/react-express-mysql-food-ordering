@@ -88,11 +88,15 @@ export default function LayoutHeader() {
                   name="place"
                   id="location"
                   onChange={handleChangePlaces}
-                  className="text-xs  border border-gray-400 py-0.5 rounded-md "
+                  className="text-xs place border border-pink-500 py-1 bg-pink-500 text-white font-bold px-4 rounded-md "
                 >
                   {getPlaceRestaurant?.map((place) => {
                     return (
-                      <option key={place} value={place}>
+                      <option
+                        className="bg-white text-black"
+                        key={place}
+                        value={place}
+                      >
                         {place}
                       </option>
                     );

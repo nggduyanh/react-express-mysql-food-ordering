@@ -92,13 +92,17 @@ export default function SpecificRes() {
         return res.json();
       })
       .then((data) => {
-        setPromotions(data);
+        const promotionsFilterRestaurant = data.filter((promo) => {
+          return promo.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
+        });
+
+        setPromotions(promotionsFilterRestaurant);
       })
       .catch((err) => {
         console.log(err.message);
         setPromotions([]);
       });
-  }, [tokenValue]);
+  }, [Seller, tokenValue]);
 
   const categoryFood = useMemo(() => {
     const array = Food.reduce((accumulate, currentVal) => {
@@ -275,11 +279,11 @@ export default function SpecificRes() {
                             <b className="text-green-500 text-xl">Price: </b>
                             {formatCurrency(detailsFood.GiaBan)}
                           </p>
-                          <div className="btn flex items-center gap-5 x">
+                          {/* <div className="btn flex items-center gap-5 x">
                             <button className=" bg-pink-400 font-bold text-white  w-24 rounded-lg hover:bg-pink-600 transition-all duration-200 ease-in">
                               Add
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

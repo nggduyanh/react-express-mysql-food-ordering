@@ -111,7 +111,6 @@ export default function OrderStatus(props) {
     else if (props.TrangThai === orderStatus?.[2].MaTrangThai)
       nameStatus = orderStatus[2].TenTrangThai;
   }
-
   return (
     <div className="bg-white p-4 rounded-xl mb-3">
       <div className="flex justify-between mb-2">
@@ -186,14 +185,16 @@ export default function OrderStatus(props) {
           <button className="py-2 px-4 border-red-500 border text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200 ease-in">
             Help
           </button>
-          <button
-            onClick={() => {
-              setIsCloseFunct(false, props);
-            }}
-            className="py-2 px-4 bg-gray-300 font-bold border-gray-300 border text-gray-500 rounded-md hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
-          >
-            Cancel
-          </button>
+          {props.TrangThai !== 5 && (
+            <button
+              onClick={() => {
+                setIsCloseFunct(false, props);
+              }}
+              className="py-2 px-4 bg-gray-300 font-bold border-gray-300 border text-gray-500 rounded-md hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -58,6 +58,7 @@ export default function EditDish() {
         const filterTypeFood = data.filter((type) => {
           return type.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
+        console.log("filterTypeFood", filterTypeFood);
         setTypeFood(filterTypeFood);
       })
       .catch((err) => {
@@ -69,11 +70,11 @@ export default function EditDish() {
 
   const [dish, setDish] = useState({
     MaMonAn: detailsFood.MaMonAn,
-    TenMonAn: "",
-    AnhMonAn: null,
-    GiaBan: "",
-    MoTa: "",
-    MaLoaiMonAn: "",
+    TenMonAn: detailsFood.TenMonAn,
+    AnhMonAn: detailsFood.AnhMonAn,
+    GiaBan: detailsFood.GiaBan,
+    MoTa: detailsFood.MoTa,
+    MaLoaiMonAn: detailsFood.MaLoaiMonAn,
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
   });
   useEffect(() => {
@@ -140,7 +141,6 @@ export default function EditDish() {
       console.error("Error adding dish:", err);
     }
   };
-  console.log(detailsFood);
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -183,17 +183,19 @@ export default function EditDish() {
                       type="text"
                       name="TenMonAn"
                       onChange={handleChange}
+                      value={dish.TenMonAn}
                       placeholder={detailsFood.TenMonAn}
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     />
                     <h5 className="mb-2">Product Catagory</h5>
                     <select
                       name="MaLoaiMonAn"
+                      value={dish.MaLoaiMonAn}
                       onChange={handleChange}
                       id=""
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     >
-                      {typeFood
+                      {/* {typeFood
                         .filter((type) => {
                           return type.MaLoaiMonAn === detailsFood.MaLoaiMonAn;
                         })
@@ -206,7 +208,7 @@ export default function EditDish() {
                               {items.TenLoaiMonAn}
                             </option>
                           );
-                        })}
+                        })} */}
 
                       {typeFood?.map((type) => {
                         return (
@@ -226,6 +228,7 @@ export default function EditDish() {
                         <input
                           type="text"
                           name="GiaBan"
+                          value={dish.GiaBan}
                           onChange={handleChange}
                           placeholder={detailsFood.GiaBan}
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
@@ -239,6 +242,7 @@ export default function EditDish() {
                       name="MoTa"
                       id=""
                       onChange={handleChange}
+                      value={dish.MoTa}
                       placeholder={detailsFood.MoTa}
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6 h-36"
                     ></textarea>

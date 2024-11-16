@@ -91,27 +91,42 @@ export default function VoucherAdd() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    toast.promise(
-      (async () => {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenValue}`,
+    console.log(voucher);
+    if (
+      voucher.TenKhuyenMai === "" ||
+      (voucher.GiaTri === null && voucher.PhanTram === null) ||
+      voucher.SoLuong === "" ||
+      voucher.NgayTao === "" ||
+      voucher.NgayHetHan === ""
+    ) {
+      toast.error("Please fullfill voucher");
+    } else {
+      toast.promise(
+        (async () => {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const response = await axios.post(
+            AddVoucher,
+            JSON.stringify(voucher),
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenValue}`,
+              },
+              withCredentials: true,
+            }
+          );
+          return response;
+        })(),
+        {
+          loading: "Adding voucher...",
+          success: (response) => {
+            navigate("/voucher");
+            return "Voucher added successfully";
           },
-          withCredentials: true,
-        });
-        return response;
-      })(),
-      {
-        loading: "Adding voucher...",
-        success: (response) => {
-          navigate("/voucher");
-          return "Voucher added successfully";
-        },
-        error: "Error adding voucher",
-      }
-    );
+          error: "Error adding voucher",
+        }
+      );
+    }
     // try {
     // const response = await axios.post(AddVoucher, JSON.stringify(voucher), {
     //   headers: {

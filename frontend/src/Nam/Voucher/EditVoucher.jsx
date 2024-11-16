@@ -14,6 +14,7 @@ import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import toast from "react-hot-toast";
 
 export default function VoucherEdit() {
   const tokenStorage = localStorage.getItem("token");
@@ -65,18 +66,26 @@ export default function VoucherEdit() {
       NgayHetHan: getFormattedDate(date),
     }));
   };
-
   const [voucher, setVoucher] = useState({
     MaKhuyenMai: detailsVoucher.MaKhuyenMai,
-    TenKhuyenMai: "",
-    PhanTram: null,
-    GiaTri: null,
+    TenKhuyenMai: detailsVoucher.TenKhuyenMai,
+    PhanTram: detailsVoucher.PhanTram || null,
+    GiaTri: detailsVoucher.GiaTri || null,
     MaNguoiBan: Seller?.[0]?.MaNguoiBan,
-    SoLuong: "",
-    NgayTao: null,
-    NgayHetHan: null,
+    SoLuong: detailsVoucher.SoLuong || 0,
+    NgayTao: getFormattedDate(detailsVoucher.NgayTao),
+    NgayHetHan: getFormattedDate(detailsVoucher.NgayTao),
   });
-
+  useEffect(() => {
+    if (Seller) {
+      setVoucher((prevVoucher) => {
+        return {
+          ...prevVoucher,
+          MaNguoiBan: Seller?.[0]?.MaNguoiBan,
+        };
+      });
+    }
+  }, [Seller]);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setVoucher((prevForm) => {
@@ -84,7 +93,9 @@ export default function VoucherEdit() {
         ...prevForm,
         [name]:
           name === "GiaTri" || name === "soluong" || name === "PhanTram"
-            ? parseInt(value)
+            ? value === ""
+              ? parseInt(value)
+              : value
             : value,
       };
     });
@@ -93,23 +104,30 @@ export default function VoucherEdit() {
     event.preventDefault();
     console.log(voucher);
     try {
-      const response = await axios.patch(
-        `http://localhost:3030/khuyenmai/update`,
-        voucher,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenValue}`,
-          },
-          withCredentials: true,
-        }
-      );
-      if (response.status === 201) {
-        alert("Update successful");
-        navigate("/voucher");
+      if (
+        (voucher.GiaTri === null || isNaN(voucher.GiaTri)) &&
+        (voucher.PhanTram === null || isNaN(voucher.PhanTram))
+      ) {
+        toast.error("Please provide at least one value for GiaTri or PhanTram");
       } else {
-        console.error("Failed to update dish. Status:", response.status);
-        alert("Failed to update dish. Please try again.");
+        const response = await axios.patch(
+          `http://localhost:3030/khuyenmai/update`,
+          voucher,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenValue}`,
+            },
+            withCredentials: true,
+          }
+        );
+        if (response.status === 201) {
+          alert("Update successful");
+          navigate("/voucher");
+        } else {
+          console.error("Failed to update dish. Status:", response.status);
+          alert("Failed to update dish. Please try again.");
+        }
       }
     } catch (err) {
       console.error("Error adding dish:", err);
@@ -135,6 +153,7 @@ export default function VoucherEdit() {
                       type="text"
                       name="TenKhuyenMai"
                       onChange={handleChange}
+                      value={voucher.TenKhuyenMai}
                       placeholder={detailsVoucher.TenKhuyenMai}
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     />
@@ -159,6 +178,7 @@ export default function VoucherEdit() {
                           type="text"
                           name="PhanTram"
                           onChange={handleChange}
+                          value={voucher.PhanTram || null}
                           placeholder={detailsVoucher.PhanTram}
                           className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                         />
@@ -172,6 +192,7 @@ export default function VoucherEdit() {
                           type="text"
                           name="GiaTri"
                           onChange={handleChange}
+                          value={voucher.GiaTri || null}
                           placeholder={detailsVoucher.GiaTri}
                           className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                         />
@@ -184,6 +205,7 @@ export default function VoucherEdit() {
                         <h5 className="mb-2">Ngay Bat Dau</h5>
                         <DatePicker
                           placeholderText={NgayBatDau}
+                          value={voucher.NgayTao}
                           dateFormat="Pp"
                           showTimeSelect
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
@@ -196,6 +218,7 @@ export default function VoucherEdit() {
                         <h5 className="mb-2">Ngay Ket Thuc</h5>
                         <DatePicker
                           placeholderText={NgayHetHan}
+                          value={voucher.NgayHetHan}
                           dateFormat="Pp"
                           showTimeSelect
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
@@ -211,6 +234,7 @@ export default function VoucherEdit() {
                         <input
                           type="text"
                           name="SoLuong"
+                          value={voucher.SoLuong || null}
                           onChange={handleChange}
                           placeholder={detailsVoucher.SoLuong}
                           className="border border-default-200 py-3 px-4 rounded-lg w-full"
@@ -224,10 +248,10 @@ export default function VoucherEdit() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -245,10 +269,10 @@ export default function VoucherEdit() {
                     <svg
                       stroke="currentColor"
                       fill="none"
-                      stroke-width="2"
+                      strokeWidth="2"
                       viewBox="0 0 24 24"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       height="20"
                       width="20"
                       xmlns="http://www.w3.org/2000/svg"

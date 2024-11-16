@@ -137,7 +137,6 @@ export default function ListComment({ sellerInfor, foodDetails }) {
   };
   const updateComment = async () => {
     // setRating(filterUserComment?.[0]?.Diem);
-    console.log(rating);
     if (Comments.noiDung.trim().length === 0) {
       toast.error("Please fullfile your response and star ");
       return;
@@ -231,7 +230,6 @@ export default function ListComment({ sellerInfor, foodDetails }) {
         (image) => image.id !== id
       );
 
-      // Tìm và thu hồi URL của ảnh đã xóa
       const removedImage = prevComments.AnhDinhKemTemp.find(
         (image) => image.id === id
       );
@@ -260,7 +258,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
                 <img
                   src={localStaticFile + userData.AnhNguoiDung}
                   alt=""
-                  className="w-full h-14"
+                  className="w-14 mt-3 h-14 rounded-full"
                 />
               ) : (
                 <img src="/avatar.png" alt="" className="w-16 h16 " />
@@ -326,6 +324,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
                     id="fileInput"
                     accept="image/*"
                     className="hidden"
+                    disabled={(isComment && !isUpdated) || error.status === 403}
                     ref={imgRef}
                     onChange={handleImageChange}
                   />

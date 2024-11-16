@@ -90,7 +90,7 @@ export default function SpecificComment({
             <img
               src={localStaticFile + imgData}
               alt=""
-              className="w-full h-full border border-pink-500 object-fill"
+              className="w-full h-full  border border-pink-500 object-fill"
             />
             <div className="">
               <IoCloseCircleSharp

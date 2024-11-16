@@ -81,6 +81,7 @@ import Profile from "./Nam/Profile/Profile";
 import Voucher from "./Nam/Voucher/Voucher";
 import VoucherAdd from "./Nam/Voucher/AddVoucher";
 import VoucherEdit from "./Nam/Voucher/EditVoucher";
+import FoodType from "./Nam/FoodType/FoodType";
 const UserAccount = createContext();
 function App() {
   return (
@@ -166,6 +167,7 @@ function App() {
                 <Route path="/orders_list" element={<OrdersList />} />
                 <Route path="/order_details" element={<OrderDetails />} />
                 <Route path="/dish" element={<Dish />} />
+                <Route path="/foodtype" element={<FoodType />} />
                 <Route path="/add_dish" element={<AddDish />} />
                 <Route path="/edit_dish" element={<EditDish />} />
                 <Route path="/dish_details" element={<DishDetails />} />

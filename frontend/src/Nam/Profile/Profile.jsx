@@ -45,7 +45,7 @@ export default function Profile() {
   }, [userInfo, tokenValue]);
 
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">

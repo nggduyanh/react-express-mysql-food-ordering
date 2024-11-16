@@ -6,13 +6,17 @@ import {
   GetUserInfo,
   handleRefreshPage,
 } from "../../routebackend";
+import toast from "react-hot-toast";
+import { refreshPage } from "../../Route";
+import { useNavigate } from "react-router-dom";
 
 export default function RestaurantInfo(props) {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const [isClose, setIsClose] = useState(false);
   const userInfo = userData?.data?.[0];
-
+  const navigate = useNavigate();
   const [Seller, setSeller] = useState({
     MaNguoiBan: props?.MaNguoiBan,
   });
@@ -78,7 +82,34 @@ export default function RestaurantInfo(props) {
       console.error("Error adding profile:", err);
     }
   };
-  // console.log("Seller", Seller)
+  const deleteAccount = async () => {
+    // console.log(Seller?.MaNguoiBan);
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await axios.delete(
+          "http://localhost:3030/nguoiban/delete",
+          {
+            data: {
+              MaNguoiBan: Seller?.MaNguoiBan,
+            },
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+            },
+          }
+        );
+        if (response.status === 200 || response.status === 201) {
+          refreshPage();
+          navigate("/loginSeller");
+        }
+      })(),
+      {
+        loading: "Delete account..",
+        success: "Delete succes",
+        error: "Error deleting",
+      }
+    );
+  };
   return (
     <div className="border border-default-200 p-6 rounded-lg">
       <h4 className="mb-4 text-xl font-medium text-default-900">Restaurant</h4>
@@ -209,9 +240,38 @@ export default function RestaurantInfo(props) {
                 className="border border-default-200 py-3 px-4 rounded-lg w-full"
               />
             </div>
+          </div>
+          {isClose && (
+            <div className="fixed top-1/2 -translate-y-1/2 left-1/2 text-center -translate-x-1/2 w-1/4 h-1/6 bg-white rounded-lg border border-orange-500">
+              <p className="mt-3 text-md p-2">
+                Are you sure you want to delete your type food?
+              </p>
+              <div className="flex items-center justify-center gap-5">
+                <button
+                  onClick={deleteAccount}
+                  className="bg-red-500 px-4 py-2 rounded-lg text-white font-bold"
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => setIsClose(false)}
+                  className="bg-blue-500 px-4 py-2 rounded-lg text-white font-bold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+          <div className="flex items-center justify-end gap-4">
+            <button
+              onClick={() => setIsClose(true)}
+              className=" px-4 py-2 text-white font-medium    text-center bg-red-500 rounded-lg  "
+            >
+              Delete account
+            </button>
             <button
               onClick={handleSubmit}
-              className="col-span-2 px-4 py-2 text-white font-medium flex gap-2 items-center justify-center text-center bg-[#F97316] rounded-lg w-auto ml-auto"
+              className=" px-4 py-2 text-white font-medium    text-center bg-[#F97316] rounded-lg  "
             >
               Save Changes
             </button>
