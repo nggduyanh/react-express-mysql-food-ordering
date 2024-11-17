@@ -3,7 +3,9 @@ import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 export default function Login() {
+  const [showpass, setShowPass] = useState(false);
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
     MatKhau: "",
@@ -110,15 +112,28 @@ export default function Login() {
             Password
           </label>
           <br />
-          <input
-            className="input_setup"
-            type="password"
-            placeholder="Enter password"
-            id="password"
-            onChange={handleChange}
-            name="MatKhau"
-            value={loginForm.MatKhau}
-          />
+          <div className="relative">
+            <input
+              className="input_setup border border-black block w-full p-3 rounded-xl"
+              type={showpass ? "text" : `password`}
+              placeholder="Enter password"
+              id="password"
+              onChange={handleChange}
+              name="MatKhau"
+              value={loginForm.MatKhau}
+            />
+            {showpass ? (
+              <AiFillEye
+                onClick={() => setShowPass(false)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            ) : (
+              <AiFillEyeInvisible
+                onClick={() => setShowPass(true)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            )}
+          </div>
           <br />
           <button
             className={` btnLoginRegister bg-gradient-to-r from-pink-500 to-pink-600 `}
