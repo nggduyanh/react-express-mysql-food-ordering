@@ -185,7 +185,7 @@ export default function OrderStatus(props) {
           <button className="py-2 px-4 border-red-500 border text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200 ease-in">
             Help
           </button>
-          {props.TrangThai !== 5 && (
+          {props.TrangThai !== 5 && props.TrangThai !== 2 && (
             <button
               onClick={() => {
                 setIsCloseFunct(false, props);

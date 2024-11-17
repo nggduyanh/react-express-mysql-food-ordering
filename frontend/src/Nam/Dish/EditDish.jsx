@@ -168,7 +168,7 @@ export default function EditDish() {
                       <label htmlFor="">Upload Image</label>
                     </div>
                     <img
-                      src={localStaticFile + detailsFood.AnhMonAn}
+                      src={localStaticFile + detailsFood?.AnhMonAn}
                       alt=""
                       className="absolute h-full w-full rounded-lg"
                     />

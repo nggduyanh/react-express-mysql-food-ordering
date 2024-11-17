@@ -124,7 +124,7 @@ export default function AddDish() {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
@@ -160,7 +160,7 @@ export default function AddDish() {
               <div className="col-span-2">
                 <div className="border border-default-200 p-6 rounded-lg grid grid-cols-2 gap-6 mb-4">
                   <div>
-                    <h5 className="mb-2">Product Name</h5>
+                    <h5 className="mb-2">Food Name</h5>
                     <input
                       type="text"
                       name="TenMonAn"
@@ -168,7 +168,7 @@ export default function AddDish() {
                       placeholder="Product Name"
                       className="border border-default-200 py-3 px-4 rounded-lg w-full mb-6"
                     />
-                    <h5 className="mb-2">Product Catagory</h5>
+                    <h5 className="mb-2">Food Catagory</h5>
                     <select
                       name="MaLoaiMonAn"
                       onChange={handleChange}

@@ -23,7 +23,8 @@ export default function Voucher() {
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
   const userInfo = userData?.data?.[0];
-
+  const [isClose, setIsClose] = useState(true);
+  const [currentVoucher, setCurrentVoucher] = useState();
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
     fetch(`http://localhost:3030/nguoiban/current`, {
@@ -153,7 +154,12 @@ export default function Voucher() {
               </svg>
             </Link>
 
-            <button onClick={() => handleRemoveVoucher(item.MaKhuyenMai)}>
+            <button
+              onClick={() => {
+                setIsClose(false);
+                setCurrentVoucher(item.MaKhuyenMai);
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -214,6 +220,30 @@ export default function Voucher() {
                   </Link>
                 </div>
               </div>
+              {!isClose && (
+                <div className="fixed top-1/2 -translate-y-1/2 left-1/2 text-center -translate-x-1/2 w-1/4 h-1/6 bg-white rounded-lg border border-orange-500">
+                  <p className="mt-3 text-md p-2">
+                    Are you sure you want to delete your type food?
+                  </p>
+                  <div className="flex items-center justify-center gap-5">
+                    <button
+                      onClick={() => {
+                        setIsClose(true);
+                        handleRemoveVoucher(currentVoucher);
+                      }}
+                      className="bg-red-500 px-4 py-2 rounded-lg text-white font-bold"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => setIsClose(true)}
+                      className="bg-blue-500 px-4 py-2 rounded-lg text-white font-bold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
               <table className="min-w-full divide-y divide-default-200">
                 <thead>
                   <tr className="bg-[#F1F5F9]">

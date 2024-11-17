@@ -40,14 +40,14 @@ export default function NavBar() {
         </svg>
       </div>
       <div className="bg-white h-10 w-10 rounded-full  overflow-hidden">
-        {userInfo?.AnhNguoiDung !== null ? (
+        {userInfo?.AnhNguoiDung && userInfo?.AnhNguoiDung !== null ? (
           <img
             src={localStaticFile + userInfo?.AnhNguoiDung}
             className="object-cover w-full h-full"
           />
         ) : (
           <img
-            src="./images/avatar.png"
+            src="../../../images/avatar.png"
             className="object-cover w-full h-full"
           />
         )}

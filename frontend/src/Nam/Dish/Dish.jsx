@@ -14,10 +14,13 @@ import {
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import toast from "react-hot-toast";
 export default function Dish() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   let [userData] = useFetchData(GetUserInfo, tokenValue);
+  const [currentId, setCurrentId] = useState();
+  const [isClose, setIsClose] = useState(true);
   const userInfo = userData?.data?.[0];
 
   const [Seller, getSeller] = useState([]);
@@ -65,7 +68,6 @@ export default function Dish() {
         setlistDishT(filterDish);
       });
   }, [listDish, Seller, tokenValue]);
-
   const handleRemoveFood = async (id) => {
     const findDish = listDish.find((dish) => dish.MaMonAn === id);
     try {
@@ -75,7 +77,7 @@ export default function Dish() {
       const response = await axios.delete(
         "http://localhost:3030/monan/delete",
         {
-          data: deleteId, // Truyền dữ liệu trong thuộc tính data
+          data: deleteId,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${tokenValue}`,
@@ -86,6 +88,11 @@ export default function Dish() {
       alert("Success Delete");
       handleRefreshPage();
     } catch (err) {
+      if (err.status === 400) {
+        toast.error(
+          "It seems like in your order has this food, so is invalid to delete it, please try again"
+        );
+      }
       console.error("Error deleting dish:", err);
     }
   };
@@ -161,7 +168,12 @@ export default function Dish() {
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
             </Link>
-            <button onClick={() => handleRemoveFood(item.MaMonAn)}>
+            <button
+              onClick={() => {
+                setIsClose(false);
+                setCurrentId(item.MaMonAn);
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="none"
@@ -187,7 +199,7 @@ export default function Dish() {
     );
   });
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <div className="flex h-full">
         <SideBar />
         <div className="flex-1 mt-0">
@@ -221,6 +233,30 @@ export default function Dish() {
                   </Link>
                 </div>
               </div>
+              {!isClose && (
+                <div className="fixed top-1/2 -translate-y-1/2 left-1/2 text-center -translate-x-1/2 w-1/4 h-1/6 bg-white rounded-lg border border-orange-500">
+                  <p className="mt-3 text-md p-2">
+                    Are you sure you want to delete your type food?
+                  </p>
+                  <div className="flex items-center justify-center gap-5">
+                    <button
+                      onClick={() => {
+                        handleRemoveFood(currentId);
+                        setIsClose(true);
+                      }}
+                      className="bg-red-500 px-4 py-2 rounded-lg text-white font-bold"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => setIsClose(true)}
+                      className="bg-blue-500 px-4 py-2 rounded-lg text-white font-bold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
               <table className="min-w-full divide-y divide-default-200">
                 <thead>
                   <tr className="bg-[#F1F5F9]">

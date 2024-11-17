@@ -192,7 +192,7 @@ export default function FoodType() {
             <h1 className="text-2xl font-medium mb-6">Food type</h1>
             <div>
               <p className="ml-5">FoodType list</p>
-              <div className="grid grid-cols-7 justify-items-center">
+              <div className="flex items-center gap-5 justify-items-center">
                 {foodTypeList?.length > 0 ? (
                   foodTypeList.map((items) => {
                     return (

@@ -265,20 +265,20 @@ export default function RestaurantSeller() {
                 name="ThanhPho"
                 onChange={handleChangeForm}
               >
-                <option value="ha-noi">Hà Nội</option>
-                <option value="ho-chi-minh">Hồ Chí Minh</option>
-                <option value="da-nang">Đà Nẵng</option>
-                <option value="hai-phong">Hải Phòng</option>
-                <option value="can-tho">Cần Thơ</option>
-                <option value="nha-trang">Nha Trang</option>
-                <option value="vinh">Vinh</option>
-                <option value="thanh-hoa">Thanh Hóa</option>
-                <option value="quang-ninh">Quảng Ninh</option>
-                <option value="buon-ma-thuot">Buôn Ma Thuột</option>
-                <option value="phu-quoc">Phú Quốc</option>
-                <option value="ha-tinh">Hà Tĩnh</option>
-                <option value="nam-dinh">Nam Định</option>
-                <option value="tuy-hoaa">Tuy Hòa</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Hải Phòng">Hải Phòng</option>
+                <option value="Cần Thơ">Cần Thơ</option>
+                <option value="Nha Trang">Nha Trang</option>
+                <option value="Vinh">Vinh</option>
+                <option value="Thanh Hóa">Thanh Hóa</option>
+                <option value="Quảng Ninh">Quảng Ninh</option>
+                <option value="Buôn Ma Thuột">Buôn Ma Thuột</option>
+                <option value="Phú Quốc">Phú Quốc</option>
+                <option value="Hà Tĩnh">Hà Tĩnh</option>
+                <option value="Nam Định">Nam Định</option>
+                <option value="Tuy Hòa">Tuy Hòa</option>
               </select>
               <br />
               <label className="text-xs">OpenTime - CloseTime</label>

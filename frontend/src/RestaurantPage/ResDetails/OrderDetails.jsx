@@ -74,6 +74,7 @@ export default function OrderDetails(props) {
       },
     });
     const data = await response.data;
+    console.log("data", data);
     dispatch({ type: "PROMOTION", payload: data[0] });
   };
   useEffect(() => {
@@ -383,14 +384,23 @@ export default function OrderDetails(props) {
               {props.lstPromotions.map((promotion) => {
                 return (
                   <option
+                    disabled={promotion.SoLuong < 1 ? true : false}
+                    className=""
                     key={promotion.MaKhuyenMai}
                     value={promotion.MaKhuyenMai}
                   >
-                    {promotion.TenKhuyenMai}
+                    {promotion.TenKhuyenMai} ({" "}
+                    <span className="">
+                      Amount:{" "}
+                      {promotion.SoLuong < 1 ? "Sold out" : promotion.SoLuong}
+                    </span>
+                    )
                   </option>
                 );
               })}
-              <option value="remove">Remove promotion</option>
+              <option value="remove" className="">
+                Remove promotion
+              </option>
             </select>
             <div className="p-2 bg-red-500 font-bold text-white rounded-e-lg">
               %Apply
