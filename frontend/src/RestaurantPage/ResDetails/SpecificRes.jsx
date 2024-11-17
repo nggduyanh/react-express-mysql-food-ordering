@@ -19,6 +19,7 @@ import {
 } from "../../Route/index.js";
 import Card from "../../Information/Payment/Card.jsx";
 import { UserContext } from "../../Layout/LayoutHeader.jsx";
+import { TiStarFullOutline, TiStarOutline } from "react-icons/ti";
 
 export default function SpecificRes() {
   const { tokenValue } = useContext(UserContext);
@@ -166,12 +167,38 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
+  const NumberOfStar = Math.floor(
+    ResInfor.state.Diem / ResInfor.state.LuotDanhGia
+  );
+  const DecimalOfStar = Number.parseInt(NumberOfStar);
+  let arrayOfStar = new Array(5);
+  if (!isNaN(NumberOfStar) && !isNaN(DecimalOfStar)) {
+    let i = 0;
+    while (i < 5) {
+      if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
+      else
+        arrayOfStar.push(
+          <TiStarFullOutline key={i} className="text-yellow-500" />
+        );
+      i++;
+    }
+  } else {
+    let i = 0;
+    while (i < 5) {
+      arrayOfStar.push(<TiStarOutline key={i} />);
+      i++;
+    }
+  }
   return (
     <div className="background_res relative">
       <div className="bg-black bckImage">
         <div className="overlay"></div>
         <MarginJustifi classname=" text-white flex justify-between py-10 header_content">
-          <ResInfo details={true} rate={ResInfor.state.Diem}>
+          <ResInfo
+            details={true}
+            rate={ResInfor.state.Diem}
+            amountComment={ResInfor.state.LuotDanhGia}
+          >
             <p className="font-bold capitalize text-4xl tracking-widest">
               {ResInfor.state.TenNguoiBan}
             </p>
@@ -188,6 +215,7 @@ export default function SpecificRes() {
               Time: {ResInfor.state.ThoiGianMoCua} -{" "}
               {ResInfor.state.ThoiGianDongCua}
             </p>
+            <div className="flex items-center mt-3">{arrayOfStar}</div>
           </ResInfo>
           <div className="res_image flex justify-end">
             {ResInfor.state.AnhNguoiBan !== null ? (

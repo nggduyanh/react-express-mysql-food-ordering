@@ -8,14 +8,22 @@ export default function ResInfo({ children, details, ...rest }) {
   const NumberOfStar = Math.floor(rest.Diem / rest.LuotDanhGia);
   const DecimalOfStar = Number.parseInt(NumberOfStar);
   let arrayOfStar = new Array(5);
-  let i = 0;
-  while (i < 5) {
-    if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
-    else
-      arrayOfStar.push(
-        <TiStarFullOutline key={i} className="text-yellow-500" />
-      );
-    i++;
+  if (!isNaN(NumberOfStar) && !isNaN(DecimalOfStar)) {
+    let i = 0;
+    while (i < 5) {
+      if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
+      else
+        arrayOfStar.push(
+          <TiStarFullOutline key={i} className="text-yellow-500" />
+        );
+      i++;
+    }
+  } else {
+    let i = 0;
+    while (i < 5) {
+      arrayOfStar.push(<TiStarOutline key={i} />);
+      i++;
+    }
   }
   return (
     <Toggle>
@@ -63,7 +71,9 @@ export default function ResInfo({ children, details, ...rest }) {
         {/* <Link to={`/restaurant/:${rest.title}`} state={rest}> */}
         {children}
         {/* </Link> */}
-        <div className="flex items-center mt-3">{arrayOfStar}</div>
+        {details !== true && (
+          <div className="flex items-center mt-3">{arrayOfStar}</div>
+        )}
       </div>
     </Toggle>
   );
