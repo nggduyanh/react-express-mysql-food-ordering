@@ -5,7 +5,7 @@ import Toggle from "../../Function/Toggle/LayoutToggle";
 import LoveButton from "../../Function/LoveButton";
 import { localStaticFile } from "../../Route";
 export default function ResInfo({ children, details, ...rest }) {
-  const NumberOfStar = Math.floor(rest.Diem / rest.LuotDanhGia);
+  const NumberOfStar = Math.round(rest.Diem / rest.LuotDanhGia);
   const DecimalOfStar = Number.parseInt(NumberOfStar);
   let arrayOfStar = new Array(5);
   if (!isNaN(NumberOfStar) && !isNaN(DecimalOfStar)) {

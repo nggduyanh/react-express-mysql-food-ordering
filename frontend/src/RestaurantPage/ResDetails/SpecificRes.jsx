@@ -167,7 +167,7 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
-  const NumberOfStar = Math.floor(
+  const NumberOfStar = Math.round(
     ResInfor.state.Diem / ResInfor.state.LuotDanhGia
   );
   const DecimalOfStar = Number.parseInt(NumberOfStar);
