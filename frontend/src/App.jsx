@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createContext, lazy, Suspense } from "react";
+import { createContext, lazy, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import ScaleLoader from "react-spinners/ScaleLoader";
 // import HomePage from "./HomePage/HomePage";
@@ -83,8 +83,30 @@ import VoucherAdd from "./Nam/Voucher/AddVoucher";
 import VoucherEdit from "./Nam/Voucher/EditVoucher";
 import FoodType from "./Nam/FoodType/FoodType";
 import SellerType from "./Nam/SellerType/SellerType";
+import useSocket from "./Hook/useSocket";
 const UserAccount = createContext();
 function App() {
+  const socket = useSocket("http://localhost:3030"); // URL máy chủ Socket.IO
+
+  useEffect(() => {
+    if (!socket) return;
+
+    // Lắng nghe sự kiện từ server
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server:", socket.id);
+    });
+
+    socket.on("message", (data) => {
+      console.log("Received message from server:", data);
+    });
+
+    // Gửi sự kiện tới server
+    socket.emit("message", "Hello from client!");
+
+    return () => {
+      socket.off("message"); // Dọn sạch listener khi unmount
+    };
+  }, [socket]);
   return (
     <UserAccount.Provider value="">
       <Toaster
