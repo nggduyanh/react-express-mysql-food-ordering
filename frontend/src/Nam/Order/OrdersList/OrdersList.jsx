@@ -165,14 +165,12 @@ export default function OrdersList() {
           className="flex flex-col gap-4 bg-[#FFF2E9] p-2 rounded-lg mt-4"
         >
           <div className="flex items-center gap-2">
-            <img
-              src="./images/Dashboard/pizza.png"
-              alt=""
-              className="h-16 max-w-16"
-            />
             <div className="flex flex-col w-full">
               <div className="flex justify-between">
-                <p className="text-sm mb-1">{item.MaDonHang}</p>
+                <p className="text-sm mb-1">
+                  {" "}
+                  <span className="font-bold">OrderID:</span> {item.MaDonHang}
+                </p>
                 <p className="text-sm mb-1">{formatTime(item.ThoiGianTao)}</p>
               </div>
               <button
@@ -187,7 +185,7 @@ export default function OrdersList() {
       );
     }
   });
-
+  console.log(onGoingOrder);
   return (
     <div className="h-screen w-screen">
       <div className="flex h-full">
@@ -320,7 +318,7 @@ export default function OrdersList() {
                 </div>
               </div>
               <div className="col-span-3">
-                <div className="flex flex-col border border-[#F58220] rounded-lg w-auto p-6">
+                <div className="flex flex-col border border-[#F58220] rounded-lg w-auto p-6 overflow-auto max-h-[500px]">
                   <h1>Ongoing Order</h1>
                   <div>
                     <h1>Waiting</h1>

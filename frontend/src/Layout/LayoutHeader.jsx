@@ -11,8 +11,21 @@ import { GetUserInfo } from "../Route/index.js";
 import LayoutFooter from "./LayoutFooter.jsx";
 import { MdOutlineFoodBank } from "react-icons/md";
 import axios from "axios";
+import useSocket from "../Hook/useSocket.jsx";
 const UserContext = createContext();
 export default function LayoutHeader() {
+  const socket = useSocket("http://localhost:3030"); // URL máy chủ Socket.IO
+
+  useEffect(() => {
+    if (!socket) return;
+    // Lắng nghe sự kiện từ server
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server:", socket.id);
+    });
+    return () => {
+      socket.off("message"); // Dọn sạch listener khi unmount
+    };
+  }, [socket]);
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
   const navigate = useNavigate();

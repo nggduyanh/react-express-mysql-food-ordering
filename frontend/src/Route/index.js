@@ -46,7 +46,7 @@ export const formatDate = (ISO_date) => {
   const year = date.getUTCFullYear();
 
   // Lấy giờ và phút và định dạng 12 giờ
-  let hours = date.getUTCHours();
+  let hours = date.getUTCHours() + 7;
   const minutes = date.getUTCMinutes().toString().padStart(2, "0");
   const ampm = hours >= 12 ? "PM" : "AM";
   hours = hours % 12 || 12; // Chuyển sang 12 giờ, 0 giờ đổi thành 12

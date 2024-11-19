@@ -83,30 +83,9 @@ import VoucherAdd from "./Nam/Voucher/AddVoucher";
 import VoucherEdit from "./Nam/Voucher/EditVoucher";
 import FoodType from "./Nam/FoodType/FoodType";
 import SellerType from "./Nam/SellerType/SellerType";
-import useSocket from "./Hook/useSocket";
+import SocketLayout from "./Nam/Components/SocketLayout";
 const UserAccount = createContext();
 function App() {
-  const socket = useSocket("http://localhost:3030"); // URL máy chủ Socket.IO
-
-  useEffect(() => {
-    if (!socket) return;
-
-    // Lắng nghe sự kiện từ server
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket server:", socket.id);
-    });
-
-    socket.on("message", (data) => {
-      console.log("Received message from server:", data);
-    });
-
-    // Gửi sự kiện tới server
-    socket.emit("message", "Hello from client!");
-
-    return () => {
-      socket.off("message"); // Dọn sạch listener khi unmount
-    };
-  }, [socket]);
   return (
     <UserAccount.Provider value="">
       <Toaster
@@ -186,19 +165,21 @@ function App() {
                 <Route path="restaurant/:resname" element={<SpecificRes />} />
               </Route>
               <Route element={<PrivateRoute />}>
-                <Route path="/home/seller" element={<Homepage />} />
-                <Route path="/orders_list" element={<OrdersList />} />
-                <Route path="/order_details" element={<OrderDetails />} />
-                <Route path="/dish" element={<Dish />} />
-                <Route path="/foodtype" element={<FoodType />} />
-                <Route path="/sellerType" element={<SellerType />} />
-                <Route path="/add_dish" element={<AddDish />} />
-                <Route path="/edit_dish" element={<EditDish />} />
-                <Route path="/dish_details" element={<DishDetails />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/voucher" element={<Voucher />} />
-                <Route path="/add_voucher" element={<VoucherAdd />} />
-                <Route path="/edit_voucher" element={<VoucherEdit />} />
+                <Route element={<SocketLayout />}>
+                  <Route path="/home/seller" element={<Homepage />} />
+                  <Route path="/orders_list" element={<OrdersList />} />
+                  <Route path="/order_details" element={<OrderDetails />} />
+                  <Route path="/dish" element={<Dish />} />
+                  <Route path="/foodtype" element={<FoodType />} />
+                  <Route path="/sellerType" element={<SellerType />} />
+                  <Route path="/add_dish" element={<AddDish />} />
+                  <Route path="/edit_dish" element={<EditDish />} />
+                  <Route path="/dish_details" element={<DishDetails />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/voucher" element={<Voucher />} />
+                  <Route path="/add_voucher" element={<VoucherAdd />} />
+                  <Route path="/edit_voucher" element={<VoucherEdit />} />
+                </Route>
               </Route>
             </Route>
           </Routes>

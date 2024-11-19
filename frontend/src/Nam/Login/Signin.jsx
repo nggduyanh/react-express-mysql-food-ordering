@@ -9,6 +9,7 @@ import Heading from "./Heading";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { GetSellerInfo } from "../../Route";
+// import { socket } from "../../Route/socket";
 // import { setTime } from "react-datepicker/dist/date_utils";
 export default function Signin({ assignAccount }) {
   const [loginForm, setLoginForm] = useState({
@@ -50,6 +51,10 @@ export default function Signin({ assignAccount }) {
             expireDate: now.getTime() + 3600000,
           };
           localStorage.setItem("token", JSON.stringify(epxireToken));
+          console.log("checkIsSellerResponse", checkIsSellerResponse);
+          // const sellerId = checkIsSellerResponse.data[0].MaNguoiBan;
+          // console.log(sellerId);
+          // socket.emit("seller_connect", sellerId);
           navigate("/home/seller");
         }
       })(),

@@ -335,6 +335,7 @@ export default function SpecificRes() {
               orderList={order}
               setOrderList={setOrder}
               AmountList={amountOrder}
+              Seller={Seller}
               setAmount={setAmountOrder}
               name={ResInfor.state.TenNguoiBan}
               img={ResInfor.state.AnhNguoiBan}

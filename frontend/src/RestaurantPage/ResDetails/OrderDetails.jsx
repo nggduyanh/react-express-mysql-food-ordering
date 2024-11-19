@@ -15,6 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { GoHome } from "react-icons/go";
 import { localStaticFile } from "../../routebackend";
+import { socket } from "../../Route/socket";
 const OrderReducer = {
   listFood: [],
   promotions: {},
@@ -226,6 +227,11 @@ export default function OrderDetails(props) {
               // setTimeout(() => {
               //   navigate("/home/activity/ongoing");
               // }, 2000);
+              socket.emit(
+                "send_order",
+                response.data[0],
+                props.Seller?.[0].MaNguoiBan
+              );
               return successMessage;
             },
             // success: () => {
@@ -279,6 +285,11 @@ export default function OrderDetails(props) {
                   return failedMessage;
                 }
                 window.location.href = response.data.order_url;
+                socket.emit(
+                  "send_order",
+                  response.data[0],
+                  props.Seller?.[0].MaNguoiBan
+                );
                 // navigate("/" + response.data.order_url);
                 return successMessage;
               },

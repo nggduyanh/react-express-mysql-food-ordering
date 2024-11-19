@@ -1,32 +1,30 @@
-const path = require ("path")
-const express = require ("express")
-const app = express ()
-const router = require ("./routes/index")
-const errorHandler = require ("./middlewares/ExceptionHandler")
-const cors = require ("cors")
-const socket = require ("socket.io")
-const http = require ("http")
-const corsOption = require ("./configs/CorsConfig")
+const path = require("path");
+const express = require("express");
+const app = express();
+const router = require("./routes/index");
+const errorHandler = require("./middlewares/ExceptionHandler");
+const cors = require("cors");
+const socket = require("socket.io");
+const http = require("http");
+const corsOption = require("./configs/CorsConfig");
 
 // middlewares
-app.use (cors (corsOption))
-app.use (express.urlencoded ({extended: true}))
-app.use (express.json ())
-app.use (express.static (path.join (__dirname,"public")))
+app.use(cors(corsOption));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-router(app)
+router(app);
 
-app.use (errorHandler)
+app.use(errorHandler);
 
+const socketConfig = require("./configs/SocketConfig");
+const server = http.createServer(app);
+const io = new socket.Server(server, socketConfig);
+const socketEvent = require("./services/Socket");
 
-const socketConfig = require ("./configs/SocketConfig")
-const server = http.createServer (app)
-const io = new socket.Server (server,socketConfig)
-const socketEvent = require ("./services/Socket")
+socketEvent(io);
 
-socketEvent (io)
-
-
-server.listen (process.env.port, () => {
-    console.log (`Đang chạy trên cổng ${process.env.port}`)
-})
+server.listen(process.env.port, () => {
+  console.log(`Đang chạy trên cổng ${process.env.port}`);
+});

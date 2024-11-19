@@ -13,6 +13,7 @@ import {
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import LineChart from "./LineChart";
+import { formatDate } from "../../Route";
 // import useFetchData from "../Components/useFetchData";
 // import { formatDate } from "react-datepicker/dist/date_utils";
 
@@ -393,11 +394,11 @@ export default function Homepage() {
           {item?.MaDonHang}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
-          {item?.ThoiGianTao}
+          {formatDate(item?.ThoiGianTao)}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
+        {/* <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
           {formatTime(item?.ThoiGianTao)}
-        </td>
+        </td> */}
         <td className="px-4 py-4 whitespace-nowrap text-sm text-default-600">
           {formatCurrency(item?.GiaBan)}
         </td>
@@ -536,12 +537,12 @@ export default function Homepage() {
                       >
                         Date
                       </th>
-                      <th
+                      {/* <th
                         scope="col"
                         className="px-4 py-4 text-start text-sm font-semibold text-default-800"
                       >
                         Time
-                      </th>
+                      </th> */}
                       <th
                         scope="col"
                         className="px-4 py-4 text-start text-sm font-semibold text-default-800"
