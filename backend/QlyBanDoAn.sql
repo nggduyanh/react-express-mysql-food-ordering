@@ -210,6 +210,21 @@ create trigger xoaNguoiMua_KhuyenMai after delete on NguoiMua_KhuyenMai
 for each row
 update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
 
+delimiter $$
+create trigger themKhuyenMai before insert on donhang
+for each row 
+begin
+	if ((select soLuong from khuyenmai where khuyenmai.MaKhuyenMai = new.MaKhuyenMai) = 0)
+    then
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
+    else update khuyenmai set soLuong = soLuong - 1 where makhuyenmai = new.makhuyenmai;
+    end if;
+end$$
+delimiter ;
+drop trigger themNguoiMua_KhuyenMai;
+drop trigger xoaNguoiMua_KhuyenMai;
+
+insert into donhang (donhang.DiaChiDen, donhang.MaKhuyenMai) values ("Hàm Tử Quan",1);
 
 # Drop Table 
 drop table anhnhanxet;
@@ -465,3 +480,7 @@ insert into loainguoiban_nguoiban (loainguoiban_nguoiban.MaLoaiNguoiBan,loainguo
         (12,75),
         (12,11),
         (14,75);
+
+select * from nguoidung;
+insert into loaimonan (loaimonan.MaNguoiBan,loaimonan.TenLoaiMonAn) values (112,"Tuyệt hỏa")
+select * from donhang
