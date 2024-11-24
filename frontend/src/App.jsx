@@ -84,6 +84,10 @@ import VoucherEdit from "./Nam/Voucher/EditVoucher";
 import FoodType from "./Nam/FoodType/FoodType";
 import SellerType from "./Nam/SellerType/SellerType";
 import SocketLayout from "./Nam/Components/SocketLayout";
+import LoginAdmin from "./Luong/Admin/LoginPage/LoginAdmin";
+import SideNav from "./Luong/Admin/Layout/SideNav";
+import AdminHome from "./Luong/Admin/HomeAdminPage/AdminHome";
+import RestaurantType from "./Luong/Admin/components/Restaurant_Type";
 const UserAccount = createContext();
 function App() {
   return (
@@ -142,8 +146,13 @@ function App() {
               <Route path="password-success" element={<PasswordSuccess />} />
             </Route>
             <Route path="*" element={<NoPage />} />
-
+            <Route path="/admin_login" element={<LoginAdmin />} />
+            <Route element={<SideNav />}>
+              <Route path="/admin_home" element={<AdminHome />} />
+              <Route path="/restaurant_type" element={<RestaurantType />} />
+            </Route>
             <Route element={<PrivateRoute />}>
+              {/* Luong Routes */}
               <Route path="home" element={<LayoutHeader />}>
                 <Route index element={<HomePage />} />
                 <Route path="information" element={<UserInfor />}>
@@ -164,6 +173,7 @@ function App() {
                 <Route path="typeRes/:type" element={<TypeRes />} />
                 <Route path="restaurant/:resname" element={<SpecificRes />} />
               </Route>
+              {/* ! Nam route */}
               <Route element={<PrivateRoute />}>
                 <Route element={<SocketLayout />}>
                   <Route path="/home/seller" element={<Homepage />} />
