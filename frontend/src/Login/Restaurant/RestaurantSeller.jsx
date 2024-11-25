@@ -4,6 +4,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { addSeller, GetUserInfo } from "../../Route";
 export default function RestaurantSeller() {
   const avatarResRef = useRef(null);
   const tokenValue = JSON.parse(localStorage.getItem("token"));
@@ -11,14 +12,11 @@ export default function RestaurantSeller() {
   const navigate = useNavigate();
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get(
-        "http://localhost:3030/nguoidung/current",
-        {
-          headers: {
-            Authorization: "Bearer " + tokenValue.token,
-          },
-        }
-      );
+      const response = await axios.get(GetUserInfo, {
+        headers: {
+          Authorization: "Bearer " + tokenValue.token,
+        },
+      });
       const data = response.data;
       setUser(data?.[0]);
     };
@@ -102,16 +100,12 @@ export default function RestaurantSeller() {
           );
           formSellerData.append("Email", SellerForm.Email);
           formSellerData.append("Hotline", SellerForm.Hotline);
-          const response = await axios.post(
-            "http://localhost:3030/nguoiban/add",
-            formSellerData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: "Bearer " + tokenValue.token,
-              },
-            }
-          );
+          const response = await axios.post(addSeller, formSellerData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + tokenValue.token,
+            },
+          });
           const Token = await response.data;
           const now = new Date();
           const epxireToken = {
@@ -168,7 +162,6 @@ export default function RestaurantSeller() {
       });
     }
   };
-  console.log(SellerForm);
   return (
     <div className="p-10">
       <div className="">
