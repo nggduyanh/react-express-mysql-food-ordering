@@ -91,6 +91,22 @@ class AuthController
         let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
         return res.status (200).json ({"NguoiDung": user, accessToken})
     }
+
+    async upgradeAdmin (req,res,next)
+    {
+        if (!req.body[nguoidung.id]) return next (new Exception (`${nguoidung.id} is ${req.body[nguoidung.id]} `,400))
+        let userId = req.body[nguoidung.id]
+        let obj = await NguoiDung.getById (userId)
+        if (!obj.res.length) return next (new Exception ({msg: `Not found user with ${nguoidung.id} = ${userId}`},404))
+        let idRoleNguoiMua = await roleService.getRoleId ("Admin")
+        if (!idRoleNguoiMua) return next (new Exception ({msg: `role Admin is ${idRoleNguoiMua}`},500))
+        let queryVaiTroNguoiDung = await roleService.addRoleToUser (idRoleNguoiMua,userId)
+        if (!queryVaiTroNguoiDung.success) return next (new Exception (queryVaiTroNguoiDung.res,500))
+        let userRoles = await roleService.getIdRolesByUser (userId)
+        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
+        return res.status (200).json ({"NguoiDung": user, accessToken})
+    }
+
 } 
 
 module.exports = new AuthController
