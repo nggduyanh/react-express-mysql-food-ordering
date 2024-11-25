@@ -39,7 +39,6 @@ export default function LoginAdmin() {
             }
           );
           const data = response.data;
-          console.log(data);
           const checkIsAdminResponse = await axios.get(
             getRoleUserSpecific + `${data.NguoiDung.MaNguoiDung}`,
             {

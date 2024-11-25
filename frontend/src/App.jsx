@@ -94,6 +94,7 @@ import SellerList from "./Luong/Admin/components/User_Management/SellerList";
 import ShipperList from "./Luong/Admin/components/User_Management/ShipperList";
 import Security from "./Luong/Admin/components/Security/Security";
 import PrivateRouteAdmin from "./Luong/Admin/Function/PrivateRouteAdmin";
+import AdminContent from "./Luong/Admin/components/Content/AdminContent";
 const UserAccount = createContext();
 function App() {
   return (
@@ -156,6 +157,7 @@ function App() {
             <Route element={<PrivateRouteAdmin />}>
               <Route element={<SideNav />}>
                 <Route path="/admin_home" element={<AdminHome />} />
+                <Route path="/admin_content" element={<AdminContent />} />
                 <Route path="/restaurant_type" element={<RestaurantType />} />
                 <Route path="user_manage" element={<UserHome />}>
                   <Route index element={<CustomerList />} />

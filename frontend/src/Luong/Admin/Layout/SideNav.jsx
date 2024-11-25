@@ -2,6 +2,9 @@ import { GrUserAdmin } from "react-icons/gr";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import AdminLayoutContext from "./AdminLayoutContext";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { getRoleUserSpecific, GetUserInfo } from "../../../Route";
 export default function SideNav() {
   const navigate = useNavigate();
   const handleLogOut = () => {
@@ -9,6 +12,34 @@ export default function SideNav() {
     navigate("/admin_login");
     toast.success("Logged out");
   };
+  const [admin, setAdmin] = useState({});
+  const token = JSON.parse(localStorage.getItem("token-admin"));
+  const tokenAdmin = token.token;
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await axios.get(GetUserInfo, {
+        headers: {
+          Authorization: "Bearer " + tokenAdmin,
+        },
+      });
+      const data = response.data;
+      const checkIsAdminResponse = await axios.get(
+        getRoleUserSpecific + `${data[0].MaNguoiDung}`,
+        {
+          headers: {
+            Authorization: "Bearer " + tokenAdmin,
+          },
+        }
+      );
+      const adminAccount = {
+        ...data[0],
+        MaVaiTro: checkIsAdminResponse.data[0].MaVaiTro,
+      };
+
+      setAdmin(adminAccount);
+    };
+    getUser();
+  }, [tokenAdmin]);
   return (
     <AdminLayoutContext>
       <div className="flex items-center">
@@ -56,20 +87,22 @@ export default function SideNav() {
                       isActive ? "bg-white w-full text-black" : ""
                     }`
                   }
-                  to="/qqq"
+                  to="/admin_content"
                 >
                   Content and feedback
                 </NavLink>
-                <NavLink
-                  className={({ isActive }) =>
-                    `px-4 py-2 font-bold rounded-xl ${
-                      isActive ? "bg-white w-full text-black" : ""
-                    }`
-                  }
-                  to="/security"
-                >
-                  System and Security Management
-                </NavLink>
+                {admin?.MaVaiTro === 1 && (
+                  <NavLink
+                    className={({ isActive }) =>
+                      `px-4 py-2 font-bold rounded-xl ${
+                        isActive ? "bg-white w-full text-black" : ""
+                      }`
+                    }
+                    to="/security"
+                  >
+                    System and Security Management
+                  </NavLink>
+                )}
               </div>
             </div>
             <div className="mt-auto mb-4 text-center">
