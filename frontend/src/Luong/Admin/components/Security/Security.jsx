@@ -10,12 +10,14 @@ import {
   upgradeAdmin,
 } from "../../../../Route";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 export default function Security() {
   const [isClose, setIsClose] = useState(true);
   const { token } = useContext(AdminContext);
   const [inforUser, setInforUser] = useState({
     MaNguoiDung: "",
   });
+  const navigate = useNavigate();
   const [listUser, setListUser] = useState([]);
   const [filterUser, setFilterUser] = useState({});
   useEffect(() => {
@@ -89,10 +91,10 @@ export default function Security() {
             },
           }
         );
-        if (response.status === 200) {
+        console.log(response);
+        if (response.status === 201) {
           toast.success("Successfully decentralization");
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          refreshPage();
+          navigate("/admin_home");
         }
       })(),
       {
