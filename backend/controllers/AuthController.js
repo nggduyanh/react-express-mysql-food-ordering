@@ -102,7 +102,7 @@ class AuthController
         if (!idRoleNguoiMua) return next (new Exception ({msg: `role Admin is ${idRoleNguoiMua}`},500))
         let queryVaiTroNguoiDung = await roleService.addRoleToUser (idRoleNguoiMua,userId)
         if (!queryVaiTroNguoiDung.success) return next (new Exception (queryVaiTroNguoiDung.res,500))
-        return res.status (201)
+        return res.sendStatus (201)
     }
 
 } 
