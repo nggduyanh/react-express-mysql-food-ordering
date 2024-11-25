@@ -1,4 +1,7 @@
 export const GetUserInfo = "http://localhost:3030/nguoidung/current";
+export const GetAllUser = "http://localhost:3030/nguoidung";
+export const getRoles = "http://localhost:3030/vaitro";
+export const getUserRole = "http://localhost:3030/vaitro/nguoidung/";
 export const GetSellerInfo = "http://localhost:3030/nguoiban/current";
 export const AddUserInfo = "http://localhost:3030/nguoidung/add";
 export const GetRestaurant = "http://localhost:3030/nguoiban";
@@ -9,8 +12,14 @@ export const GetFoodRestaurant = "http://localhost:3030/monan";
 export const localStaticFile = "http://localhost:3030/";
 export const Order = "http://localhost:3030/donhang";
 export const OrderStatus = "http://localhost:3030/trangthaidonhang";
+export const getSellerType = "http://localhost:3030/loainguoiban";
+export const AddSellerType = "http://localhost:3030/loainguoiban/add";
+export const GetSellerTypeId = "http://localhost:3030/loainguoiban/";
+export const UpdateSellerType = "http://localhost:3030/loainguoiban/update";
+export const DeleteSellerType = "http://localhost:3030/loainguoiban/delete";
 export const GetRole = "http://localhost:3030/vaitro";
 export const GetPromotion = "http://localhost:3030/khuyenmai";
+export const getRoleUserSpecific = "http://localhost:3030/vaitro/nguoidung/";
 export const addLoveRestaurant =
   "http://localhost:3030/nguoimua/nguoibanyeuthich/add";
 export const getLoveRestaurant =

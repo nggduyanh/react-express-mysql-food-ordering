@@ -88,6 +88,12 @@ import LoginAdmin from "./Luong/Admin/LoginPage/LoginAdmin";
 import SideNav from "./Luong/Admin/Layout/SideNav";
 import AdminHome from "./Luong/Admin/HomeAdminPage/AdminHome";
 import RestaurantType from "./Luong/Admin/components/Restaurant_Type";
+import UserHome from "./Luong/Admin/components/User_Management/UserHome";
+import CustomerList from "./Luong/Admin/components/User_Management/CustomerList";
+import SellerList from "./Luong/Admin/components/User_Management/SellerList";
+import ShipperList from "./Luong/Admin/components/User_Management/ShipperList";
+import Security from "./Luong/Admin/components/Security/Security";
+import PrivateRouteAdmin from "./Luong/Admin/Function/PrivateRouteAdmin";
 const UserAccount = createContext();
 function App() {
   return (
@@ -147,9 +153,23 @@ function App() {
             </Route>
             <Route path="*" element={<NoPage />} />
             <Route path="/admin_login" element={<LoginAdmin />} />
-            <Route element={<SideNav />}>
-              <Route path="/admin_home" element={<AdminHome />} />
-              <Route path="/restaurant_type" element={<RestaurantType />} />
+            <Route element={<PrivateRouteAdmin />}>
+              <Route element={<SideNav />}>
+                <Route path="/admin_home" element={<AdminHome />} />
+                <Route path="/restaurant_type" element={<RestaurantType />} />
+                <Route path="user_manage" element={<UserHome />}>
+                  <Route index element={<CustomerList />} />
+                  <Route path="seller_manage" element={<SellerList />} />
+                  <Route path="shipper_manage" element={<ShipperList />} />
+                  <Route path="user_manage/:info" element={<ShipperList />} />
+                  <Route path="seller_manage/:info" element={<ShipperList />} />
+                  <Route
+                    path="shipper_manage/:info"
+                    element={<ShipperList />}
+                  />
+                </Route>
+                <Route path="/security" element={<Security />} />
+              </Route>
             </Route>
             <Route element={<PrivateRoute />}>
               {/* Luong Routes */}
