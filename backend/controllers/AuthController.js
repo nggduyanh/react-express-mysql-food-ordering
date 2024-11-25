@@ -102,9 +102,7 @@ class AuthController
         if (!idRoleNguoiMua) return next (new Exception ({msg: `role Admin is ${idRoleNguoiMua}`},500))
         let queryVaiTroNguoiDung = await roleService.addRoleToUser (idRoleNguoiMua,userId)
         if (!queryVaiTroNguoiDung.success) return next (new Exception (queryVaiTroNguoiDung.res,500))
-        let userRoles = await roleService.getIdRolesByUser (userId)
-        let accessToken = jwt.sign ({userId,userRoles},process.env.secretTokenKey, {expiresIn: "24h"})
-        return res.status (200).json ({"NguoiDung": user, accessToken})
+        return res.status (201)
     }
 
 } 
