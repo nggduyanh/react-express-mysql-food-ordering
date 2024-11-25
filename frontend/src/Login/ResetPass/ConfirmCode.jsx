@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CiKeyboard } from "react-icons/ci";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { recoverpassword, verifyOTP } from "../../Route";
 
 export default function ConfirmCode() {
   const data = useLocation();
@@ -48,13 +49,10 @@ export default function ConfirmCode() {
       );
       toast.promise(
         (async () => {
-          const response = await axios.post(
-            "http://localhost:3030/auth/verifyOTP",
-            {
-              SoDienThoai: data.state.resetForm.SoDienThoai,
-              OTP: number6digit,
-            }
-          );
+          const response = await axios.post(verifyOTP, {
+            SoDienThoai: data.state.resetForm.SoDienThoai,
+            OTP: number6digit,
+          });
           if (response.status === 200) {
             const data = response.data;
             navigate("/forgot-password/create-new", {
@@ -91,7 +89,7 @@ export default function ConfirmCode() {
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const response = await axios.post(
-          "http://localhost:3030/auth/recoverpassword/mail",
+          recoverpassword,
           data.state.resetForm,
           {
             headers: { "Content-Type": "application/json" },

@@ -4,6 +4,7 @@ import {
   formatCurrency,
   formatDate,
   getDetailsOrder,
+  GetRestaurant,
   GetTypeRes,
   localStaticFile,
 } from "../../Route";
@@ -61,7 +62,7 @@ export default function OrderStatus(props) {
   useEffect(() => {
     const getNguoiBan = async () => {
       try {
-        const response = await axios.get("http://localhost:3030/nguoiban", {
+        const response = await axios.get(GetRestaurant, {
           headers: {
             Authorization: `Bearer ${tokenValue}`,
           },

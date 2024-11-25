@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import Toggle from "./Toggle/LayoutToggle";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
-import { addLoveRestaurant, getLoveRestaurant, refreshPage } from "../Route";
+import {
+  addLoveRestaurant,
+  deleteLove,
+  getLoveRestaurant,
+  refreshPage,
+} from "../Route";
 import toast, { Toaster } from "react-hot-toast";
 import { useOutletContext } from "react-router-dom";
 export default function LoveButton({ idSeller }) {
@@ -44,20 +49,17 @@ export default function LoveButton({ idSeller }) {
   const handleRemoveLove = async () => {
     try {
       console.log("Removing", idSeller);
-      const response = await axios.delete(
-        "http://localhost:3030/nguoimua/nguoibanyeuthich/delete",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + tokenValue,
-          },
-          withCredentials: true,
-          data: {
-            MaNguoiMua: userData?.MaNguoiDung,
-            MaNguoiBan: idSeller,
-          },
-        }
-      );
+      const response = await axios.delete(deleteLove, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + tokenValue,
+        },
+        withCredentials: true,
+        data: {
+          MaNguoiMua: userData?.MaNguoiDung,
+          MaNguoiBan: idSeller,
+        },
+      });
       toast.success("Removed favourite successfully, wait to refresh!!", {
         style: {
           backgroundColor: "green",

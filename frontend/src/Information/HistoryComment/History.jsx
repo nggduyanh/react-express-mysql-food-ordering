@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { formatDate, getAllComments, localStaticFile } from "../../Route";
+import {
+  formatDate,
+  getAllComments,
+  GetRestaurant,
+  localStaticFile,
+} from "../../Route";
 import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 
@@ -13,7 +18,7 @@ export default function History() {
       const getList = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3030/nguoimua/allnhanxet/${userData?.MaNguoiDung}`,
+            getAllComments + `${userData?.MaNguoiDung}`,
             {
               headers: {
                 Authorization: "Bearer " + tokenValue,
@@ -34,7 +39,7 @@ export default function History() {
   useEffect(() => {
     const getSeller = async () => {
       try {
-        const response = await axios.get("http://localhost:3030/nguoiban", {
+        const response = await axios.get(GetRestaurant, {
           headers: {
             Authorization: "Bearer " + tokenValue,
           },

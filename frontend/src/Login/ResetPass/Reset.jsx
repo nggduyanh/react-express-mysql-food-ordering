@@ -3,6 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { recoverpassword } from "../../Route";
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX =
   /^(0[3|5|7|8|9][0-9]{8}|(01[2|6|8|9]|09[0-9]|[3|5|7|8|9][0-9])[0-9]{8})$/;
@@ -35,13 +36,9 @@ export default function Reset() {
         toast.promise(
           (async () => {
             await new Promise((resolve) => setTimeout(resolve, 100));
-            const response = await axios.post(
-              "http://localhost:3030/auth/recoverpassword/mail",
-              resetForm,
-              {
-                headers: { "Content-Type": "application/json" },
-              }
-            );
+            const response = await axios.post(recoverpassword, resetForm, {
+              headers: { "Content-Type": "application/json" },
+            });
             if (response.status === 201) {
               navigate("/forgot-password/confirmCode", {
                 state: { resetForm },

@@ -4,7 +4,11 @@ import { IoLocationOutline } from "react-icons/io5";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { createContext, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { GetRestaurant, localStaticFile } from "../Route/index.js";
+import {
+  GetRestaurant,
+  GetSellerInfo,
+  localStaticFile,
+} from "../Route/index.js";
 import toast from "react-hot-toast";
 import useFetchData from "../Hook/useFetchData.jsx";
 import { GetUserInfo } from "../Route/index.js";
@@ -48,15 +52,11 @@ export default function LayoutHeader() {
   );
   useEffect(() => {
     const getSellerInfor = async () => {
-      const resposne = await axios.get(
-        "http://localhost:3030/nguoiban/current",
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      );
-      console.log(resposne);
+      const resposne = await axios.get(GetSellerInfo, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      });
       if (resposne.status === 403) {
         setIsActive(false);
       } else {

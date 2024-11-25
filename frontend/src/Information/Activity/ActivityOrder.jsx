@@ -17,7 +17,6 @@ export default function OrderHistory() {
   const [cancel, setCancel] = useState(false);
   const [getInforOrder, setGetInforOrder] = useState({});
   const CancelStatusOrder = async () => {
-    console.log(getInforOrder);
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));

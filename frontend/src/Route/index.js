@@ -8,6 +8,7 @@ export const GetRestaurant = "http://localhost:3030/nguoiban";
 export const GetTypeRes = "http://localhost:3030/loaimonan";
 export const getTypeRestaurant = "http://localhost:3030/loainguoiban";
 export const UpdateUser = "http://localhost:3030/nguoidung/update";
+export const upgradeAdmin = "http://localhost:3030/auth/upgradeAdmin";
 export const GetFoodRestaurant = "http://localhost:3030/monan";
 export const localStaticFile = "http://localhost:3030/";
 export const Order = "http://localhost:3030/donhang";
@@ -20,6 +21,10 @@ export const DeleteSellerType = "http://localhost:3030/loainguoiban/delete";
 export const GetRole = "http://localhost:3030/vaitro";
 export const GetPromotion = "http://localhost:3030/khuyenmai";
 export const getRoleUserSpecific = "http://localhost:3030/vaitro/nguoidung/";
+export const verifyOTP = "http://localhost:3030/auth/verifyOTP";
+export const addSeller = "http://localhost:3030/nguoiban/add";
+export const recoverpassword =
+  "http://localhost:3030/auth/recoverpassword/mail";
 export const addLoveRestaurant =
   "http://localhost:3030/nguoimua/nguoibanyeuthich/add";
 export const getLoveRestaurant =
@@ -30,6 +35,8 @@ export const setCommendForSpecificFood =
   "http://localhost:3030/nguoimua/nhanxet/add";
 export const updateCommendForSpecificFood =
   "http://localhost:3030/nguoimua/nhanxet/update";
+export const deleteLove =
+  "http://localhost:3030/nguoimua/nguoibanyeuthich/delete";
 export const formatCurrency = (value) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -168,7 +175,7 @@ export const District = {
 };
 export const urlPayment = "http://localhost:3030/payment/create";
 export const searchUrl = "http://localhost:3030/nguoidung/search/";
-export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/:";
+export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/";
 export const customBadWords = [
   "chửi",
   "ngu",
