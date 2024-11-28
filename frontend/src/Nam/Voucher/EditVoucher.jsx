@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { vi } from "date-fns/locale";
 import {
   AddVoucher,
+  EditVoucher,
   getFormattedDate,
   GetUserInfo,
   handleRefreshPage,
@@ -15,6 +16,7 @@ import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
 import toast from "react-hot-toast";
+import { GetSellerInfo } from "../../Route";
 
 export default function VoucherEdit() {
   const tokenStorage = localStorage.getItem("token");
@@ -25,7 +27,7 @@ export default function VoucherEdit() {
   const [Seller, getSeller] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -110,17 +112,13 @@ export default function VoucherEdit() {
       ) {
         toast.error("Please provide at least one value for GiaTri or PhanTram");
       } else {
-        const response = await axios.patch(
-          `http://localhost:3030/khuyenmai/update`,
-          voucher,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenValue}`,
-            },
-            withCredentials: true,
-          }
-        );
+        const response = await axios.patch(EditVoucher, voucher, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+          withCredentials: true,
+        });
         if (response.status === 201) {
           alert("Update successful");
           navigate("/voucher");

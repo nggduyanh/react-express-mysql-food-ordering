@@ -13,9 +13,11 @@ import {
   handleRefreshPage,
   // localStaticFile,
   OrderStatus,
+  UpdateOrder,
 } from "../../../routebackend";
 import NavBar from "../../Components/NavBar";
 import useFetchData from "../../Components/useFetchData";
+import { GetSellerInfo, OrderSeller } from "../../../Route";
 
 export default function OrdersList() {
   const tokenStorage = localStorage.getItem("token");
@@ -25,7 +27,7 @@ export default function OrdersList() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -38,7 +40,7 @@ export default function OrdersList() {
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+    fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -59,7 +61,7 @@ export default function OrdersList() {
 
   const [SuccessOrder, setSuccessOrder] = useState([]); // Đơn hàng được giao thành công Trang thai === 4
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+    fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -129,7 +131,7 @@ export default function OrdersList() {
   });
 
   const handleChangeStatus = async (id) => {
-    fetch(`http://localhost:3030/donhang/update/`, {
+    fetch(UpdateOrder, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +146,7 @@ export default function OrdersList() {
   };
   const [onGoingOrder, setOnGoinOrder] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+    fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

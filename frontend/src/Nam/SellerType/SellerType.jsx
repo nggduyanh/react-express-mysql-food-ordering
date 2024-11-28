@@ -5,6 +5,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { handleRefreshPage } from "../../routebackend";
+import {
+  AddSellerType,
+  DeleteSellerType,
+  GetSellerInfo,
+  getSellerType,
+  SellerTypes,
+} from "../../Route";
 export default function SellerType() {
   const tokenValue = JSON.parse(localStorage.getItem("token")).token;
   const [SellerListType, setSellerListType] = useState([]);
@@ -12,7 +19,7 @@ export default function SellerType() {
   const [listSellerType, setListSellerType] = useState([]);
   useEffect(() => {
     const getSellerListType = async () => {
-      const response = await axios.get("http://localhost:3030/loainguoiban", {
+      const response = await axios.get(getSellerType, {
         headers: {
           Authorization: `Bearer ${tokenValue}`,
         },
@@ -24,14 +31,11 @@ export default function SellerType() {
   }, [tokenValue]);
   useEffect(() => {
     const getSeller = async () => {
-      const response = await axios.get(
-        "http://localhost:3030/nguoiban/current",
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      );
+      const response = await axios.get(GetSellerInfo, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      });
       const data = response.data;
       setSeller(data[0]);
     };
@@ -39,14 +43,11 @@ export default function SellerType() {
   }, [tokenValue]);
   useEffect(() => {
     const getListType = async () => {
-      const response = await axios.get(
-        `http://localhost:3030/loainguoiban/nguoiban/${seller?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      );
+      const response = await axios.get(SellerTypes + `${seller?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      });
       const data = response.data;
       setListSellerType(data);
     };
@@ -58,7 +59,7 @@ export default function SellerType() {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         const response = await axios.post(
-          "http://localhost:3030/nguoiban/loainguoiban/add",
+          AddSellerType,
           {
             MaNguoiBan: seller?.MaNguoiBan,
             MaLoaiNguoiBan: id,
@@ -85,19 +86,16 @@ export default function SellerType() {
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.delete(
-          "http://localhost:3030/nguoiban/loainguoiban/delete",
-          {
-            data: {
-              MaNguoiBan: seller?.MaNguoiBan,
-              MaLoaiNguoiBan: id,
-            },
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${tokenValue}`,
-            },
-          }
-        );
+        const response = await axios.delete(DeleteSellerType, {
+          data: {
+            MaNguoiBan: seller?.MaNguoiBan,
+            MaLoaiNguoiBan: id,
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
         if (response.status === 204) {
           handleRefreshPage();
         }

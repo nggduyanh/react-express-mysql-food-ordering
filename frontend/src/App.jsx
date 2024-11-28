@@ -95,6 +95,7 @@ import ShipperList from "./Luong/Admin/components/User_Management/ShipperList";
 import Security from "./Luong/Admin/components/Security/Security";
 import PrivateRouteAdmin from "./Luong/Admin/Function/PrivateRouteAdmin";
 import AdminContent from "./Luong/Admin/components/Content/AdminContent";
+import AdminList from "./Luong/Admin/components/User_Management/AdminList";
 const UserAccount = createContext();
 function App() {
   return (
@@ -163,6 +164,7 @@ function App() {
                   <Route index element={<CustomerList />} />
                   <Route path="seller_manage" element={<SellerList />} />
                   <Route path="shipper_manage" element={<ShipperList />} />
+                  <Route path="admin_manage" element={<AdminList />} />
                   <Route path="user_manage/:info" element={<ShipperList />} />
                   <Route path="seller_manage/:info" element={<ShipperList />} />
                   <Route

@@ -1,15 +1,17 @@
 import { FaSearch } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
-import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AdminContext } from "../../Layout/AdminLayoutContext";
 import { GetAllUser, getUserRole } from "../../../../Route";
+import { getRoleUserSpecific, GetUserInfo } from "../../../../Route";
 export default function UserHome() {
   const { token } = useContext(AdminContext);
   const [listUser, setListUser] = useState([]);
   const [listSeller, setListSeller] = useState([]);
   const [listShipper, setListShipper] = useState([]);
+  const [listAdmin, setListAdmin] = useState([]);
+  const [admin, setAdmin] = useState({});
   useEffect(() => {
     const getListUser = async () => {
       const response = await axios.get(GetAllUser, {
@@ -34,6 +36,25 @@ export default function UserHome() {
           };
         })
       );
+      const responseAdmin = await axios.get(GetUserInfo, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      const dataAdmin = responseAdmin.data;
+      const checkIsAdminResponse = await axios.get(
+        getRoleUserSpecific + `${dataAdmin[0].MaNguoiDung}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      const adminAccount = {
+        ...dataAdmin[0],
+        MaVaiTro: checkIsAdminResponse.data[0].MaVaiTro,
+      };
+      setAdmin(adminAccount);
       const filterUser = updateData.filter((user) => {
         return user.MaVaiTro === 2;
       });
@@ -43,6 +64,10 @@ export default function UserHome() {
       const filterShipper = updateData.filter((shipper) => {
         return shipper.MaVaiTro === 4;
       });
+      const filterAdmin = updateData.filter((admin) => {
+        return admin.MaVaiTro === 1;
+      });
+      setListAdmin(filterAdmin);
       setListUser(filterUser);
       setListSeller(filterSeller);
       setListShipper(filterShipper);
@@ -97,6 +122,18 @@ export default function UserHome() {
             >
               Shipper
             </NavLink>
+            {admin.MaNguoiDung === 2 && (
+              <NavLink
+                to="admin_manage"
+                className={({ isActive }) =>
+                  `border border-blue-500 rounded-lg p-3 ${
+                    isActive ? "bg-blue-500 text-white font-bold" : ""
+                  }`
+                }
+              >
+                Admin
+              </NavLink>
+            )}
           </div>
         </div>
         <br />
@@ -109,7 +146,7 @@ export default function UserHome() {
           </div>
         </div>
         <div className="rounded-b-2xl border border-gray-300 p-4">
-          <Outlet context={{ listUser, listSeller, listShipper }} />
+          <Outlet context={{ listUser, listSeller, listShipper, listAdmin }} />
         </div>
       </div>
     </div>

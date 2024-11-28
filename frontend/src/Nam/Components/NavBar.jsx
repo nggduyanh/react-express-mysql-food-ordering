@@ -5,6 +5,7 @@ import { GetUserInfo, localStaticFile } from "../../routebackend";
 import useFetchData from "./useFetchData";
 import { useOutletContext } from "react-router-dom";
 import { PiExclamationMarkFill } from "react-icons/pi";
+import { GetSellerInfo } from "../../Route";
 export default function NavBar() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
@@ -13,7 +14,7 @@ export default function NavBar() {
   const userInfo = userData?.data?.[0];
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -23,7 +24,6 @@ export default function NavBar() {
         getSeller(data);
       });
   }, [userData, tokenValue]);
-  console.log("Navbar", listOrder);
   const [isNotification, setIsNotification] = useState(false);
   const [isShown, setIsShown] = useState(false);
   useEffect(() => {

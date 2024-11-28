@@ -21,7 +21,7 @@ export default function AddDish() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetUserInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

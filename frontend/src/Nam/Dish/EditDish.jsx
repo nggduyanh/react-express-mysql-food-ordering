@@ -7,12 +7,14 @@ import {
   GetUserInfo,
   handleRefreshPage,
   localStaticFile,
+  UpdateFoodRestaurant,
   // UpdateFoodRestaurant,
 } from "../../routebackend";
 import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import { GetSellerInfo } from "../../Route";
 
 export default function EditDish() {
   const data = useLocation();
@@ -25,7 +27,7 @@ export default function EditDish() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -118,17 +120,13 @@ export default function EditDish() {
     event.preventDefault();
     console.log("dish", dish);
     try {
-      const response = await axios.patch(
-        `http://localhost:3030/monan/update`,
-        dish,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${tokenValue}`,
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.patch(UpdateFoodRestaurant, dish, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokenValue}`,
+        },
+        withCredentials: true,
+      });
       if (response.status === 201) {
         // Kiểm tra trạng thái phản hồi
         alert("Update successful");

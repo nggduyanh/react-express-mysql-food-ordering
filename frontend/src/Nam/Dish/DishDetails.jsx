@@ -14,7 +14,12 @@ import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
 // import useFetchData from "../Components/useFetchData";
 import axios from "axios";
-import { GetSellerInfo } from "../../Route";
+import {
+  GetAllUser,
+  GetSellerInfo,
+  SellerComment,
+  updateSellerComment,
+} from "../../Route";
 import toast from "react-hot-toast";
 
 export default function DishDetails() {
@@ -71,7 +76,7 @@ export default function DishDetails() {
   const [NhanXet, setNhanXet] = useState([]);
   useEffect(() => {
     if (seller && seller.MaNguoiBan) {
-      fetch(`http://localhost:3030/nguoiban/nhanxet/${seller?.MaNguoiBan}`, {
+      fetch(SellerComment + `${seller?.MaNguoiBan}`, {
         headers: {
           Authorization: `Bearer ${tokenValue}`,
         },
@@ -100,7 +105,7 @@ export default function DishDetails() {
   // console.log(NhanXet?.[0]?.NhanXet.MaNguoiMua);
   const [Buyers, setBuyers] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoidung/`, {
+    fetch(GetAllUser, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -146,7 +151,7 @@ export default function DishDetails() {
         toast.error("Please enter your reply");
       } else {
         const response = await axios.patch(
-          "http://localhost:3030/nguoiban/nhanxet/update",
+          updateSellerComment,
           {
             MaNguoiMua: id,
             MaMonAn: RepNhanXet.MaMonAn,

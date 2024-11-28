@@ -12,6 +12,7 @@ import {
 // import { UserAccount } from "../App";
 import useFetchData from "../Components/useFetchData";
 import { GetUserInfo } from "../../routebackend";
+import { GetSellerInfo, OrderSeller } from "../../Route";
 
 ChartJS.register(
   LineElement,
@@ -30,7 +31,7 @@ export default function LineChart() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -43,7 +44,7 @@ export default function LineChart() {
 
   const [Orders, setOrders] = useState([]); // Tất cả các đơn hàng
   useEffect(() => {
-    fetch(`http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`, {
+    fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

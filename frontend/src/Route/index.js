@@ -1,42 +1,49 @@
-export const GetUserInfo = "http://localhost:3030/nguoidung/current";
-export const GetAllUser = "http://localhost:3030/nguoidung";
-export const getRoles = "http://localhost:3030/vaitro";
-export const getUserRole = "http://localhost:3030/vaitro/nguoidung/";
-export const GetSellerInfo = "http://localhost:3030/nguoiban/current";
-export const AddUserInfo = "http://localhost:3030/nguoidung/add";
-export const GetRestaurant = "http://localhost:3030/nguoiban";
-export const GetTypeRes = "http://localhost:3030/loaimonan";
-export const getTypeRestaurant = "http://localhost:3030/loainguoiban";
-export const UpdateUser = "http://localhost:3030/nguoidung/update";
-export const upgradeAdmin = "http://localhost:3030/auth/upgradeAdmin";
-export const GetFoodRestaurant = "http://localhost:3030/monan";
-export const localStaticFile = "http://localhost:3030/";
-export const Order = "http://localhost:3030/donhang";
-export const OrderStatus = "http://localhost:3030/trangthaidonhang";
-export const getSellerType = "http://localhost:3030/loainguoiban";
-export const AddSellerType = "http://localhost:3030/loainguoiban/add";
-export const GetSellerTypeId = "http://localhost:3030/loainguoiban/";
-export const UpdateSellerType = "http://localhost:3030/loainguoiban/update";
-export const DeleteSellerType = "http://localhost:3030/loainguoiban/delete";
-export const GetRole = "http://localhost:3030/vaitro";
-export const GetPromotion = "http://localhost:3030/khuyenmai";
-export const getRoleUserSpecific = "http://localhost:3030/vaitro/nguoidung/";
-export const verifyOTP = "http://localhost:3030/auth/verifyOTP";
-export const addSeller = "http://localhost:3030/nguoiban/add";
-export const recoverpassword =
-  "http://localhost:3030/auth/recoverpassword/mail";
-export const addLoveRestaurant =
-  "http://localhost:3030/nguoimua/nguoibanyeuthich/add";
-export const getLoveRestaurant =
-  "http://localhost:3030/nguoiban/nguoibanyeuthich/";
-export const getCommentForSpecificFood =
-  "http://localhost:3030/nguoimua/nhanxet/";
-export const setCommendForSpecificFood =
-  "http://localhost:3030/nguoimua/nhanxet/add";
-export const updateCommendForSpecificFood =
-  "http://localhost:3030/nguoimua/nhanxet/update";
-export const deleteLove =
-  "http://localhost:3030/nguoimua/nguoibanyeuthich/delete";
+const API_BASE_URL = "http://localhost:3030/";
+export const Url = "http://localhost:3030";
+export const GetUserInfo = `${API_BASE_URL}nguoidung/current`;
+export const GetAllUser = `${API_BASE_URL}nguoidung`;
+export const getRoles = `${API_BASE_URL}vaitro`;
+export const getUserRole = `${API_BASE_URL}vaitro/nguoidung/`;
+export const GetSellerInfo = `${API_BASE_URL}nguoiban/current`;
+export const AddUserInfo = `${API_BASE_URL}nguoidung/add`;
+export const GetRestaurant = `${API_BASE_URL}nguoiban`;
+export const GetTypeRes = `${API_BASE_URL}loaimonan`;
+export const getTypeRestaurant = `${API_BASE_URL}loainguoiban`;
+export const UpdateUser = `${API_BASE_URL}nguoidung/update`;
+export const upgradeAdmin = `${API_BASE_URL}auth/upgradeAdmin`;
+export const GetFoodRestaurant = `${API_BASE_URL}monan`;
+export const localStaticFile = `${API_BASE_URL}`;
+export const Order = `${API_BASE_URL}donhang`;
+export const OrderStatus = `${API_BASE_URL}trangthaidonhang`;
+export const getSellerType = `${API_BASE_URL}loainguoiban`;
+export const AddSellerType = `${API_BASE_URL}loainguoiban/add`;
+export const GetSellerTypeId = `${API_BASE_URL}loainguoiban/`;
+export const UpdateSellerType = `${API_BASE_URL}loainguoiban/update`;
+export const DeleteSellerType = `${API_BASE_URL}loainguoiban/delete`;
+export const GetRole = `${API_BASE_URL}vaitro`;
+export const GetPromotion = `${API_BASE_URL}khuyenmai`;
+export const getRoleUserSpecific = `${API_BASE_URL}vaitro/nguoidung/`;
+export const verifyOTP = `${API_BASE_URL}auth/verifyOTP`;
+export const loginAuth = `${API_BASE_URL}auth/login`;
+export const SignUpAuth = `${API_BASE_URL}auth/signup`;
+export const addSeller = `${API_BASE_URL}nguoiban/add`;
+export const DeleteFood = `${API_BASE_URL}monan/delete`;
+export const SellerComment = `${API_BASE_URL}nguoiban/nhanxet/`;
+export const recoverpassword = `${API_BASE_URL}auth/recoverpassword/mail`;
+export const addLoveRestaurant = `${API_BASE_URL}nguoimua/nguoibanyeuthich/add`;
+export const getLoveRestaurant = `${API_BASE_URL}nguoiban/nguoibanyeuthich/`;
+export const getCommentForSpecificFood = `${API_BASE_URL}nguoimua/nhanxet/`;
+export const setCommendForSpecificFood = `${API_BASE_URL}nguoimua/nhanxet/add`;
+export const updateCommendForSpecificFood = `${API_BASE_URL}nguoimua/nhanxet/update`;
+export const FoodsType = `${API_BASE_URL}nguoimua/loaimonan`;
+export const FoodsTypeAdd = `${API_BASE_URL}loaimonan/add`;
+export const SellerTypes = `${API_BASE_URL}loainguoiban/nguoiban/`;
+export const DeleteSeller = `${API_BASE_URL}nguoiban/delete`;
+export const FoodsTypeDelete = `${API_BASE_URL}loaimonan/delete`;
+export const FoodsTypeUpdate = `${API_BASE_URL}loaimonan/update`;
+export const OrderSeller = `${API_BASE_URL}donhang/nguoiban/`;
+export const deleteLove = `${API_BASE_URL}nguoimua/nguoibanyeuthich/delete`;
+export const updateSellerComment = `${API_BASE_URL}nguoiban/nhanxet/update`;
 export const formatCurrency = (value) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -47,12 +54,11 @@ export const refreshPage = () => {
   window.location.reload();
 };
 
-export const PaymentMethod = "http://localhost:3030/phuongthucgiaodich";
-export const OrderAdd = "http://localhost:3030/donhang/add";
-export const OrderDetailAdd =
-  "http://localhost:3030/donhang/chitietdonhang/add";
-export const getDetailsOrder = "http://localhost:3030/monan/donhang/";
-export const updateOrder = "http://localhost:3030/donhang/update";
+export const PaymentMethod = `${API_BASE_URL}phuongthucgiaodich`;
+export const OrderAdd = `${API_BASE_URL}donhang/add`;
+export const OrderDetailAdd = `${API_BASE_URL}donhang/chitietdonhang/add`;
+export const getDetailsOrder = `${API_BASE_URL}monan/donhang/`;
+export const updateOrder = `${API_BASE_URL}donhang/update`;
 export const formatDate = (ISO_date) => {
   const date = new Date(ISO_date);
 
@@ -72,7 +78,7 @@ export const formatDate = (ISO_date) => {
   return formattedDate;
 };
 
-export const deleteUserRoute = "http://localhost:3030/nguoidung/delete";
+export const deleteUserRoute = `${API_BASE_URL}nguoidung/delete`;
 export const City = [
   "TP.Hà Nội",
   "TP.Hồ Chí Minh",
@@ -173,9 +179,9 @@ export const District = {
     "Huyện Tuy Phước",
   ],
 };
-export const urlPayment = "http://localhost:3030/payment/create";
-export const searchUrl = "http://localhost:3030/nguoidung/search/";
-export const getAllComments = "http://localhost:3030/nguoimua/allnhanxet/";
+export const urlPayment = `${API_BASE_URL}payment/create`;
+export const searchUrl = `${API_BASE_URL}nguoidung/search/`;
+export const getAllComments = `${API_BASE_URL}nguoimua/allnhanxet/`;
 export const customBadWords = [
   "chửi",
   "ngu",

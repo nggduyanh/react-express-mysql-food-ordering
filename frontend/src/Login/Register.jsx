@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { SignUpAuth } from "../Route";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -99,7 +100,7 @@ export default function Register() {
         (async () => {
           await new Promise((resolve) => setTimeout(resolve, 700));
           const response = await axios.post(
-            "http://localhost:3030/auth/signup",
+            SignUpAuth,
             JSON.stringify(RegisterForm.form),
             {
               headers: {

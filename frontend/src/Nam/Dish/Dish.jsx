@@ -15,6 +15,7 @@ import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
 import toast from "react-hot-toast";
+import { DeleteFood, GetSellerInfo } from "../../Route";
 export default function Dish() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
@@ -25,7 +26,7 @@ export default function Dish() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -74,17 +75,14 @@ export default function Dish() {
       const deleteId = {
         MaMonAn: findDish.MaMonAn,
       };
-      const response = await axios.delete(
-        "http://localhost:3030/monan/delete",
-        {
-          data: deleteId,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenValue}`,
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.delete(DeleteFood, {
+        data: deleteId,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenValue}`,
+        },
+        withCredentials: true,
+      });
       alert("Success Delete");
       handleRefreshPage();
     } catch (err) {

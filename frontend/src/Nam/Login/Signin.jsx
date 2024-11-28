@@ -8,7 +8,7 @@ import Heading from "./Heading";
 // import { GetSellerInfo, GetUserInfo } from "../routebackend";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { GetSellerInfo } from "../../Route";
+import { GetSellerInfo, loginAuth } from "../../Route";
 // import { socket } from "../../Route/socket";
 // import { setTime } from "react-datepicker/dist/date_utils";
 export default function Signin({ assignAccount }) {
@@ -32,10 +32,7 @@ export default function Signin({ assignAccount }) {
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.post(
-          "http://localhost:3030/auth/login",
-          loginForm
-        );
+        const response = await axios.post(loginAuth, loginForm);
         const getUserInfoArray = response.data;
         const checkIsSellerResponse = await axios.get(GetSellerInfo, {
           headers: {

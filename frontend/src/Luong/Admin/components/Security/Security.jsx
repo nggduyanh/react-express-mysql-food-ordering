@@ -2,13 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { AdminContext } from "../../Layout/AdminLayoutContext";
 import axios from "axios";
-import {
-  GetAllUser,
-  getRoleUserSpecific,
-  getUserRole,
-  refreshPage,
-  upgradeAdmin,
-} from "../../../../Route";
+import { GetAllUser, getUserRole, upgradeAdmin } from "../../../../Route";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 export default function Security() {

@@ -8,6 +8,7 @@ import {
   GetRestaurant,
   GetSellerInfo,
   localStaticFile,
+  Url,
 } from "../Route/index.js";
 import toast from "react-hot-toast";
 import useFetchData from "../Hook/useFetchData.jsx";
@@ -18,7 +19,7 @@ import axios from "axios";
 import useSocket from "../Hook/useSocket.jsx";
 const UserContext = createContext();
 export default function LayoutHeader() {
-  const socket = useSocket("http://localhost:3030"); // URL máy chủ Socket.IO
+  const socket = useSocket(Url); // URL máy chủ Socket.IO
 
   useEffect(() => {
     if (!socket) return;

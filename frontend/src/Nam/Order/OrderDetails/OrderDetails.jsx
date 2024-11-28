@@ -12,6 +12,7 @@ import {
 // import { UserAccount } from "../../App";
 import useFetchData from "../../Components/useFetchData";
 import NavBar from "../../Components/NavBar";
+import { GetSellerInfo } from "../../../Route";
 export default function OrderDetails() {
   const data = useLocation();
   const detailsOrder = data.state;
@@ -23,7 +24,7 @@ export default function OrderDetails() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

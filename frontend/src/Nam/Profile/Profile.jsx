@@ -13,6 +13,7 @@ import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
 // import PersonalDetails from "./PersonalDetails";
 import RestaurantInfo from "./RestaurantInfo";
+import { GetSellerInfo } from "../../Route";
 
 export default function Profile() {
   const tokenStorage = localStorage.getItem("token");
@@ -22,7 +23,7 @@ export default function Profile() {
 
   const [Seller, setSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import NavBar from "../Components/NavBar";
 import SideBar from "../Components/SideBar";
 import axios from "axios";
-import { GetSellerInfo, refreshPage } from "../../Route";
+import {
+  GetSellerInfo,
+  refreshPage,
+  FoodsType,
+  FoodsTypeAdd,
+  FoodsTypeDelete,
+  FoodsTypeUpdate,
+} from "../../Route";
 import { FaMinusCircle } from "react-icons/fa";
 import { GrUpdate } from "react-icons/gr";
 import toast from "react-hot-toast";
@@ -32,7 +39,7 @@ export default function FoodType() {
   useEffect(() => {
     if (seller) {
       const getFoodTypeList = async () => {
-        const response = await axios.get("http://localhost:3030/loaimonan/", {
+        const response = await axios.get(FoodsType, {
           headers: {
             Authorization: "Bearer " + tokenValue,
           },
@@ -63,7 +70,7 @@ export default function FoodType() {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3030/loaimonan/add",
+          FoodsTypeAdd,
           {
             MaNguoiBan: seller?.MaNguoiBan,
             TenLoaiMonAn: foodType.TenLoaiMonAn,
@@ -89,19 +96,16 @@ export default function FoodType() {
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.delete(
-          "http://localhost:3030/loaimonan/delete",
-          {
-            data: {
-              MaNguoiBan: seller?.MaNguoiBan,
-              MaLoaiMonAn: id,
-            },
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + tokenValue,
-            },
-          }
-        );
+        const response = await axios.delete(FoodsTypeDelete, {
+          data: {
+            MaNguoiBan: seller?.MaNguoiBan,
+            MaLoaiMonAn: id,
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenValue,
+          },
+        });
         if (
           response.status === 200 ||
           response.status === 201 ||
@@ -127,7 +131,7 @@ export default function FoodType() {
         (async () => {
           await new Promise((resolve) => setTimeout(resolve, 500));
           const response = await axios.patch(
-            "http://localhost:3030/loaimonan/update",
+            FoodsTypeUpdate,
             {
               TenLoaiMonAn: foodType.TenLoaiMonAn,
               MaLoaiMonAn: currentType?.MaLoaiMonAn,
@@ -157,7 +161,7 @@ export default function FoodType() {
   };
   const getCurrentIdType = async (id) => {
     // console.log(id);
-    const response = await axios.get(`http://localhost:3030/loaimonan/${id}`, {
+    const response = await axios.get(FoodsType + `/${id}`, {
       headers: {
         Authorization: "Bearer " + tokenValue,
       },

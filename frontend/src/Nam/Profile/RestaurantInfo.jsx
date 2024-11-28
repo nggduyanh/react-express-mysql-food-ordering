@@ -1,13 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useFetchData from "../Components/useFetchData";
-import {
-  GetSellerInfo,
-  GetUserInfo,
-  handleRefreshPage,
-} from "../../routebackend";
+import { GetUserInfo, handleRefreshPage, UpdateUser } from "../../routebackend";
 import toast from "react-hot-toast";
-import { refreshPage } from "../../Route";
+import { refreshPage, GetSellerInfo, DeleteSeller } from "../../Route";
 import { useNavigate } from "react-router-dom";
 
 export default function RestaurantInfo(props) {
@@ -22,14 +18,11 @@ export default function RestaurantInfo(props) {
   });
   useEffect(() => {
     const getSellerIdCurrent = async () => {
-      const response = await axios.get(
-        "http://localhost:3030/nguoiban/current",
-        {
-          headers: {
-            Authorization: "Bearer " + tokenValue,
-          },
-        }
-      );
+      const response = await axios.get(GetSellerInfo, {
+        headers: {
+          Authorization: "Bearer " + tokenValue,
+        },
+      });
       const data = response.data;
       setSeller({
         MaNguoiBan: data[0].MaNguoiBan,
@@ -60,17 +53,13 @@ export default function RestaurantInfo(props) {
     event.preventDefault();
     try {
       console.log("Submit", Seller);
-      const res = await axios.patch(
-        `http://localhost:3030/nguoiban/update`,
-        Seller,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${tokenValue}`,
-          },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.patch(UpdateUser, Seller, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokenValue}`,
+        },
+        withCredentials: true,
+      });
       if (res.status === 201) {
         alert("Update successful");
         handleRefreshPage();
@@ -87,17 +76,14 @@ export default function RestaurantInfo(props) {
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.delete(
-          "http://localhost:3030/nguoiban/delete",
-          {
-            data: {
-              MaNguoiBan: Seller?.MaNguoiBan,
-            },
-            headers: {
-              Authorization: `Bearer ${tokenValue}`,
-            },
-          }
-        );
+        const response = await axios.delete(DeleteSeller, {
+          data: {
+            MaNguoiBan: Seller?.MaNguoiBan,
+          },
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
         if (response.status === 200 || response.status === 201) {
           refreshPage();
           navigate("/loginSeller");

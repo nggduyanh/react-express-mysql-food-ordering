@@ -13,7 +13,7 @@ import {
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import LineChart from "./LineChart";
-import { formatDate } from "../../Route";
+import { formatDate, GetSellerInfo, OrderSeller } from "../../Route";
 // import useFetchData from "../Components/useFetchData";
 // import { formatDate } from "react-datepicker/dist/date_utils";
 
@@ -25,7 +25,7 @@ export default function Homepage() {
   // console.log("userInfo", userInfo);
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -48,14 +48,11 @@ export default function Homepage() {
   const [Orders, setOrders] = useState([]);
   useEffect(() => {
     if (Seller?.length > 0) {
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -79,14 +76,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const today = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -115,14 +109,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const lastmonth = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -167,14 +158,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const today = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -204,14 +192,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const lastmonth = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -260,14 +245,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const today = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -297,14 +279,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const lastmonth = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");
@@ -353,14 +332,11 @@ export default function Homepage() {
   useEffect(() => {
     if (Seller?.length > 0) {
       const today = new Date();
-      fetch(
-        `http://localhost:3030/donhang/nguoiban/${Seller?.[0]?.MaNguoiBan}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenValue}`,
-          },
-        }
-      )
+      fetch(OrderSeller + `${Seller?.[0]?.MaNguoiBan}`, {
+        headers: {
+          Authorization: `Bearer ${tokenValue}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error("No order found");

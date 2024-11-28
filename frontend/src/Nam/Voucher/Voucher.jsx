@@ -18,6 +18,7 @@ import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
 import toast from "react-hot-toast";
+import { GetSellerInfo } from "../../Route";
 export default function Voucher() {
   const tokenStorage = localStorage.getItem("token");
   const tokenValue = JSON.parse(tokenStorage).token;
@@ -27,7 +28,7 @@ export default function Voucher() {
   const [currentVoucher, setCurrentVoucher] = useState();
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

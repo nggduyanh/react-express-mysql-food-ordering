@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import useSocket from "../../Hook/useSocket";
 import { GetUserInfo } from "../../routebackend";
+import { GetSellerInfo } from "../../Route";
 import useFetchData from "./useFetchData";
 
 export default function SocketLayout() {
@@ -12,7 +13,7 @@ export default function SocketLayout() {
   // const userInfo = userData?.data?.[0];
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
