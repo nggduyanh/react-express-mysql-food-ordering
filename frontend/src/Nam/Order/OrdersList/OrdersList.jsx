@@ -68,8 +68,9 @@ export default function OrdersList() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("data", data);
         const filterOrder = data?.filter((order) => {
-          return order.TrangThai !== 5 && order.TrangThai !== 1;
+          return order.TrangThai !== 5 && order.TrangThaiThanhToan === 1;
         });
         setSuccessOrder(filterOrder);
       });
@@ -154,8 +155,9 @@ export default function OrdersList() {
       .then((response) => response.json())
       .then((data) => {
         const filterOrder = data.filter((order) => {
-          return order.TrangThai === 1;
+          return order.TrangThai === 1 && order.TrangThaiThanhToan === 1;
         });
+        console.log("Filter order", filterOrder);
         setOnGoinOrder(filterOrder);
       });
   }, [Seller, tokenValue]);

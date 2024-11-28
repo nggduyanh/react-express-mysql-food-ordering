@@ -94,7 +94,7 @@ export default function Homepage() {
           const filterOrder = data?.filter((order) => {
             return (
               new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
-              today?.getMonth() + 1
+                today?.getMonth() + 1 && order.TrangThaiThanhToan === 1
             );
           });
           setOrdersThisMonth(filterOrder);
@@ -350,6 +350,7 @@ export default function Homepage() {
           const filterOrder = data?.filter((order) => {
             return (
               order?.TrangThai === 1 &&
+              order?.TrangThaiThanhToan === 1 &&
               new Date(order?.ThoiGianTao)?.getMonth() + 1 ===
                 today?.getMonth() + 1 &&
               new Date(order?.ThoiGianTao)?.getDate() === today?.getDate()

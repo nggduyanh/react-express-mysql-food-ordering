@@ -60,6 +60,7 @@ export default function RestaurantInfo(props) {
         },
         withCredentials: true,
       });
+      console.log(res);
       if (res.status === 201) {
         alert("Update successful");
         handleRefreshPage();

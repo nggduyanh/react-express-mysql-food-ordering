@@ -5,12 +5,12 @@ import NextCount from "../Function/NextCount";
 import PrevCount from "../Function/PrevCount";
 import { useState } from "react";
 export default function SellerList() {
-  const { listSeller } = useOutletContext();
+  const { listSeller, search } = useOutletContext();
   const [rows, setRows] = useState(5);
   return (
     <>
       <CountLayout rows={rows}>
-        <ArrayGetList array={listSeller} />
+        <ArrayGetList array={listSeller} filter={search} />
         <div className="flex items-center justify-end mt-3 gap-2">
           <p>Rows per page: {rows}</p>
           <div className="flex items-center gap-4">

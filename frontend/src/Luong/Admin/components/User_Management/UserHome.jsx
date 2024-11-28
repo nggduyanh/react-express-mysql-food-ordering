@@ -12,6 +12,7 @@ export default function UserHome() {
   const [listShipper, setListShipper] = useState([]);
   const [listAdmin, setListAdmin] = useState([]);
   const [admin, setAdmin] = useState({});
+  const [search, setSearch] = useState("");
   useEffect(() => {
     const getListUser = async () => {
       const response = await axios.get(GetAllUser, {
@@ -74,6 +75,10 @@ export default function UserHome() {
     };
     getListUser();
   }, [token]);
+  const handleSearch = (event) => {
+    const { name, value } = event.target;
+    setSearch(value);
+  };
   return (
     <div>
       <p className="text-2xl font-bold ">User list</p>
@@ -83,7 +88,9 @@ export default function UserHome() {
           <div className="w-2/3">
             <input
               type="text"
+              name="search"
               placeholder="Search user"
+              onChange={handleSearch}
               className="border border-gray-500 pl-8 p-4 w-full rounded-2xl "
             />
             <div className="absolute top-1/2 -translate-y-1/2 mx-2">
@@ -146,7 +153,9 @@ export default function UserHome() {
           </div>
         </div>
         <div className="rounded-b-2xl border border-gray-300 p-4">
-          <Outlet context={{ listUser, listSeller, listShipper, listAdmin }} />
+          <Outlet
+            context={{ listUser, listSeller, listShipper, listAdmin, search }}
+          />
         </div>
       </div>
     </div>

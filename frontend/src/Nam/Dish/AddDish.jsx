@@ -12,6 +12,7 @@ import axios from "axios";
 import SideBar from "../Components/SideBar";
 import NavBar from "../Components/NavBar";
 import useFetchData from "../Components/useFetchData";
+import { GetSellerInfo } from "../../Route";
 
 export default function AddDish() {
   const tokenStorage = localStorage.getItem("token");
@@ -21,7 +22,7 @@ export default function AddDish() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(GetUserInfo, {
+    fetch(GetSellerInfo, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },
@@ -46,6 +47,7 @@ export default function AddDish() {
         return res.json();
       })
       .then((data) => {
+        console.log(data);
         const filterTypeFood = data.filter((type) => {
           return type.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
         });
@@ -57,7 +59,6 @@ export default function AddDish() {
         } else console.log("Another error", err.message);
       });
   }, [Seller, tokenValue]);
-
   const [dish, setDish] = useState({
     TenMonAn: "",
     AnhMonAn: null,

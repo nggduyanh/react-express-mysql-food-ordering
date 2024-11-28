@@ -5,11 +5,11 @@ import PrevCount from "../Function/PrevCount";
 import NextCount from "../Function/NextCount";
 import ArrayGetList from "../Function/ArrayGetList";
 export default function CustomerList() {
-  const { listUser } = useOutletContext();
+  const { listUser, search } = useOutletContext();
   const [rows, setRows] = useState(5);
   return (
     <CountLayout rows={rows}>
-      <ArrayGetList array={listUser} />
+      <ArrayGetList array={listUser} filter={search} />
       <div className="flex items-center justify-end mt-3 gap-2">
         <p>Rows per page: {rows}</p>
         <div className="flex items-center gap-4">

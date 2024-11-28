@@ -11,6 +11,8 @@ import {
   GetSellerInfo,
   getSellerType,
   SellerTypes,
+  SellerTypesAdd,
+  SellerTypesDelele,
 } from "../../Route";
 export default function SellerType() {
   const tokenValue = JSON.parse(localStorage.getItem("token")).token;
@@ -59,7 +61,7 @@ export default function SellerType() {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         const response = await axios.post(
-          AddSellerType,
+          SellerTypesAdd,
           {
             MaNguoiBan: seller?.MaNguoiBan,
             MaLoaiNguoiBan: id,
@@ -86,7 +88,7 @@ export default function SellerType() {
     toast.promise(
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const response = await axios.delete(DeleteSellerType, {
+        const response = await axios.delete(SellerTypesDelele, {
           data: {
             MaNguoiBan: seller?.MaNguoiBan,
             MaLoaiNguoiBan: id,
