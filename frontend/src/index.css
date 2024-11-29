@@ -1,3 +1,111 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.input_setup {
+  @apply border mb-5 border-white border-b-gray-400 hover:border-b-black transition-all hover:duration-150 hover:ease-in rounded-sm w-full p-3;
+}
+
+.btnInputReLog {
+  @apply border p-2 inline-block text-center w-28 rounded-lg bg-gradient-to-r font-bold text-white;
+}
+
+.btnLoginRegister {
+  @apply p-4 border border-black mt-4  w-full rounded-lg font-bold uppercase text-white hover:bg-black transition-all;
+}
+
+.advertiseBanner {
+  @apply w-full border border-gray-400 shadow-lg rounded-xl;
+}
+
+.btnSelections {
+  @apply flex items-center gap-5 border border-b-gray-300;
+}
+
+@layer components {
+  .btnGradientPink {
+    @apply bg-gradient-to-r from-pink-400 to-pink-600 font-bold text-white uppercase rounded-lg p-3 hover:bg-pink-700 transition-all ease-in duration-200;
+  }
+}
+.bg_homeScreen {
+  background-color: #eeeeee;
+}
+
+.marginJustification {
+  @apply w-11/12 mx-auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.78);
+  z-index: 1;
+}
+
+.bckImage {
+  position: relative;
+  background: url("../public/blackFoodImage.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.header_content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.sticky-div {
+  position: sticky;
+  top: 1px;
+  padding-block: 10px;
+  max-height: calc(100vh - 20px);
+}
+.orderBox {
+  height: 700px;
+}
+
+.background_res {
+  background-color: #f5f5f5;
+}
+
+.roundCheckInfo {
+  @apply border border-white rounded-full bg-white hover:bg-pink-600 hover:border-transparent transition-all ease-in duration-200;
+}
+.setupForRound {
+  @apply text-4xl p-2 text-black font-bold cursor-pointer  hover:text-white;
+}
+
+.foodDetails {
+  height: 95%;
+}
+.Xbutton {
+  top: 12px;
+  right: 10px;
+}
+
+.imageDetails {
+  top: -400px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.place option:checked {
+  @apply bg-pink-500 text-white font-bold;
+}
+
+.place option:focus {
+  background-color: pink;
+}

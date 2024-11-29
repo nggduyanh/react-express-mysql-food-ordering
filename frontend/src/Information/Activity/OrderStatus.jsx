@@ -1,6 +1,14 @@
 import { useEffect, useReducer, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
-import { formatCurrency, getDetailsOrder, localStaticFile } from "../../Route";
+import {
+  formatCurrency,
+  formatDate,
+  getDetailsOrder,
+  GetRestaurant,
+  GetTypeRes,
+  localStaticFile,
+} from "../../Route";
+import axios from "axios";
 
 const OrderAction = {
   orderDetaiInfo: [],
@@ -28,11 +36,10 @@ const OrderReducer = (state, action) => {
 };
 
 export default function OrderStatus(props) {
-  const { tokenValue, userData } = useOutletContext();
+  const { tokenValue, userData, setIsCloseFunct } = useOutletContext();
   const { orderStatus } = useOutletContext();
   const [orderDetails, dispatch] = useReducer(OrderReducer, OrderAction);
-  const [seller, setSeller] = useState([]);
-  console.log("MaDonHang", props.MaDonHang);
+  const [seller, setSeller] = useState({});
   useEffect(() => {
     fetch(getDetailsOrder + `${props.MaDonHang}`, {
       headers: {
@@ -51,55 +58,65 @@ export default function OrderStatus(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, [props.MaDonHang]);
+  }, [props.MaDonHang, tokenValue]);
   useEffect(() => {
-    fetch("http://localhost:3030/nguoiban", {
-      headers: {
-        Authorization: `Bearer ${tokenValue}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("No seller / restaurant was found");
-        }
-        return res.json();
-      })
-      .then((sellers) => {
-        const filterSeller = sellers.find((seller) => {
+    const getNguoiBan = async () => {
+      try {
+        const response = await axios.get(GetRestaurant, {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
+        const seller = response.data;
+        const filterSeller = seller.find((seller) => {
           return (
             seller.MaNguoiBan ===
             orderDetails.orderDetaiInfo?.[0]?.MonAn?.MaNguoiBan
           );
         });
-        setSeller(filterSeller || {});
-      })
-      .catch((err) => {
+        const responseFilterFood = await axios.get(GetTypeRes, {
+          headers: {
+            Authorization: `Bearer ${tokenValue}`,
+          },
+        });
+        const data = responseFilterFood.data;
+        const filterFoodType = data.filter((food) => {
+          return food.MaNguoiBan === filterSeller?.MaNguoiBan;
+        });
+
+        setSeller({
+          ...filterSeller,
+          loaiMonAn: filterFoodType,
+        });
+      } catch (err) {
         console.log(err);
-      });
-  }, [orderDetails.orderDetaiInfo]);
-  console.log(orderDetails);
+      }
+    };
+    getNguoiBan();
+  }, [tokenValue, orderDetails.orderDetaiInfo]);
+
   let colorStatus = " ";
   let nameStatus = " ";
-  if (props.TrangThai === orderStatus[4].MaTrangThai) {
+  if (props.TrangThai === orderStatus?.[4].MaTrangThai) {
     colorStatus = "bg-red-500";
     nameStatus = orderStatus[4].TenTrangThai;
-  } else if (props.TrangThai === orderStatus[3].MaTrangThai) {
+  } else if (props.TrangThai === orderStatus?.[3].MaTrangThai) {
     colorStatus = "bg-green-500";
     nameStatus = orderStatus[3].TenTrangThai;
   } else {
     colorStatus = "bg-yellow-500";
-    if (props.TrangThai === orderStatus[0].MaTrangThai)
+    if (props.TrangThai === orderStatus?.[0].MaTrangThai)
       nameStatus = orderStatus[0].TenTrangThai;
-    else if (props.TrangThai === orderStatus[1].MaTrangThai)
+    else if (props.TrangThai === orderStatus?.[1].MaTrangThai)
       nameStatus = orderStatus[1].TenTrangThai;
-    else if (props.TrangThai === orderStatus[2].MaTrangThai)
+    else if (props.TrangThai === orderStatus?.[2].MaTrangThai)
       nameStatus = orderStatus[2].TenTrangThai;
   }
   return (
     <div className="bg-white p-4 rounded-xl mb-3">
       <div className="flex justify-between mb-2">
         <div className="flex gap-3">
-          {seller.AnhNguoiBan !== null ? (
+          {seller.AnhNguoiBan && seller.AnhNguoiBan !== null ? (
             <img
               src={localStaticFile + seller.AnhNguoiBan}
               className="w-48 h-28 rounded-lg"
@@ -116,6 +133,7 @@ export default function OrderStatus(props) {
             <p>Ordered by: {userData.TenNguoiDung}</p>
             <p>Address going to: {props.DiaChiDen}</p>
             <p>OrderID: {props.MaDonHang}</p>
+
             {/* <Link to="/activity/:123" className="mt-3 text-red-500">
               View Details
             </Link> */}
@@ -125,10 +143,11 @@ export default function OrderStatus(props) {
           <p className={`${colorStatus} text-white rounded-md p-1`}>
             {nameStatus}
           </p>
-          <p className="text-xs mt-2">11/12/2003</p>
+          <p>{formatDate(props.ThoiGianTao)}</p>
         </div>
       </div>
       <hr />
+
       <div className="detailsOrders flex items-center justify-between text-xs ">
         <div className="listOrder py-4">
           <div>
@@ -147,6 +166,7 @@ export default function OrderStatus(props) {
                 </div>
               );
             })}
+            <p>Note: {props.LoiNhan !== null ? props.LoiNhan : "No note"}</p>
           </div>
         </div>
         <div className="pay flex place-items-center gap-2">
@@ -166,6 +186,16 @@ export default function OrderStatus(props) {
           <button className="py-2 px-4 border-red-500 border text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200 ease-in">
             Help
           </button>
+          {props.TrangThai !== 5 && props.TrangThai !== 2 && (
+            <button
+              onClick={() => {
+                setIsCloseFunct(false, props);
+              }}
+              className="py-2 px-4 bg-gray-300 font-bold border-gray-300 border text-gray-500 rounded-md hover:bg-gray-500 hover:text-white transition-all duration-200 ease-in"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
     </div>

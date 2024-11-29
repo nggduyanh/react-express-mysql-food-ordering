@@ -1,22 +1,50 @@
 import { TiStarFullOutline } from "react-icons/ti";
 import avatar from "../../assets/avatar.png";
-import { formatDate, localStaticFile, refreshPage } from "../../Route";
+import {
+  customBadWords,
+  formatDate,
+  getCommentForSpecificFood,
+  localStaticFile,
+  refreshPage,
+} from "../../Route";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Toggle from "../../Function/Toggle/LayoutToggle";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useOutletContext, useParams } from "react-router-dom";
 import { IoCloseCircleSharp } from "react-icons/io5";
-export default function SpecificComment({ seller, checkUpdate, ...comment }) {
+import { Filter } from "bad-words";
+import axios from "axios";
+export default function SpecificComment({
+  seller,
+  MaMonAn,
+  checkUpdate,
+  ...comment
+}) {
   const { userData, tokenValue } = useOutletContext();
   const [showFixComment, setshowFixComment] = useState(false);
   const [ReportComment, setReportComment] = useState(false);
   const commentRef = useRef(null);
   const [showImg, setShowImg] = useState(false);
+  const filter = new Filter({
+    list: customBadWords,
+  });
+  const cleanedContent = filter.clean(comment.NoiDung);
   const [imgData, setImageData] = useState("");
   const nameRestaurant = useParams();
-  const handleSetFixComment = () => {
-    checkUpdate(false);
+  const handleSetFixComment = async () => {
+    const response = await axios.get(getCommentForSpecificFood + `${MaMonAn}`, {
+      headers: {
+        Authorization: "Bearer " + tokenValue,
+      },
+    });
+    const data = response.data;
+    const filterUserComment = data?.[0]?.NhanXet.filter((user) => {
+      return user.MaNguoiMua === userData.MaNguoiDung;
+    });
+    console.log("filterUserComment", filterUserComment);
+    // console.log("data", data?.[0]?.NhanXet?.[0]);
+    checkUpdate(false, filterUserComment?.[0]?.Diem);
   };
   const handleShowBtn = (event) => {
     event.stopPropagation();
@@ -62,7 +90,7 @@ export default function SpecificComment({ seller, checkUpdate, ...comment }) {
             <img
               src={localStaticFile + imgData}
               alt=""
-              className="w-full h-full border border-pink-500 object-fill"
+              className="w-full h-full  border border-pink-500 object-fill"
             />
             <div className="">
               <IoCloseCircleSharp
@@ -79,7 +107,7 @@ export default function SpecificComment({ seller, checkUpdate, ...comment }) {
           <img
             src={localStaticFile + comment.AnhNguoiDung}
             alt=""
-            className="h-10 w-10 border border-pink-500 rounded-full"
+            className="h-10 w-10 border border-pink-500 rounded-full "
           />
         ) : (
           <img
@@ -122,7 +150,7 @@ export default function SpecificComment({ seller, checkUpdate, ...comment }) {
           <i className="text-xs">
             Created: {formatDate(String(comment.ThoiGianTao))}
           </i>
-          <p>{comment.NoiDung}</p>
+          <p>{cleanedContent}</p>
         </div>
         {showFixComment && (
           <div

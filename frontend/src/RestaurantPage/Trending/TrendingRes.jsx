@@ -6,7 +6,11 @@ import { UserContext } from "../../Layout/LayoutHeader";
 export default function TrendingRes() {
   const { tokenValue } = useContext(UserContext);
   const trendingFood = useFilterRes_Type(" ", tokenValue)
-    .sort((a, b) => b.Diem - a.Diem)
+    .filter((res) => res.LuotDanhGia > 0)
+    .sort(
+      (a, b) =>
+        Math.round(b.Diem / b.LuotDanhGia) - Math.round(a.Diem / a.LuotDanhGia)
+    )
     .map((res) => {
       return (
         <ResInfo key={res.MaNguoiBan} {...res}>

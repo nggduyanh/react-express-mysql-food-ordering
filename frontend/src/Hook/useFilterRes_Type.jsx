@@ -31,7 +31,7 @@ export default function useFilterRes_Type(valueFilter = " ", tokenValue) {
   const filterRes = useMemo(() => {
     const trimValueFilter = valueFilter.trim();
     return listRestaurant.filter((value) => {
-      const matchesName = value.TenNguoiBan.includes(trimValueFilter);
+      const matchesName = value.TenNguoiBan?.includes(trimValueFilter);
       const matchesTypeFood = value.loaiMonAn.some((food) =>
         food.TenLoaiMonAn.includes(trimValueFilter)
       );

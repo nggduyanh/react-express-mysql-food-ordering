@@ -13,11 +13,15 @@ import {
 } from "../../Route";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { GoHome } from "react-icons/go";
+import { localStaticFile } from "../../routebackend";
+import { socket } from "../../Route/socket";
 const OrderReducer = {
   listFood: [],
   promotions: {},
   suggestion: "",
   paymentMethod: "",
+  address: "",
 };
 const OrderAction = (state, action) => {
   switch (action.type) {
@@ -32,6 +36,7 @@ const OrderAction = (state, action) => {
         promotions: action.payload,
       };
     case "SUGGESTION":
+    case "ADDRESS":
     case "PAYMENT": {
       const { name, value } = action.event.target;
       return {
@@ -48,6 +53,8 @@ export default function OrderDetails(props) {
   const { tokenValue, userData } = useOutletContext();
   const [detailsOrder, dispatch] = useReducer(OrderAction, OrderReducer);
   const [totalMoney, settotalMoney] = useState(0);
+  const [mainAddress, setMainAddress] = useState();
+  const DiaChiDen = JSON.parse(sessionStorage.getItem("userAddress"));
   const [paymentMethod, setPaymentMethod] = useState([]);
   const navigate = useNavigate();
   const handlePayment = async (e) => {
@@ -68,8 +75,15 @@ export default function OrderDetails(props) {
       },
     });
     const data = await response.data;
+    console.log("data", data);
     dispatch({ type: "PROMOTION", payload: data[0] });
   };
+  useEffect(() => {
+    if (DiaChiDen) {
+      setMainAddress(DiaChiDen.address);
+    }
+  }, [tokenValue, DiaChiDen]);
+
   useEffect(() => {
     dispatch({ type: "LIST_ORDER", payload: props.orderList });
   }, [props.orderList]);
@@ -121,6 +135,9 @@ export default function OrderDetails(props) {
     if (totalTemp < 0) return totalPrice;
     return totalTemp;
   };
+  const handleChangeAddress = (e) => {
+    dispatch({ type: "ADDRESS", event: e });
+  };
   const handlePayOrder = async (event) => {
     event.preventDefault();
     const total = applyPromotions(detailsOrder);
@@ -142,7 +159,8 @@ export default function OrderDetails(props) {
           axios.post(
             OrderAdd,
             {
-              DiaChiDen: "De La Thanh",
+              DiaChiDen:
+                mainAddress !== undefined ? mainAddress : detailsOrder.address,
               TrangThai: 1,
               GiaBan: total,
               MaTaiXe: null,
@@ -150,6 +168,7 @@ export default function OrderDetails(props) {
               MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
               TrangThaiThanhToan: TrangThaiThanhToan,
               MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+              LoiNhan: detailsOrder.suggestion,
             },
             {
               headers: {
@@ -208,6 +227,11 @@ export default function OrderDetails(props) {
               // setTimeout(() => {
               //   navigate("/home/activity/ongoing");
               // }, 2000);
+              socket.emit(
+                "send_order",
+                response.data[0],
+                props.Seller?.[0].MaNguoiBan
+              );
               return successMessage;
             },
             // success: () => {
@@ -226,7 +250,10 @@ export default function OrderDetails(props) {
                 urlPayment,
                 {
                   MaDonHang: response.data[0].MaDonHang,
-                  DiaChiDen: "De La Thanh",
+                  DiaChiDen:
+                    mainAddress !== undefined
+                      ? mainAddress
+                      : detailsOrder.address,
                   TrangThai: 1,
                   GiaBan: total,
                   MaTaiXe: null,
@@ -234,6 +261,7 @@ export default function OrderDetails(props) {
                   MaKhuyenMai: detailsOrder.promotions?.MaKhuyenMai || null,
                   TrangThaiThanhToan: false,
                   MaPhuongThucGiaoDich: parseInt(detailsOrder.paymentMethod),
+                  LoiNhan: detailsOrder.suggestion,
                   ListItems: reponseDetailsOrder?.data,
                 },
                 {
@@ -252,12 +280,16 @@ export default function OrderDetails(props) {
               success: (response) => {
                 // console.log("Response: " + response);
                 const successMessage = response.data.return_message;
-                console.log("response", response);
                 if (response.data.return_code !== 1) {
                   const failedMessage = "Something went wrong";
                   return failedMessage;
                 }
                 window.location.href = response.data.order_url;
+                socket.emit(
+                  "send_order",
+                  response.data[0],
+                  props.Seller?.[0].MaNguoiBan
+                );
                 // navigate("/" + response.data.order_url);
                 return successMessage;
               },
@@ -281,10 +313,14 @@ export default function OrderDetails(props) {
   return (
     <div className="sticky-div">
       <div className="pr-16 -ml-6 ">
-        <div className="border shadow-xl bg-white border-gray-300 rounded-2xl w-full orderBox p-4 grid grid-rows-8 gap-3">
+        <div className="border shadow-xl bg-white border-gray-300 rounded-2xl w-full orderBox p-4 grid grid-rows-9 gap-3">
           <div className="text-xl font-bold pb-2 flex items-center gap-3">
             {props.img !== null ? (
-              <img src={props.img} alt="" className="w-10 h-10 rounded-full" />
+              <img
+                src={localStaticFile + props.img}
+                alt=""
+                className="w-10 h-10 rounded-full"
+              />
             ) : (
               <img
                 src="/resDefault.jpg"
@@ -313,7 +349,7 @@ export default function OrderDetails(props) {
                       <div className="flex items-center">
                         {order.AnhMonAn !== null ? (
                           <img
-                            src={order.AnhMonAn}
+                            src={localStaticFile + order.AnhMonAn}
                             alt=""
                             className="h-10 w-10"
                           />
@@ -333,11 +369,25 @@ export default function OrderDetails(props) {
               // props.orderList
             )}
           </div>
+          {mainAddress === undefined && (
+            <div className="flex items-center">
+              <input
+                placeholder="enter your address"
+                type="text"
+                name="address"
+                onChange={handleChangeAddress}
+                className=" rounded-l-lg px-2 border border-gray-400 h-full w-full"
+              />
+              <div className="w-2/12 justify-center bg-pink-500 h-full rounded-r-lg flex items-center">
+                <GoHome className="font-bold text-white text-3xl " />
+              </div>
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <select
               name="promotions"
               onChange={handlePromotionChange}
-              className="w-full border border-gray-200 p-2"
+              className="w-full border border-gray-300 p-2"
             >
               <option value="" hidden>
                 Choose promotion
@@ -345,14 +395,23 @@ export default function OrderDetails(props) {
               {props.lstPromotions.map((promotion) => {
                 return (
                   <option
+                    disabled={promotion.SoLuong < 1 ? true : false}
+                    className=""
                     key={promotion.MaKhuyenMai}
                     value={promotion.MaKhuyenMai}
                   >
-                    {promotion.TenKhuyenMai}
+                    {promotion.TenKhuyenMai} ({" "}
+                    <span className="">
+                      Amount:{" "}
+                      {promotion.SoLuong < 1 ? "Sold out" : promotion.SoLuong}
+                    </span>
+                    )
                   </option>
                 );
               })}
-              <option value="remove">Remove promotion</option>
+              <option value="remove" className="">
+                Remove promotion
+              </option>
             </select>
             <div className="p-2 bg-red-500 font-bold text-white rounded-e-lg">
               %Apply

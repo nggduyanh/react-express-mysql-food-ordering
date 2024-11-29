@@ -1,17 +1,14 @@
 import ResTypeButton from "../RestaurantPage/ResTypeButton";
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
-import { GetRestaurant, GetTypeRes, getTypeRestaurant } from "../Route";
+import { getTypeRestaurant } from "../Route";
 import useFetchData from "../Hook/useFetchData";
 import { useContext, useState } from "react";
 import { UserContext } from "../Layout/LayoutHeader";
 export default function Slider() {
   const { tokenValue } = useContext(UserContext);
-  const [typeRes, errorTypeRes] = useFetchData(GetTypeRes, tokenValue);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [type, setType] = useFetchData(getTypeRestaurant, tokenValue);
-  const [res, setRes] = useFetchData(GetRestaurant, tokenValue);
-  console.log("type", type);
   // console.log("restaurant", res);
   const itemsPerPage = 8;
   const listType = type?.data
@@ -21,8 +18,8 @@ export default function Slider() {
     });
 
   const handleClickNext = () => {
-    if (typeRes && typeRes.data) {
-      const totalPages = Math.ceil(typeRes.data.length / itemsPerPage);
+    if (type && type.data) {
+      const totalPages = Math.ceil(type.data.length / itemsPerPage);
       if (currentIndex < totalPages - 1) {
         setCurrentIndex(currentIndex + 1);
       }

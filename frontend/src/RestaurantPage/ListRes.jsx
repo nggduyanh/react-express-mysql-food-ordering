@@ -28,7 +28,7 @@ export default function ListRes() {
     <div className="marginJustification min-h-screen">
       <p className="text-2xl font-bold my-4">Good food near you</p>
       <Search searchResult={(val) => setSearch(val)} />
-      <GridDiv cols={4} classname="listFood mt-5">
+      <GridDiv cols={4} classname="listFood my-10">
         {listFood}
       </GridDiv>
     </div>

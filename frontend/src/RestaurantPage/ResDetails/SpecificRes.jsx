@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
-import ResInfo from "../InfoRes/ResInfo";
+import ResInfo from "../InfoRes/ResInfo.jsx";
 import { lazy, Suspense, useContext, useEffect, useState } from "react";
 import { useMemo } from "react";
-import FoodDetails from "../Food/FoodDetails";
-import MarginJustifi from "../../Function/MarginJustifi";
-import GridDiv from "../../Function/GridDiv";
-const Rating = lazy(() => import("../Comment/Rating"));
-import OrderDetails from "./OrderDetails";
-import ListComment from "../Comment/ListComment";
+import FoodDetails from "../Food/FoodDetails.jsx";
+import MarginJustifi from "../../Function/MarginJustifi.jsx";
+import GridDiv from "../../Function/GridDiv.jsx";
+const Rating = lazy(() => import("../Comment/Rating.jsx"));
+import OrderDetails from "./OrderDetails.jsx";
+import ListComment from "../Comment/ListComment.jsx";
 import { FaRegHeart, FaRegCommentAlt } from "react-icons/fa";
 import { IoLocationOutline, IoCloseCircleSharp } from "react-icons/io5";
 import {
@@ -17,8 +17,9 @@ import {
   GetRestaurant,
   localStaticFile,
 } from "../../Route/index.js";
-import Card from "../../Information/Payment/Card";
+import Card from "../../Information/Payment/Card.jsx";
 import { UserContext } from "../../Layout/LayoutHeader.jsx";
+import { TiStarFullOutline, TiStarOutline } from "react-icons/ti";
 
 export default function SpecificRes() {
   const { tokenValue } = useContext(UserContext);
@@ -92,13 +93,17 @@ export default function SpecificRes() {
         return res.json();
       })
       .then((data) => {
-        setPromotions(data);
+        const promotionsFilterRestaurant = data.filter((promo) => {
+          return promo.MaNguoiBan === Seller?.[0]?.MaNguoiBan;
+        });
+
+        setPromotions(promotionsFilterRestaurant);
       })
       .catch((err) => {
         console.log(err.message);
         setPromotions([]);
       });
-  }, [tokenValue]);
+  }, [Seller, tokenValue]);
 
   const categoryFood = useMemo(() => {
     const array = Food.reduce((accumulate, currentVal) => {
@@ -162,12 +167,38 @@ export default function SpecificRes() {
       );
     });
   }, [getFoodByCategory]);
+  const NumberOfStar = Math.round(
+    ResInfor.state.Diem / ResInfor.state.LuotDanhGia
+  );
+  const DecimalOfStar = Number.parseInt(NumberOfStar);
+  let arrayOfStar = new Array(5);
+  if (!isNaN(NumberOfStar) && !isNaN(DecimalOfStar)) {
+    let i = 0;
+    while (i < 5) {
+      if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
+      else
+        arrayOfStar.push(
+          <TiStarFullOutline key={i} className="text-yellow-500" />
+        );
+      i++;
+    }
+  } else {
+    let i = 0;
+    while (i < 5) {
+      arrayOfStar.push(<TiStarOutline key={i} />);
+      i++;
+    }
+  }
   return (
     <div className="background_res relative">
       <div className="bg-black bckImage">
         <div className="overlay"></div>
         <MarginJustifi classname=" text-white flex justify-between py-10 header_content">
-          <ResInfo details={true} rate={ResInfor.state.Diem}>
+          <ResInfo
+            details={true}
+            rate={ResInfor.state.Diem}
+            amountComment={ResInfor.state.LuotDanhGia}
+          >
             <p className="font-bold capitalize text-4xl tracking-widest">
               {ResInfor.state.TenNguoiBan}
             </p>
@@ -184,11 +215,12 @@ export default function SpecificRes() {
               Time: {ResInfor.state.ThoiGianMoCua} -{" "}
               {ResInfor.state.ThoiGianDongCua}
             </p>
+            <div className="flex items-center mt-3">{arrayOfStar}</div>
           </ResInfo>
           <div className="res_image flex justify-end">
             {ResInfor.state.AnhNguoiBan !== null ? (
               <img
-                src={ResInfor.state.img}
+                src={localStaticFile + ResInfor.state.AnhNguoiBan}
                 alt=""
                 className="w-11/12 h-48 rounded-xl"
               />
@@ -275,11 +307,11 @@ export default function SpecificRes() {
                             <b className="text-green-500 text-xl">Price: </b>
                             {formatCurrency(detailsFood.GiaBan)}
                           </p>
-                          <div className="btn flex items-center gap-5 x">
+                          {/* <div className="btn flex items-center gap-5 x">
                             <button className=" bg-pink-400 font-bold text-white  w-24 rounded-lg hover:bg-pink-600 transition-all duration-200 ease-in">
                               Add
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -303,10 +335,10 @@ export default function SpecificRes() {
               orderList={order}
               setOrderList={setOrder}
               AmountList={amountOrder}
+              Seller={Seller}
               setAmount={setAmountOrder}
               name={ResInfor.state.TenNguoiBan}
               img={ResInfor.state.AnhNguoiBan}
-              InputCard={(paymentMethod) => {}}
             />
           </div>
           {!close && (

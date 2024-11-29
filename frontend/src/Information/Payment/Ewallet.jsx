@@ -1,5 +1,3 @@
-import PaymentChoose from "./PaymentChoose";
-
 export default function Ewallet() {
   return (
     <div>

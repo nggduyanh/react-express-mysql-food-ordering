@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import videoLogin from "../assets/food_login.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { loginAuth } from "../Route";
 export default function Login() {
+  const [showpass, setShowPass] = useState(false);
   const [loginForm, setLoginForm] = useState({
     SoDienThoai: "",
     MatKhau: "",
@@ -23,17 +26,13 @@ export default function Login() {
     event.preventDefault();
     toast.promise(
       (async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const response = await axios.post(
-          "http://localhost:3030/auth/login",
-          loginForm,
-          {
-            headers: {
-              secretTokenKey:
-                "PX1fGoibstQNJnr9LGvuEoMxh4U8b2ugCfNiAvT2qiPol9Pk5Mh/NbvCS3Nv7poV/kDD7skuT13aD0unwL2ZoJWQ6eK6biY7s2fe7svzjkzrdF7wfXSmlEqQ17aYyy4IljtOmaYymaDNv+/QNbCjzzF7sOaWmIxBn0Ej1b/dzLAdu2H/DJuataMoOL4AhlkNrQR08/cDnnr3Kw2DDGZlDUl++K75O5+ejO1pCbhnar7zpD2zghMVxxxrQw5GAulL3pVJ2EfnXtxC4mdLKLHlpuzliAfJrof8FxQHfPyuaBMfECNIRe5bBC7v3/K6nSGYUjr3OdWRiNy45kqajqGedw==",
-            },
-          }
-        );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await axios.post(loginAuth, loginForm, {
+          headers: {
+            secretTokenKey:
+              "PX1fGoibstQNJnr9LGvuEoMxh4U8b2ugCfNiAvT2qiPol9Pk5Mh/NbvCS3Nv7poV/kDD7skuT13aD0unwL2ZoJWQ6eK6biY7s2fe7svzjkzrdF7wfXSmlEqQ17aYyy4IljtOmaYymaDNv+/QNbCjzzF7sOaWmIxBn0Ej1b/dzLAdu2H/DJuataMoOL4AhlkNrQR08/cDnnr3Kw2DDGZlDUl++K75O5+ejO1pCbhnar7zpD2zghMVxxxrQw5GAulL3pVJ2EfnXtxC4mdLKLHlpuzliAfJrof8FxQHfPyuaBMfECNIRe5bBC7v3/K6nSGYUjr3OdWRiNy45kqajqGedw==",
+          },
+        });
 
         const getUserInfo = response.data;
         const now = new Date();
@@ -73,13 +72,14 @@ export default function Login() {
     } else {
       console.log("Login again");
     }
-  }, []);
+  }, [navigate]);
   return (
     <div className="flex">
       <video
         loop
         autoPlay
         muted
+        preload="auto"
         id="login_video"
         className="w-1/2 h-screen object-cover"
       >
@@ -109,15 +109,28 @@ export default function Login() {
             Password
           </label>
           <br />
-          <input
-            className="input_setup"
-            type="password"
-            placeholder="Enter password"
-            id="password"
-            onChange={handleChange}
-            name="MatKhau"
-            value={loginForm.MatKhau}
-          />
+          <div className="relative">
+            <input
+              className="input_setup border border-black block w-full p-3 rounded-xl"
+              type={showpass ? "text" : `password`}
+              placeholder="Enter password"
+              id="password"
+              onChange={handleChange}
+              name="MatKhau"
+              value={loginForm.MatKhau}
+            />
+            {showpass ? (
+              <AiFillEye
+                onClick={() => setShowPass(false)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            ) : (
+              <AiFillEyeInvisible
+                onClick={() => setShowPass(true)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            )}
+          </div>
           <br />
           <button
             className={` btnLoginRegister bg-gradient-to-r from-pink-500 to-pink-600 `}

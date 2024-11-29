@@ -4,8 +4,10 @@ import toast from "react-hot-toast";
 import { MdOutlinePassword } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UpdateUser } from "../../Route";
-
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 export default function CreateNewPass() {
+  const [showpass, setShowPass] = useState(false);
   const userData = useLocation();
   const accessToken = userData.state.data.accessToken;
   const navigate = useNavigate();
@@ -30,6 +32,9 @@ export default function CreateNewPass() {
     } else {
       if (newPass.confirmNewPassword !== newPass.setupNewPassword) {
         toast.error("Password is not matched");
+      }
+      if (!PWD_REGEX.test(newPass.setupNewPassword)) {
+        toast.error("Invalid password");
       } else {
         toast.promise(
           (async () => {
@@ -77,22 +82,52 @@ export default function CreateNewPass() {
           Must be at least 8 characters
         </p>
         <div>
-          <input
-            type="text"
-            onChange={handleCreateNewPassChange}
-            value={newPass.setupNewPassword}
-            name="setupNewPassword"
-            placeholder="setup new password"
-            className="block border border-gray-400 w-full mb-3 p-3 rounded-lg"
-          />
-          <input
-            type="text"
-            onChange={handleCreateNewPassChange}
-            value={newPass.confirmNewPassword}
-            name="confirmNewPassword"
-            placeholder="confirm new password"
-            className="block border border-gray-400 w-full mb-3 p-3 rounded-lg"
-          />
+          <div className="relative">
+            <input
+              type={showpass ? "text" : `password`}
+              onChange={handleCreateNewPassChange}
+              value={newPass.setupNewPassword}
+              name="setupNewPassword"
+              placeholder="setup new password"
+              className="block border border-gray-400 w-full mb-3 p-3 rounded-lg"
+            />
+            {showpass ? (
+              <AiFillEye
+                onClick={() => setShowPass(false)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            ) : (
+              <AiFillEyeInvisible
+                onClick={() => setShowPass(true)}
+                className="absolute top-1/2 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            )}
+          </div>
+          <div className="relative">
+            <input
+              type={showpass ? "text" : `password`}
+              onChange={handleCreateNewPassChange}
+              value={newPass.confirmNewPassword}
+              name="confirmNewPassword"
+              placeholder="confirm new password"
+              className="block border border-gray-400 w-full mb-3 p-3 rounded-lg"
+            />
+            {showpass ? (
+              <AiFillEye
+                onClick={() => setShowPass(false)}
+                className="absolute top-1/3 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            ) : (
+              <AiFillEyeInvisible
+                onClick={() => setShowPass(true)}
+                className="absolute top-1/3 -translate-y-1/2 right-0 mx-2 cursor-pointer"
+              />
+            )}
+            <p className="text-xs text-gray-500 mb-2">
+              <span className="font-bold ">Password:</span> Must be 8-24 chars,
+              with at least 1 uppercase, 1 lowercase, 1 number, and 1 special.
+            </p>
+          </div>
         </div>
         <button className="mt-3 inline-block w-full bg-pink-500 p-3 rounded-lg text-white font-bold hover:bg-pink-700 transition-all duration-200 ease-in">
           Reset password

@@ -3,18 +3,27 @@ import { TiStarOutline } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import Toggle from "../../Function/Toggle/LayoutToggle";
 import LoveButton from "../../Function/LoveButton";
+import { localStaticFile } from "../../Route";
 export default function ResInfo({ children, details, ...rest }) {
-  const NumberOfStar = rest.Diem;
+  const NumberOfStar = Math.round(rest.Diem / rest.LuotDanhGia);
   const DecimalOfStar = Number.parseInt(NumberOfStar);
   let arrayOfStar = new Array(5);
-  let i = 0;
-  while (i < 5) {
-    if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
-    else
-      arrayOfStar.push(
-        <TiStarFullOutline key={i} className="text-yellow-500" />
-      );
-    i++;
+  if (!isNaN(NumberOfStar) && !isNaN(DecimalOfStar)) {
+    let i = 0;
+    while (i < 5) {
+      if (i >= DecimalOfStar) arrayOfStar.push(<TiStarOutline key={i} />);
+      else
+        arrayOfStar.push(
+          <TiStarFullOutline key={i} className="text-yellow-500" />
+        );
+      i++;
+    }
+  } else {
+    let i = 0;
+    while (i < 5) {
+      arrayOfStar.push(<TiStarOutline key={i} />);
+      i++;
+    }
   }
   return (
     <Toggle>
@@ -28,7 +37,7 @@ export default function ResInfo({ children, details, ...rest }) {
             <Link to={`/home/restaurant/:${rest.TenNguoiBan}`} state={rest}>
               {rest.AnhNguoiBan !== null ? (
                 <img
-                  src={rest.AnhNguoiBan}
+                  src={localStaticFile + rest.AnhNguoiBan}
                   alt=""
                   className="w-full h-48 rounded-lg"
                 />
@@ -44,7 +53,15 @@ export default function ResInfo({ children, details, ...rest }) {
             <div className="absolute bottom-0 right-0 p-2">
               <div className="flex items-center bg-green-700 gap-1 text-white font-bold text-xs p-1 rounded-md">
                 <TiStarOutline />
-                <p>{rest.Diem}</p>
+                <p>
+                  {isNaN(
+                    Math.floor(parseInt(rest.Diem) / parseInt(rest.LuotDanhGia))
+                  )
+                    ? 0
+                    : Math.floor(
+                        parseInt(rest.Diem) / parseInt(rest.LuotDanhGia)
+                      )}
+                </p>
                 <p>({rest.LuotDanhGia}+)</p>
               </div>
             </div>
@@ -54,7 +71,9 @@ export default function ResInfo({ children, details, ...rest }) {
         {/* <Link to={`/restaurant/:${rest.title}`} state={rest}> */}
         {children}
         {/* </Link> */}
-        <div className="flex items-center mt-3">{arrayOfStar}</div>
+        {details !== true && (
+          <div className="flex items-center mt-3">{arrayOfStar}</div>
+        )}
       </div>
     </Toggle>
   );

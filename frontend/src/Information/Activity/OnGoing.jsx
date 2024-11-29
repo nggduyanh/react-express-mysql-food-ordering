@@ -1,5 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import OrderStatus from "./OrderStatus";
+import { useEffect } from "react";
 
 export default function OnGoing() {
   const { order, orderStatus } = useOutletContext();
@@ -11,14 +12,15 @@ export default function OnGoing() {
       return (
         items.TrangThai === parseInt(orderReceive?.MaTrangThai) ||
         items.TrangThai === parseInt(orderPrepare?.MaTrangThai) ||
-        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai) ||
-        items.TrangThaiThanhToan === 1
+        items.TrangThai === parseInt(orderAlreadyGoing?.MaTrangThai)
       );
+    })
+    .filter((items) => {
+      return items.TrangThaiThanhToan === 1;
     })
     .map((items) => {
       return <OrderStatus {...items} key={items.MaDonHang} />;
     });
-  console.log("order", order);
   return (
     <div className="overflow-auto max-h-[720px]">
       {orderList?.length > 0 ? (
