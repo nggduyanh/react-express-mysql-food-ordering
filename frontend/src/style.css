@@ -1,0 +1,8 @@
+.toast-error{
+    background-color: #f44336;
+    color: white;
+}
+.toast-succes{
+    background-color: #4caf50; /* Màu xanh lá cây cho thông báo thành công */
+  color: white; /* Màu chữ */
+}
