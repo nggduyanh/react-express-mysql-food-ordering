@@ -1,19 +1,20 @@
 const constant = {
     tableName: "NguoiBan",
     id: "MaNguoiBan",
-    ten: "TenNguoiBan",
     thanhPho: "ThanhPho",
     moCua: "ThoiGianMoCua",
     dongCua: "ThoiGianDongCua",
     diaChi: "DiaChi",
     cccd: "CanCuoc",
     giayPhep: "GiayPhep",
-    sdt: "SoDienThoai",
-    mk: "MatKhau",
-    anh: "Anh",
-    mail: "Email",
     diem: "Diem",
-    luotDanhGia: "luotDanhGia" 
+    luotDanhGia: "LuotDanhGia",
+    anh: "AnhNguoiBan",
+    tenChuSoHuu: "TenChuSoHuu",
+    queQuanChuSoHuu: "QueQuanChuSoHuu",
+    ngaySinhChuSoHuu: "NgaySinhChuSoHuu",
+    email: "Email",
+    hotline: "Hotline"
 }
 
 module.exports = constant
