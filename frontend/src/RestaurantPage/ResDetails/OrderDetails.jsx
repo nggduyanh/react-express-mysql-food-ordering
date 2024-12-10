@@ -154,7 +154,8 @@ export default function OrderDetails(props) {
       // });
       let TrangThaiThanhToan =
         parseInt(detailsOrder.paymentMethod) !== 1 ? false : true;
-      if (detailsOrder.listFood.length > 0) {
+      let settingsAddress = detailsOrder.address || mainAddress;  
+      if (detailsOrder.listFood.length > 0 && detailsOrder.paymentMethod !== "" && settingsAddress !== undefined) {
         const response = await toast.promise(
           axios.post(
             OrderAdd,

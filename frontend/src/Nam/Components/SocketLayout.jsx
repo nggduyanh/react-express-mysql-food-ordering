@@ -23,7 +23,7 @@ export default function SocketLayout() {
         getSeller(data);
       });
   }, [userData, tokenValue]);
-  const socketSeller = useSocket("http://localhost:3030"); // URL máy chủ Socket.IO
+  const socketSeller = useSocket(import.meta.env.API_URL || "http://localhost:3000"); // URL máy chủ Socket.IO
   useEffect(() => {
     if (!socketSeller) return;
     // Lắng nghe sự kiện từ server
@@ -35,14 +35,22 @@ export default function SocketLayout() {
       console.log("order_Seller_UserInterfaces", order);
       setListOrder((prevList) => {
         // Kiểm tra xem MaDonHang đã tồn tại trong danh sách chưa
-        if (
-          !prevList.some(
-            (existingOrder) => existingOrder.MaDonHang === order.MaDonHang
-          )
-        ) {
-          return [...prevList, order]; // Thêm order mới vào danh sách
+        const existingOrderIndex = prevList.findIndex(
+          (existingOrder) => existingOrder?.MaDonHang === order?.MaDonHang
+        );
+
+        if (existingOrderIndex !== -1) {
+          // Nếu đơn hàng đã tồn tại, cập nhật thông tin
+          const updatedList = [...prevList];
+          updatedList[existingOrderIndex] = {
+            ...prevList[existingOrderIndex],
+            ...order,
+          };
+          return updatedList;
+        } else {
+          // Nếu đơn hàng chưa tồn tại, thêm mới vào danh sách
+          return [...prevList, order];
         }
-        return prevList; // Giữ nguyên danh sách nếu đã tồn tại
       });
     });
     return () => {

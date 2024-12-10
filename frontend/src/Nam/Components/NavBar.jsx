@@ -58,14 +58,16 @@ export default function NavBar() {
         {isShown && (
           <div className="absolute bg-white border border-orange-500 rounded-lg w-60 h-40 -left-52 top-11 overflow-auto max-h-[200px] p-2">
             {isNotification === true ? (
-              listOrder?.map((items) => {
+              listOrder?.filter((item) => {
+                return item?.MaDonHang !== undefined;
+              })?.map((items) => {
                 return (
                   <div
                     key={items.MaDonHang}
                     className="flex items-center justify-between mb-2 px-2 py-3 bg-orange-500 text-white font-bold rounded-lg"
                   >
-                    <p>OrderId: {items.MaDonHang}</p>
-                    <p>Amount: {items.SoLuong}</p>
+                    <p>OrderId: {items?.MaDonHang || "waiting to payment"}</p>
+                    <p>Amount: {items?.SoLuong || "?"}</p>
                   </div>
                 );
               })

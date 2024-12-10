@@ -16,7 +16,7 @@ async function CreatePayment(req, res) {
 
   const order = {
     app_id: process.env.app_id,
-    app_trans_id: `${moment().format("YYMMDD")}_${transID}+`,
+    app_trans_id: `${moment().format("YYMMDD")}_${transID}`,
     app_user: req.body.MaNguoiMua,
     app_time: Date.now(), // miliseconds
     item: JSON.stringify(req.body.ListItems),
@@ -24,7 +24,7 @@ async function CreatePayment(req, res) {
     amount: req.body.GiaBan,
     description: `Payment for the order #${transID}`,
     bank_code: "",
-    callback_url: process.env.ngrokForwarding + "/payment/callback",
+    callback_url: process.env.API_URL + "/payment/callback",
   };
   console.log("order", order);
   const data =
@@ -113,7 +113,7 @@ async function OrderStatus(trans_id, orderID) {
   };
 
   try {
-    await new Promise((resovle) => setTimeout(resovle, 5000));
+    await new Promise((resovle) => setTimeout(resovle, 60000));
     const orderStatusResult = await axios(reqConfig);
 
     if (orderStatusResult.data.return_code === 3) {

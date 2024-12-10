@@ -26,7 +26,7 @@ export default function Voucher() {
 
   const [Seller, getSeller] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3030/nguoiban/current`, {
+    fetch(import.meta.env.API_URL || "http://localhost:3000" +"/nguoiban/current", {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
       },

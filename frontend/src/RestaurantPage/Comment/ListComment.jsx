@@ -26,8 +26,8 @@ export default function ListComment({ sellerInfor, foodDetails }) {
   const [Comments, setComments] = useState({
     MaNguoiMua: userData.MaNguoiDung,
     MaMonAn: foodDetails.MaMonAn,
-    noiDung: "",
-    diem: "",
+    NoiDung: "",
+    Diem: "",
     HienThi: 1,
     AnhDinhKem: [],
     AnhDinhKemTemp: [],
@@ -77,14 +77,14 @@ export default function ListComment({ sellerInfor, foodDetails }) {
     setComments((prevComments) => {
       return {
         ...prevComments,
-        [name]: name === "diem" ? Number.parseFloat(value) : value,
+        [name]: name === "Diem" ? Number.parseFloat(value) : value,
       };
     });
   };
   const createComment = async () => {
     if (
-      Comments.noiDung.trim().length === 0 &&
-      Comments.diem.trim().length === 0
+      Comments.NoiDung.trim().length === 0 &&
+      Comments.Diem.trim().length === 0
     ) {
       toast.error("Please fullfile your response and star ");
       return;
@@ -101,9 +101,9 @@ export default function ListComment({ sellerInfor, foodDetails }) {
       });
       formCommentData.append("MaNguoiMua", userData.MaNguoiDung);
       formCommentData.append("MaMonAn", foodDetails.MaMonAn);
-      formCommentData.append("noiDung", dataToSend.noiDung);
+      formCommentData.append("NoiDung", dataToSend.NoiDung);
       formCommentData.append("HienThi", dataToSend.HienThi);
-      formCommentData.append("diem", dataToSend.diem);
+      formCommentData.append("Diem", dataToSend.Diem);
       // for (let pair of formCommentData.entries()) {
       //   console.log(pair[0], pair[1]);
       // }
@@ -137,7 +137,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
   };
   const updateComment = async () => {
     // setRating(filterUserComment?.[0]?.Diem);
-    if (Comments.noiDung.trim().length === 0) {
+    if (Comments.NoiDung.trim().length === 0) {
       toast.error("Please fullfile your response and star ");
       return;
     } else {
@@ -155,7 +155,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
           });
           formCommentData.append("MaNguoiMua", userData.MaNguoiDung);
           formCommentData.append("MaMonAn", foodDetails.MaMonAn);
-          formCommentData.append("noiDung", dataToSend.noiDung);
+          formCommentData.append("NoiDung", dataToSend.NoiDung);
           formCommentData.append("HienThi", dataToSend.HienThi);
           const response = await axios.patch(
             updateCommendForSpecificFood,
@@ -194,7 +194,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
     setComments((prevComments) => {
       return {
         ...prevComments,
-        diem: newRating,
+        Diem: newRating,
       };
     });
     setRating(newRating);
@@ -288,7 +288,7 @@ export default function ListComment({ sellerInfor, foodDetails }) {
                 </div>
               )}
               <textarea
-                name="noiDung"
+                name="NoiDung"
                 id="comment"
                 onChange={handleComment}
                 placeholder={

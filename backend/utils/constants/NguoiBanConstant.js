@@ -8,7 +8,7 @@ const constant = {
     cccd: "CanCuoc",
     giayPhep: "GiayPhep",
     diem: "Diem",
-    luotDanhGia: "luotDanhGia",
+    luotDanhGia: "LuotDanhGia",
     anh: "AnhNguoiBan",
     tenChuSoHuu: "TenChuSoHuu",
     queQuanChuSoHuu: "QueQuanChuSoHuu",

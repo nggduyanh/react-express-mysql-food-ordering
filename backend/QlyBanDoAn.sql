@@ -1,5 +1,8 @@
+-- use testdb2;
+-- create database testdb2;
+-- drop database testdb2;
 create table NguoiDung (
-	MaNguoiDung int primary key auto_increment,
+        MaNguoiDung int primary key auto_increment,
     TenNguoiDung varchar (50) unique,
     Email varchar (255),
     AnhNguoiDung varchar (255),
@@ -7,13 +10,13 @@ create table NguoiDung (
     SoDienThoai varchar (50)
 );
 
-alter table nguoidung add column OTP int;
-alter table nguoidung add column OTPExpire varchar (20);
-alter table nguoidung modify column SoDienThoai varchar (50) unique;
-alter table nguoidung add column diachi varchar (50);
+alter table NguoiDung add column OTP int;
+alter table NguoiDung add column OTPExpire varchar (20);
+alter table NguoiDung modify column SoDienThoai varchar (50) unique;
+alter table NguoiDung add column diachi varchar (50);
 
 create table NguoiBan (
-	MaNguoiBan int primary key,
+        MaNguoiBan int primary key,
     TenNguoiBan varchar (50),
     ThanhPho varchar (50),
     ThoiGianMoCua time,
@@ -34,53 +37,53 @@ alter table NguoiBan add column Email varchar (255);
 alter table NguoiBan add column Hotline varchar (255);
 
 create table LoaiNguoiBan (
-	MaLoaiNguoiBan int primary key auto_increment,
+        MaLoaiNguoiBan int primary key auto_increment,
     TenLoaiNguoiBan varchar (50)
 );
 
 create table LoaiMonAn (
-	MaLoaiMonAn int primary key auto_increment,
+        MaLoaiMonAn int primary key auto_increment,
     TenLoaiMonAn varchar (50),
     MaNguoiBan int not null,
     foreign key (MaNguoiBan) references NguoiBan (MaNguoiBan) on delete cascade
 );
 
 create table MonAn (
-	MaMonAn int primary key auto_increment,
+        MaMonAn int primary key auto_increment,
     TenMonAn varchar (50),
     AnhMonAn varchar (255),
     GiaBan int,
     MoTa varchar (255),
     MaNguoiBan int,
     MaLoaiMonAn int,
-    foreign key (MaNguoiBan) references nguoiban (MaNguoiBan) on delete set null,
-    foreign key (MaLoaiMonAn) references loaimonan (MaLoaiMonAn) on delete set null
+    foreign key (MaNguoiBan) references NguoiBan (MaNguoiBan) on delete set null,
+    foreign key (MaLoaiMonAn) references LoaiMonAn (MaLoaiMonAn) on delete set null
 );
 
 create table NhanXet (
-	MaNguoiMua int,
+        MaNguoiMua int,
     MaMonAn int,
     primary key (MaNguoiMua,MaMonAn),
-    foreign key (MaNguoiMua) references nguoidung (MaNguoiDung) on delete cascade,
-    foreign key (MaMonAn) references monan (MaMonAn),
+    foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete cascade,
+    foreign key (MaMonAn) references MonAn (MaMonAn),
     HienThi boolean default true,
     NoiDung varchar (255),
     TraLoi varchar (255),
     Diem double
 );
 
-alter table nhanxet add column ThoiGianTao datetime default now();
+alter table NhanXet add column ThoiGianTao datetime default now();
 
 create table LoaiNguoiBan_NguoiBan (
-	MaNguoiBan int,
+        MaNguoiBan int,
     MaLoaiNguoiBan int,
     primary key (MaNguoiBan,MaLoaiNguoiBan),
-    foreign key (MaNguoiBan) references nguoiban (MaNguoiBan) on delete cascade,
+    foreign key (MaNguoiBan) references NguoiBan (MaNguoiBan) on delete cascade,
     foreign key (MaLoaiNguoiBan) references LoaiNguoiBan (MaLoaiNguoiBan) on delete cascade
 );
 
 create table KhuyenMai (
-	MaKhuyenMai int primary key auto_increment,
+        MaKhuyenMai int primary key auto_increment,
     TenKhuyenMai varchar (255),
     PhanTram double,
     GiaTri int default 0,
@@ -92,7 +95,7 @@ create table KhuyenMai (
 );
 
 create table NguoiMua_KhuyenMai (
-	MaNguoiMua int,
+        MaNguoiMua int,
     MaKhuyenMai int,
     primary key (MaNguoiMua, MaKhuyenMai),
     foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete cascade,
@@ -100,24 +103,24 @@ create table NguoiMua_KhuyenMai (
 );
 
 create table TaiXe (
-	MaTaiXe int primary key, 
+        MaTaiXe int primary key,
     CanCuoc varchar (255),
     BangLai varchar (255),
     foreign key (MaTaiXe) references NguoiDung (MaNguoiDung) on delete cascade
 );
 
 create table TrangThaiDonHang (
-	MaTrangThai int primary key auto_increment,
+        MaTrangThai int primary key auto_increment,
     TenTrangThai varchar (50)
 );
 
 create table PhuongThucGiaoDich (
-	MaPhuongThucGiaoDich int primary key auto_increment,
+        MaPhuongThucGiaoDich int primary key auto_increment,
     TenPhuongThucGiaoDich varchar (50)
 );
 
 create table DonHang (
-	MaDonHang int primary key auto_increment,
+        MaDonHang int primary key auto_increment,
     DiaChiDen varchar (255),
     TrangThai int,
     GiaBan int,
@@ -133,45 +136,45 @@ create table DonHang (
     foreign key (MaPhuongThucGiaoDich) references PhuongThucGiaoDich (MaPhuongThucGiaoDich) on delete set null
 );
 
-alter table donhang add column ThoiGianTao datetime default now();
-alter table donhang add column LoiNhan varchar (255);
+alter table DonHang add column ThoiGianTao datetime default now();
+alter table DonHang add column LoiNhan varchar (255);
 
 create table ChiTietDonHang (
-	MaMonAn int,
+        MaMonAn int,
     MaDonHang int,
     SoLuong int,
     primary key (MaMonAn, MaDonHang),
     foreign key (MaMonAn) references MonAn (MaMonAn),
-    foreign key (MaDonHang) references DonHang (MaDonHang) 
+    foreign key (MaDonHang) references DonHang (MaDonHang)
 );
 
 create table NguoiBanYeuThich (
-	MaNguoiBan int,
+        MaNguoiBan int,
     MaNguoiMua int,
     primary key (MaNguoiBan,MaNguoiMua),
-    foreign key (MaNguoiBan) references nguoiban (MaNguoiBan) on delete cascade,
-    foreign key (MaNguoiMua) references nguoidung (MaNguoiDung) on delete cascade
+    foreign key (MaNguoiBan) references NguoiBan (MaNguoiBan) on delete cascade,
+    foreign key (MaNguoiMua) references NguoiDung (MaNguoiDung) on delete cascade
 );
 
 create table VaiTro (
-	MaVaiTro int primary key auto_increment,
+        MaVaiTro int primary key auto_increment,
     TenVaiTro varchar (50)
 );
 
 create table VaiTro_NguoiDung (
-	MaVaiTro int,
+        MaVaiTro int,
     MaNguoiDung int,
     primary key (MaVaiTro,MaNguoiDung),
     foreign key (MaVaiTro) references VaiTro (MaVaiTro) on delete cascade,
-    foreign key (MaNguoiDung) references nguoidung (MaNguoiDung) on delete cascade
+    foreign key (MaNguoiDung) references NguoiDung (MaNguoiDung) on delete cascade
 );
 
 create table AnhNhanXet (
-	MaNguoiMua int not null,
+        MaNguoiMua int not null,
     MaMonAn int not null,
     MaAnh int primary key auto_increment,
-    foreign key (MaNguoiMua) references nhanxet (MaNguoiMua) on delete cascade,
-    foreign key (MaMonAn) references nhanxet (MaMonAn) on delete cascade
+    foreign key (MaNguoiMua) references NhanXet (MaNguoiMua) on delete cascade,
+    foreign key (MaMonAn) references NhanXet (MaMonAn) on delete cascade
 );
 
 alter table AnhNhanXet add column AnhDinhKem varchar (255);
@@ -180,83 +183,82 @@ alter table AnhNhanXet add column AnhDinhKem varchar (255);
 
 create trigger tinhDiemNguoiBanInsert after insert on NhanXet
 for each row
-update NguoiBan 
-join 
-(select new.Diem as diem, nguoiban.MaNguoiBan from monan join nguoiban on monan.MaNguoiBan = nguoiban.MaNguoiBan where monan.MaMonAn = new.MaMonAn ) as tmp 
+update NguoiBan
+join
+(select new.Diem as diem, NguoiBan.MaNguoiBan from MonAn join NguoiBan on MonAn.MaNguoiBan = NguoiBan.MaNguoiBan where MonAn.MaMonAn = new.MaMonAn ) as tmp
 on NguoiBan.MaNguoiBan = tmp.MaNguoiBan
 set NguoiBan.Diem = NguoiBan.Diem + tmp.diem, NguoiBan.LuotDanhGia = NguoiBan.LuotDanhGia + 1 ;
 
 create trigger tinhDiemNguoiBanUpdate after update on NhanXet
 for each row
-update NguoiBan 
-join 
-(select new.Diem - old.Diem as diem, nguoiban.MaNguoiBan from monan join nguoiban on monan.MaNguoiBan = nguoiban.MaNguoiBan where monan.MaMonAn = old.MaMonAn ) as tmp 
+update NguoiBan
+join
+(select new.Diem - old.Diem as diem, NguoiBan.MaNguoiBan from MonAn join NguoiBan on MonAn.MaNguoiBan = NguoiBan.MaNguoiBan where MonAn.MaMonAn = old.MaMonAn ) as tmp
 on NguoiBan.MaNguoiBan = tmp.MaNguoiBan
 set NguoiBan.Diem = NguoiBan.Diem + tmp.diem;
 
 delimiter $$
 create trigger themNguoiMua_KhuyenMai before insert on NguoiMua_KhuyenMai
-for each row 
+for each row
 begin
-	if ((select soLuong from khuyenmai where khuyenmai.MaKhuyenMai = new.MaKhuyenMai) = 0)
+        if ((select SoLuong from KhuyenMai where KhuyenMai.MaKhuyenMai = new.MaKhuyenMai) = 0)
     then
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
-    else update khuyenmai set soLuong = soLuong - 1 where makhuyenmai = new.makhuyenmai;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
+    else update KhuyenMai set SoLuong = SoLuong - 1 where MaKhuyenMai = new.MaKhuyenMai;
     end if;
 end$$
 delimiter ;
 
 create trigger xoaNguoiMua_KhuyenMai after delete on NguoiMua_KhuyenMai
 for each row
-update khuyenmai set soLuong = soLuong + 1 where maKhuyenMai = old.maKhuyenMai;
+update KhuyenMai set SoLuong = SoLuong + 1 where MaKhuyenMai = old.MaKhuyenMai;
 
 delimiter $$
-create trigger themKhuyenMai before insert on donhang
-for each row 
+create trigger themKhuyenMai before insert on DonHang
+for each row
 begin
-	if ((select soLuong from khuyenmai where khuyenmai.MaKhuyenMai = new.MaKhuyenMai) = 0)
+        if ((select SoLuong from KhuyenMai where KhuyenMai.MaKhuyenMai = new.MaKhuyenMai) = 0)
     then
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
-    else update khuyenmai set soLuong = soLuong - 1 where makhuyenmai = new.makhuyenmai;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đã hết số lượng khuyến mãi';
+    else update KhuyenMai set SoLuong = SoLuong - 1 where MaKhuyenMai = new.MaKhuyenMai;
     end if;
 end$$
 delimiter ;
-drop trigger themNguoiMua_KhuyenMai;
-drop trigger xoaNguoiMua_KhuyenMai;
+-- drop trigger themNguoiMua_KhuyenMai;
+-- drop trigger xoaNguoiMua_KhuyenMai;
 
-insert into donhang (donhang.DiaChiDen, donhang.MaKhuyenMai) values ("Hàm Tử Quan",1);
 
-# Drop Table 
-drop table anhnhanxet;
-drop table NhanXet;
-drop table NguoiMua_KhuyenMai;
-drop table LoaiNguoiBan_NguoiBan;
-drop table ChiTietDonHang;
-drop table VaiTro_NguoiDung;
-drop table NguoiBanYeuThich;
-drop table DonHang;
-drop table MonAn;
-drop table LoaiMonAn;
-drop table LoaiNguoiBan;
-drop table KhuyenMai;
-drop table NguoiBan;
-drop table TaiXe;
-drop table NguoiDung;
-drop table PhuongThucGiaoDich;
-drop table TrangThaiDonHang;
-drop table VaiTro;
+# Drop Table
+-- drop table anhnhanxet;
+-- drop table NhanXet;
+-- drop table NguoiMua_KhuyenMai;
+-- drop table LoaiNguoiBan_NguoiBan;
+-- drop table ChiTietDonHang;
+-- drop table VaiTro_NguoiDung;
+-- drop table NguoiBanYeuThich;
+-- drop table DonHang;
+-- drop table MonAn;
+-- drop table LoaiMonAn;
+-- drop table LoaiNguoiBan;
+-- drop table KhuyenMai;
+-- drop table NguoiBan;
+-- drop table TaiXe;
+-- drop table NguoiDung;
+-- drop table PhuongThucGiaoDich;
+-- drop table TrangThaiDonHang;
+-- drop table VaiTro;
 
 -- Dữ liệu
 -- VaiTro
-insert into vaitro (vaitro.TenVaiTro) values 
-	("Admin"),
+insert into VaiTro (VaiTro.TenVaiTro) values
+        ("Admin"),
     ("Buyer"),
     ("Seller"),
     ("Driver");
 
 -- NguoiDung
-insert into nguoidung (nguoidung.TenNguoiDung,nguoidung.MatKhau) values 
-	("abc","1"),
+insert into NguoiDung (NguoiDung.TenNguoiDung,NguoiDung.MatKhau) values
+        ("abc","1"),
     ("root","1"),
     ("custard","1"),
     ("malenia423","1"),
@@ -265,8 +267,8 @@ insert into nguoidung (nguoidung.TenNguoiDung,nguoidung.MatKhau) values
     ("sktt1","1");
 
 -- VaiTroNguoiDung
-insert into vaitro_nguoidung (vaitro_nguoidung.MaNguoiDung, vaitro_nguoidung.MaVaiTro) values 
-	(2,1),
+insert into VaiTro_NguoiDung (VaiTro_NguoiDung.MaNguoiDung, VaiTro_NguoiDung.MaVaiTro) values
+        (2,1),
     (1,2),
     (3,2),
     (4,2),
@@ -275,20 +277,20 @@ insert into vaitro_nguoidung (vaitro_nguoidung.MaNguoiDung, vaitro_nguoidung.MaV
     (7,3);
 
 -- NguoiBan
-insert into nguoiban (nguoiban.MaNguoiBan,nguoiban.TenNguoiBan,nguoiban.ThanhPho, nguoiban.ThoiGianMoCua, nguoiban.ThoiGianDongCua, nguoiban.DiaChi) values 
-	(5,"Thiên Đường ăn vặt","Hà Nội","8:00","10:00","Hàm Tử Quan"),
+insert into NguoiBan (NguoiBan.MaNguoiBan,NguoiBan.TenNguoiBan,NguoiBan.ThanhPho, NguoiBan.ThoiGianMoCua, NguoiBan.ThoiGianDongCua, NguoiBan.DiaChi) values
+        (5,"Thiên Đường ăn vặt","Hà Nội","8:00","10:00","Hàm Tử Quan"),
     (6,"Salt and lime", "Hà Nội", "8:00","19:00", "Đặng Thai Mai"),
     (7, "King Roti", "Hà Nội", "7:00","23:00","Hàng Gai");
-    
+
 -- LoaiMonAn
-insert into loaimonan (loaimonan.TenLoaiMonAn,loaimonan.MaNguoiBan) values 
-	("Ăn vặt",5),
+insert into LoaiMonAn (LoaiMonAn.TenLoaiMonAn,LoaiMonAn.MaNguoiBan) values
+        ("Ăn vặt",5),
     ("Salads, (California Burritos style)",6),
     ("American BBQ Menu",6),
     ("Roti",7);
 -- MonAn
-insert into monan (monan.TenMonAn,monan.MoTa,monan.MaNguoiBan,monan.GiaBan,monan.MaLoaiMonAn) values 
-	("Mỳ cay","Cay xè lưỡi",5,25000,1),
+insert into MonAn (MonAn.TenMonAn,MonAn.MoTa,MonAn.MaNguoiBan,MonAn.GiaBan,MonAn.MaLoaiMonAn) values
+        ("Mỳ cay","Cay xè lưỡi",5,25000,1),
     ("Nem nướng","Đậm ngậy mỗi miếng",5,10000,1),
     ("Pizza", "Ngất ngây",5,250000,null),
     ("Salad Grill Chicken","Black beans, 100 grams fresh grilled chicken, cheddar cheese, picante, sour cream, lettuce and your choice of Salt n' Lime salsa",6,80000,2),
@@ -298,50 +300,50 @@ insert into monan (monan.TenMonAn,monan.MoTa,monan.MaNguoiBan,monan.GiaBan,monan
     ("Roti trà xanh","Bánh Roti Trà Xanh là loại bánh có Nhân bơ sữa - Vỏ bánh Trà Xanh",7,20000,4),
     ("Roti bơ mặn","Bánh Roti Bơ Mặn với nhân phô mai mặn - Vỏ bánh cà phê",7,20000,4);
 
--- NguoiBanYeuThich 
-insert into nguoibanyeuthich values 
-	(5,1),
+-- NguoiBanYeuThich
+insert into NguoiBanYeuThich values
+        (5,1),
     (6,1),
     (7,1),
     (6,3),
     (7,3),
     (5,4),
     (7,4);
-    
+
 -- KhuyenMai
-insert into khuyenmai (khuyenmai.TenKhuyenMai,khuyenmai.PhanTram,khuyenmai.GiaTri,khuyenmai.MaNguoiBan,khuyenmai.SoLuong,khuyenmai.NgayTao,khuyenmai.NgayHetHan) values 
-	("Giảm sâu",null,100000,5,10,"2024-12-1 00:00:00","2024-12-2 00:00:00"),
+insert into KhuyenMai (KhuyenMai.TenKhuyenMai,KhuyenMai.PhanTram,KhuyenMai.GiaTri,KhuyenMai.MaNguoiBan,KhuyenMai.SoLuong,KhuyenMai.NgayTao,KhuyenMai.NgayHetHan) values
+        ("Giảm sâu",null,100000,5,10,"2024-12-1 00:00:00","2024-12-2 00:00:00"),
     ("Giảm nông",5,null,5,10,"2024-10-7 00:00:00","2024-10-9 00:00:00"),
     ("Giảm siêu to",null,1000,5,2,"2024-10-5 00:00:00", "2024-10-6 00:00:00" );
 
 -- NguoiMua_KhuyenMai
-insert into nguoimua_khuyenmai values 
-	(1,1),
+insert into NguoiMua_KhuyenMai values
+        (1,1),
     (3,1),
     (4,1);
 
--- NhanXet 
-insert into nhanxet (nhanxet.MaNguoiMua,nhanxet.MaMonAn,nhanxet.Diem,nhanxet.NoiDung,nhanxet.TraLoi) values 
-	(1,4,10,null,null),
+-- NhanXet
+insert into NhanXet (NhanXet.MaNguoiMua,NhanXet.MaMonAn,NhanXet.Diem,NhanXet.NoiDung,NhanXet.TraLoi) values
+        (1,4,10,null,null),
     (1,8,2,"Hơi ngọt",null),
     (3,5,10,"Tuyệt","Shop cám ơn ạ");
 
 -- PhuongThucGiaoDich
-insert into phuongthucgiaodich (phuongthucgiaodich.TenPhuongThucGiaoDich) values 
-	("Cash on Delivery"),
+insert into PhuongThucGiaoDich (PhuongThucGiaoDich.TenPhuongThucGiaoDich) values
+        ("Cash on Delivery"),
     ("Card"),
     ("E-wallet");
 
 -- TrangThaiDonHang
-insert into trangthaidonhang (trangthaidonhang.TenTrangThai) values 
-	("Đã nhận đon hàng"),
+insert into TrangThaiDonHang (TrangThaiDonHang.TenTrangThai) values
+        ("Đã nhận đon hàng"),
     ("Đang chuẩn bị món ăn"),
     ("Đang giao"),
     ("Đã giao"),
     ("Đã hủy");
-    
+
 -- AI Generate
-insert into NguoiDung (TenNguoiDung, Email, MatKhau, SoDienThoai, MaNguoiDung) values 
+insert into NguoiDung (TenNguoiDung, Email, MatKhau, SoDienThoai, MaNguoiDung) values
         ('bnegro0', 'abaythrop0@jigsy.com', '5912817173', '3243002103', 8),
         ('smackie1', 'tstemson1@w3.org', '4358268451', '4698044816', 67),
         ('ypoon2', 'mollin2@salon.com', '2531790398', '5932872011', 51),
@@ -363,7 +365,7 @@ insert into NguoiDung (TenNguoiDung, Email, MatKhau, SoDienThoai, MaNguoiDung) v
         ('dbuffeyi', 'mkubelkai@webmd.com', '8528446677', '7355874573', 58),
         ('gwitulj', 'tbrechej@tinyurl.com', '5538413942', '6257133844', 63);
 
-insert into nguoiban (nguoiban.MaNguoiBan,nguoiban.TenNguoiBan,nguoiban.DiaChi,nguoiban.ThanhPho,nguoiban.ThoiGianMoCua,nguoiban.ThoiGianDongCua) values 
+insert into NguoiBan (NguoiBan.MaNguoiBan,NguoiBan.TenNguoiBan,NguoiBan.DiaChi,NguoiBan.ThanhPho,NguoiBan.ThoiGianMoCua,NguoiBan.ThoiGianDongCua) values
         (8,"Taste of the Countryside","345 Bạch Đằng, Quận Hải Châu","Đà Nẵng","07:00","22:00"),
         (67,"Four Seasons Dining","123 Nguyễn Thị Minh Khai, Quận 1","Hồ Chí Minh","08:30","21:30"),
         (51,"Pho House Hanoi","45 Lý Thái Tổ, Quận Hoàn Kiếm","Hà Nội","06:00","23:00"),
@@ -385,8 +387,8 @@ insert into nguoiban (nguoiban.MaNguoiBan,nguoiban.TenNguoiBan,nguoiban.DiaChi,n
         (58,"Sushi Nắng Hồng","99 Quang Trung, Quận Gò Vấp","Hồ Chí Minh","01:00","07:00"),
         (63,"Old Town Bistro","789 Nguyễn Văn Cừ, Quận Long Biên","Hà Nội","10:00","11:00");
 
-insert into vaitro_nguoidung values
-	    (3,8),
+insert into VaiTro_NguoiDung values
+            (3,8),
         (3,67),
         (3,51),
         (3,72),
@@ -406,9 +408,9 @@ insert into vaitro_nguoidung values
         (3,29),
         (3,58),
         (3,63);
-        
-insert into loaimonan (loaimonan.MaLoaiMonAn,loaimonan.MaNguoiBan,loaimonan.TenLoaiMonAn) values
-	    (10,8,"Món chính tỏa hương vị quê nhà"),
+
+insert into LoaiMonAn (LoaiMonAn.MaLoaiMonAn,LoaiMonAn.MaNguoiBan,LoaiMonAn.TenLoaiMonAn) values
+            (10,8,"Món chính tỏa hương vị quê nhà"),
         (11,8,"Khai vị hấp dẫn"),
         (12,8,"Canh thanh mát"),
         (13,8,"Tráng miệng ngọt ngào"),
@@ -428,9 +430,9 @@ insert into loaimonan (loaimonan.MaLoaiMonAn,loaimonan.MaNguoiBan,loaimonan.TenL
         (27,100,"Món chiên"),
         (28,100,"Món hấp"),
         (29,100,"Món nướng");
-        
-insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBan,monan.MoTa) values 
-	    (10,8,"Gà kho gừng",250000,"Gà tươi được kho với gừng và gia vị, tạo ra món ăn thơm ngon và bổ dưỡng"),
+
+insert into MonAn (MonAn.MaLoaiMonAn,MonAn.MaNguoiBan,MonAn.TenMonAn,MonAn.GiaBan,MonAn.MoTa) values
+            (10,8,"Gà kho gừng",250000,"Gà tươi được kho với gừng và gia vị, tạo ra món ăn thơm ngon và bổ dưỡng"),
         (10,8,"Bò nướng lá lốt",300000,"Thịt bò xay nhuyễn cuốn trong lá lốt, nướng trên than hồng, tỏa ra hương vị đặc trưng"),
         (10,8,"Cơm lam",100000,"Gạo nếp được nấu trong ống tre, có vị thơm đặc biệt, thường ăn kèm với muối vừng"),
         (13,8,"Chè đậu xanh",30000,"Chè ngọt thanh từ đậu xanh và nước cốt dừa, rất thích hợp cho những ngày hè nóng bức"),
@@ -451,8 +453,8 @@ insert into monan (monan.MaLoaiMonAn,monan.MaNguoiBan,monan.TenMonAn,monan.GiaBa
         (22,24,"SOFT SHELL CHIZU MAKI",189000,"Cơm Cuộn Cua Lột & Phô Mai"),
         (22,24,"TONKATSU MAKI",109000,"Cơm Cuộn Thịt Heo Chiên");
 
-insert into loainguoiban values 
-		(1,"Gà rán"),
+insert into LoaiNguoiBan values
+                (1,"Gà rán"),
         (2,"Pizza"),
         (3,"Burger"),
         (4,"Pasta"),
@@ -467,9 +469,9 @@ insert into loainguoiban values
         (13,"Đồ chay"),
         (14,"Đồ ngọt"),
         (15,"Sushi");
-                
-insert into loainguoiban_nguoiban (loainguoiban_nguoiban.MaLoaiNguoiBan,loainguoiban_nguoiban.MaNguoiBan) values 
-		(11,8),
+
+insert into LoaiNguoiBan_NguoiBan (LoaiNguoiBan_NguoiBan.MaLoaiNguoiBan,LoaiNguoiBan_NguoiBan.MaNguoiBan) values
+                (11,8),
         (11,24),
         (11,100),
         (11,58),
@@ -480,7 +482,3 @@ insert into loainguoiban_nguoiban (loainguoiban_nguoiban.MaLoaiNguoiBan,loainguo
         (12,75),
         (12,11),
         (14,75);
-
-select * from nguoidung;
-insert into loaimonan (loaimonan.MaNguoiBan,loaimonan.TenLoaiMonAn) values (112,"Tuyệt hỏa")
-select * from donhang

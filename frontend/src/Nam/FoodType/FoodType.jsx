@@ -185,7 +185,7 @@ export default function FoodType() {
         };
       });
     }
-  }, [currentType]);
+  }, [currentType,tokenValue]);
   return (
     <div className="">
       <div className="flex h-full">
@@ -217,7 +217,7 @@ export default function FoodType() {
                           onClick={
                             () => {
                               setIsClose(false);
-                              getCurrentIdType(items.TenLoaiMonAn);
+                              getCurrentIdType(items.MaLoaiMonAn);
                             }
                             // handleDeleteFoodType(items.MaLoaiMonAn)
                           }

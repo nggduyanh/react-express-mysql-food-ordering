@@ -1,10 +1,10 @@
-const API_BASE_URL = "http://localhost:3030/";
-export const Url = "http://localhost:3030";
+const API_BASE_URL = import.meta.env.API_URL || "http://localhost:3000" +"/";
+export const Url = import.meta.env.API_URL || "http://localhost:3000";
 export const GetUserInfo = `${API_BASE_URL}nguoidung/current`;
 export const GetAllUser = `${API_BASE_URL}nguoidung`;
 export const getRoles = `${API_BASE_URL}vaitro`;
 export const getUserRole = `${API_BASE_URL}vaitro/nguoidung/`;
-export const GetSellerInfo = `${API_BASE_URL}nguoiban/current`;
+export const GetSellerInfo = `${API_BASE_URL}nguoiban/current`; 
 export const AddUserInfo = `${API_BASE_URL}nguoidung/add`;
 export const GetRestaurant = `${API_BASE_URL}nguoiban`;
 export const GetTypeRes = `${API_BASE_URL}loaimonan`;

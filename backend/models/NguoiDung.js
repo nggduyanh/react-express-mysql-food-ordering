@@ -41,7 +41,7 @@ class NguoiDung
     async search (keyword)
     {
         // Tạo bảng phụ
-        let subTable = `(select distinct nguoiban.MaNguoiBan from nguoiban left join loainguoiban_nguoiban on loainguoiban_nguoiban.MaNguoiBan = nguoiban.MaNguoiBan left join loainguoiban on loainguoiban_nguoiban.MaLoaiNguoiBan = loainguoiban.MaLoaiNguoiBan left join loaimonan on loaimonan.MaNguoiBan = nguoiban.MaNguoiBan join monan on monan.MaNguoiBan = nguoiban.MaNguoiBan where nguoiban.TenNguoiBan like ? or loainguoiban.TenLoaiNguoiBan like ? or loaimonan.TenLoaiMonAn like ? or monan.TenMonAn like ?) as tmp`
+        let subTable = `(select distinct NguoiBan.MaNguoiBan from NguoiBan left join LoaiNguoiBan_NguoiBan on LoaiNguoiBan_NguoiBan.MaNguoiBan = NguoiBan.MaNguoiBan left join LoaiNguoiBan on LoaiNguoiBan_NguoiBan.MaLoaiNguoiBan = LoaiNguoiBan.MaLoaiNguoiBan left join LoaiMonAn on LoaiMonAn.MaNguoiBan = NguoiBan.MaNguoiBan join MonAn on MonAn.MaNguoiBan = NguoiBan.MaNguoiBan where NguoiBan.TenNguoiBan like ? or LoaiNguoiBan.TenLoaiNguoiBan like ? or LoaiMonAn.TenLoaiMonAn like ? or MonAn.TenMonAn like ?) as tmp`
         let newKeyword = keyword+"%"
         let args = Array(4).fill (newKeyword)
         let joinClause = `join ${subTable} on ${nguoiban.tableName}.${nguoiban.id} = tmp.MaNguoiBan`
